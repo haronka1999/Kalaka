@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/businessProfile">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -36,7 +36,14 @@
         android:id="@+id/profileFragment"
         android:name="com.e.kalaka.fragments.ProfileFragment"
         android:label="Profil"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_businessProfile"
+            app:destination="@id/businessProfile" />
+        <action
+            android:id="@+id/action_profileFragment_to_noBusinessFragment"
+            app:destination="@id/noBusinessFragment" />
+    </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.e.kalaka.fragments.RegisterFragment"
@@ -78,4 +85,9 @@
         android:id="@+id/businessProfile"
         android:name="com.e.kalaka.fragments.BusinessProfile"
         android:label="BusinessProfile" />
+    <fragment
+        android:id="@+id/noBusinessFragment"
+        android:name="com.e.kalaka.fragments.NoBusinessFragment"
+        android:label="fragment_no_business"
+        tools:layout="@layout/fragment_no_business" />
 </navigation>

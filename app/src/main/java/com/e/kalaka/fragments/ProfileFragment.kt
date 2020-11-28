@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 
 
@@ -25,6 +26,7 @@ class ProfileFragment : Fragment() {
     private lateinit var database: FirebaseDatabase
     private lateinit var databaseRef: DatabaseReference
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var userID: FirebaseUser
     private lateinit var binding: FragmentProfileBinding
 
     override fun onCreateView(
@@ -37,23 +39,44 @@ class ProfileFragment : Fragment() {
 
         initializeDatabase()
         showDatas()
+        businessCheck()
 
         return view
     }
 
 
+    fun businessCheck():Boolean{
+        var business = ""
+        databaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val user = dataSnapshot.child("LVHz4KlAugVrDiM0PPEyf5oQoIZ2")
+                business = user.child("businessId").value.toString()
+                Log.d("businessertek", "ertek1: ${user.child("businessId").value.toString()}")
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException())
+            }
+        })
+
+        Log.d("businessertek", "ertek: $business")
+        return true
+    }
 
     fun initializeDatabase(){
         database = FirebaseDatabase.getInstance()
         databaseRef = database.getReference("users")
         firebaseAuth = FirebaseAuth.getInstance()
+        userID = firebaseAuth.currentUser!!
     }
 
+
     private fun showDatas() {
-        var userID = firebaseAuth.currentUser
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val user = dataSnapshot.child("userID")
+                val user = dataSnapshot.child("LVHz4KlAugVrDiM0PPEyf5oQoIZ2")
                 binding.firstName.text=user.child("firstName").value.toString()
                 binding.lastName.text=user.child("lastName").value.toString()
                 binding.email.text=user.child("email").value.toString()
