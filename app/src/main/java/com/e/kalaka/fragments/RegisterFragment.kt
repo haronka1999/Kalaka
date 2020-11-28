@@ -1,7 +1,6 @@
 package com.e.kalaka.fragments
 
 import android.app.Activity.RESULT_OK
-import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,32 +17,32 @@ import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentRegisterBinding
 import com.e.kalaka.models.User
-import com.e.kalaka.models.UserOrder
 import com.e.kalaka.utils.Validation
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.*
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.*
+import kotlin.concurrent.schedule
 
 
 class RegisterFragment : Fragment() {
 
-    private lateinit var datab: FirebaseDatabase
-    private lateinit var databaseRef: DatabaseReference
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var userID: FirebaseUser
-    private val preloadedData: PreloadViewModel by activityViewModels()
     private lateinit var binding: FragmentRegisterBinding
     private lateinit var mAuth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
+
     private lateinit var imageUri: Uri
     private lateinit var userId: String
+    private lateinit var lastName: String
+    private lateinit var firstName: String
+    private lateinit var email: String
+    private lateinit var password: String
     var database = FirebaseDatabase.getInstance()
     var myRef = database.reference
+    private val preloadedData: PreloadViewModel by activityViewModels()
 
     companion object {
         //image pick code
@@ -60,42 +59,29 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false)
-
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
 
-
-
         binding.chooseImageButton.setOnClickListener {
             pickImageFromGallery()
-
+            //binding.imageView.setImageURI(imageUri)
         }
 
         binding.saveButton.setOnClickListener {
-            val lastName = binding.lastNameEditText.text.toString()
-            val firstName = binding.firstNameEditText.text.toString()
-            val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
-            // val image = binding.imageView.
+            lastName = binding.lastNameEditText.text.toString()
+            firstName = binding.firstNameEditText.text.toString()
+            email = binding.emailEditText.text.toString()
+            password = binding.passwordEditText.text.toString()
 
             Log.d("helo", "Email : $email")
             Log.d("helo", "password : $password")
             if (!registrationValidation(lastName, firstName, email, password))
                 return@setOnClickListener
+
+            //authentication
             registerUserInDataBase(email, password)
-            userId = mAuth.currentUser?.uid.toString()
-            val user = User(
-                0,
-                email,
-                arrayListOf(),
-                firstName,
-                userId,
-                lastName,
-                arrayListOf(),
-                imageUri.toString()
-            )
-            putUserDataIntoRealTimeDatabase(user)
         }
+
         binding.gotoLoginButton.setOnClickListener {
             Navigation.findNavController(binding.root)
                 .navigate(R.id.action_registerFragment_to_loginFragment)
@@ -109,13 +95,17 @@ class RegisterFragment : Fragment() {
         // Log.d("Helo", "LastName: $lastName")
         //Log.d("Helo", "firstName: $firstName")
         Log.d("Helo", "imageUri: $imageUri")
+
+        userId = mAuth.currentUser?.uid.toString()
+        user.userId = userId
         Log.d("Helo", "userId: $userId")
+        myRef.child("users").child(userId).setValue(user)
 
-
-        myRef.child("users").child(user.userId).setValue(user)
-//        myRef.child("users").child(user.userId).child("email").setValue(user.email)
-//        myRef.child("users").child(user.userId).child("username")
-//            .setValue(user.userName)
+        Toast.makeText(
+            activity,
+            "User created into realtime",
+            Toast.LENGTH_SHORT
+        ).show()
 
 
     }
@@ -123,7 +113,6 @@ class RegisterFragment : Fragment() {
     private fun registerUserInDataBase(email: String, password: String) {
         val navController = Navigation.findNavController(binding.root);
         mAuth = FirebaseAuth.getInstance();
-
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 // let the user know that the registration was successful
@@ -131,33 +120,27 @@ class RegisterFragment : Fragment() {
 
                 if (task.isSuccessful) {
                     Log.d("Helo", "successfull")
-
+                    userId = ""
+                    val user = User(
+                        0,
+                        email,
+                        arrayListOf(),
+                        firstName,
+                        userId,
+                        lastName,
+                        arrayListOf(),
+                        imageUri.toString()
+                    )
+                    //realtime
                     Toast.makeText(
                         activity,
-                        "User created",
+                        "User created into authentication",
                         Toast.LENGTH_SHORT
                     ).show()
-                    datab = FirebaseDatabase.getInstance()
-                    databaseRef = database.getReference("users")
-                    firebaseAuth = FirebaseAuth.getInstance()
-                    userID = firebaseAuth.currentUser!!
-                    databaseRef.addValueEventListener(object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val user = dataSnapshot.child("userID")
-                            val u = User(0,user.child("email").value.toString(),
-                                mutableListOf(),user.child("firsName").value.toString(),user.child("userId").value.toString(),user.child("lastName").value.toString(),
-                                mutableListOf(),user.child("photoUrl").value.toString()
-                                )
-                            Log.d("user","val: $u")
-                            preloadedData.user.value=u
 
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            // Failed to read value
-                            Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
-                        }
-                    })
+                    putUserDataIntoRealTimeDatabase(user)
+                    preloadedData.user.value=user
+                    Log.d("user","val: $user")
                     navController.navigate(R.id.homeFragment)
                 } else {
                     Log.d("Helo", task.exception.toString())

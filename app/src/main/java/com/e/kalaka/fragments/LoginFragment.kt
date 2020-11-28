@@ -33,7 +33,7 @@ class LoginFragment : Fragment() {
     private lateinit var database: FirebaseDatabase
     private lateinit var databaseRef: DatabaseReference
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var userID: FirebaseUser
+    private lateinit var userID: String
     private val preloadedData: PreloadViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,18 +66,33 @@ class LoginFragment : Fragment() {
                         database = FirebaseDatabase.getInstance()
                         databaseRef = database.getReference("users")
                         firebaseAuth = FirebaseAuth.getInstance()
-                        userID = firebaseAuth.currentUser!!
+                        userID = firebaseAuth.currentUser?.uid.toString()
                         databaseRef.addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                val user = dataSnapshot.child("userID") as User
-                                Log.d("user","val: $user")
-                                preloadedData.user.value=user
+                                val user = dataSnapshot.child(userID)
+                                Log.d("user", "val: $user")
+                                val u = User(
+                                    0,
+                                    user.child("email").value.toString(),
+                                    mutableListOf(),
+                                    user.child("firstName").value.toString(),
+                                    user.child("userId").value.toString(),
+                                    user.child("lastName").value.toString(),
+                                    mutableListOf(),
+                                    user.child("photoURL").value.toString()
+                                )
+                                preloadedData.user.value = u
+                                Log.d("preloadedData","login: $u")
 
                             }
 
                             override fun onCancelled(error: DatabaseError) {
                                 // Failed to read value
-                                Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
+                                Log.w(
+                                    ContentValues.TAG,
+                                    "Failed to read value.",
+                                    error.toException()
+                                )
                             }
                         })
                         // Sign in success, update UI with the signed-in user's information

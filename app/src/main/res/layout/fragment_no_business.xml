@@ -20,9 +20,9 @@
 
     <Button
         android:id="@+id/createBusinessButton"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
-        android:text="Button"
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:text="Létrehozás"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
