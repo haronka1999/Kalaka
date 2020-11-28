@@ -3,6 +3,7 @@ package com.e.kalaka.fragments
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,8 +46,12 @@ class ProfileFragment : Fragment() {
 
 
             if (user?.businessId == 0) {
+//                Navigation.findNavController(binding.root)
+//                    .navigate(R.id.action_profileFragment_to_noBusinessFragment)
+
                 Navigation.findNavController(binding.root)
-                    .navigate(R.id.action_profileFragment_to_noBusinessFragment)
+                    .navigate(R.id.action_profileFragment_to_businessProfile)
+
             } else {
                 Navigation.findNavController(binding.root)
                     .navigate(R.id.action_profileFragment_to_businessProfile)

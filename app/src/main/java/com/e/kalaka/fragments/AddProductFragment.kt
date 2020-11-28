@@ -12,11 +12,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentAddProductBinding
 import com.e.kalaka.databinding.FragmentOrderProductBinding
 import com.e.kalaka.models.Product
 import com.e.kalaka.utils.Validation
+import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -30,7 +32,6 @@ class AddProductFragment : Fragment() {
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
 
-
     //form datas
     private lateinit var name: String
     private lateinit var description: String
@@ -39,7 +40,7 @@ class AddProductFragment : Fragment() {
     //helper variables
     private lateinit var binding: FragmentAddProductBinding
     private lateinit var imageUri: Uri
-
+    private val preloadedData: PreloadViewModel by activityViewModels()
     companion object {
         //image pick code
         const val IMAGE_PICK_CODE = 1;
@@ -63,17 +64,21 @@ class AddProductFragment : Fragment() {
         }
 
         binding.addProductButton.setOnClickListener {
+
+            val userCredentials = preloadedData.user.value
+
             name = binding.productNameEditText.text.toString()
             description = binding.descriptionEditText.text.toString()
             price = binding.priceEditText.text.toString().toDouble()
-
+            val businessId = userCredentials?.businessId.toString()
+            val productId = UUID.randomUUID().toString()
             if (!isValidForm()) {
                 return@setOnClickListener
             }
 
 
-          //  val product = Product()
-          //  writeProductIntoDataBase(product)
+            val product = Product(businessId,description,name,imageUri.toString(),price,productId)
+            writeProductIntoDataBase(product)
         }
 
 
@@ -82,7 +87,8 @@ class AddProductFragment : Fragment() {
     }
 
     private fun writeProductIntoDataBase(product: Product) {
-
+        preloadedData.productList
+        myRef.child("products").child(product.productId).setValue(product)
     }
 
     private fun isValidForm(): Boolean {

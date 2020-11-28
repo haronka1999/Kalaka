@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.*
-import kotlin.concurrent.schedule
 
 
 class RegisterFragment : Fragment() {
@@ -63,6 +63,7 @@ class RegisterFragment : Fragment() {
 
         binding.chooseImageButton.setOnClickListener {
             pickImageFromGallery()
+
             //binding.imageView.setImageURI(imageUri)
         }
 
@@ -88,6 +89,42 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
 
+
+
+    private fun pickImageFromGallery() {
+        //Intent to pick image
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(intent, IMAGE_PICK_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.data != null) {
+            imageUri = data.data!!
+
+            uploadPicture()
+        }
+    }
+
+
+    private fun uploadPicture() {
+
+        val randomKey = UUID.randomUUID().toString()
+        val riversRef: StorageReference = storageReference.child("profile_image/$randomKey")
+
+        riversRef.putFile(imageUri)
+            .addOnSuccessListener { taskSnapshot -> // Get a URL to the uploaded content
+                Log.d("Helo", "kep sikeresen feltoltve")
+                Toast.makeText(activity, "Kép sikeresen feltöltve", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Log.d("Helo", "valami hiba a kepfeltoltesnel")
+            }
+
+    }
+
     private fun putUserDataIntoRealTimeDatabase(
         user: User
     ) {
@@ -108,7 +145,6 @@ class RegisterFragment : Fragment() {
 
 
     }
-
     private fun registerUserInDataBase(email: String, password: String) {
         val navController = Navigation.findNavController(binding.root);
         mAuth = FirebaseAuth.getInstance();
@@ -119,6 +155,11 @@ class RegisterFragment : Fragment() {
 
                 if (task.isSuccessful) {
                     Log.d("Helo", "successfull")
+                    Log.d("Helo", "imageUri.toString() $imageUri")
+
+//                    val photoSplit=imageUri.toString().toArr("%3A");
+//                    imageUri="content://media/external/images/media/"+photoSplit[1];
+
                     userId = ""
                     val user = User(
                         0,
@@ -138,7 +179,7 @@ class RegisterFragment : Fragment() {
                     ).show()
 
                     putUserDataIntoRealTimeDatabase(user)
-                    preloadedData.user.value=user
+                    preloadedData.user.value = user
                     navController.navigate(R.id.homeFragment)
                 } else {
                     Log.d("Helo", task.exception.toString())
@@ -150,37 +191,6 @@ class RegisterFragment : Fragment() {
                 }
             }
     }
-
-    private fun pickImageFromGallery() {
-        //Intent to pick image
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(intent, IMAGE_PICK_CODE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.data != null) {
-            imageUri = data.data!!
-            uploadPicture()
-        }
-    }
-
-    private fun uploadPicture() {
-        val randomKey = UUID.randomUUID().toString()
-        val riversRef: StorageReference = storageReference.child("profile_image/" + randomKey)
-
-        riversRef.putFile(imageUri)
-            .addOnSuccessListener { taskSnapshot -> // Get a URL to the uploaded content
-                Log.d("Helo", "kep sikeresen feltoltve")
-                Toast.makeText(activity, "Kép sikeresen feltöltve", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                Log.d("Helo", "valami hiba a kepfeltoltesnel")
-            }
-    }
-
     private fun registrationValidation(
         lastName: String,
         firstName: String,
