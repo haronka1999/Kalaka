@@ -39,31 +39,10 @@ class ProfileFragment : Fragment() {
 
         initializeDatabase()
         showDatas()
-        businessCheck()
 
         return view
     }
 
-
-    fun businessCheck():Boolean{
-        var business = ""
-        databaseRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val user = dataSnapshot.child("LVHz4KlAugVrDiM0PPEyf5oQoIZ2")
-                business = user.child("businessId").value.toString()
-                Log.d("businessertek", "ertek1: ${user.child("businessId").value.toString()}")
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException())
-            }
-        })
-
-        Log.d("businessertek", "ertek: $business")
-        return true
-    }
 
     fun initializeDatabase(){
         database = FirebaseDatabase.getInstance()
