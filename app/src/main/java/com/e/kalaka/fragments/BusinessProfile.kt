@@ -68,10 +68,6 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-       // TODO("Not yet implemented")
+        preloadedData.currentProduct = preloadedData.productList.value!![position]
     }
-
-
-
-
 }
