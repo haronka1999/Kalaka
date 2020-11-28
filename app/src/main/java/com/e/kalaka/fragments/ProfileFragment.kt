@@ -53,8 +53,7 @@ class ProfileFragment : Fragment() {
         var userID = firebaseAuth.currentUser
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                //TODO: amikor elkeszul az authentication ki kell cserelni az alabbi path erteket 0-rol userID-ra
-                val user = dataSnapshot.child("0")
+                val user = dataSnapshot.child("userID")
                 binding.firstName.text=user.child("firstName").value.toString()
                 binding.lastName.text=user.child("lastName").value.toString()
                 binding.email.text=user.child("email").value.toString()
