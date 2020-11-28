@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "816148248056",
+    "firebase_url": "https://localtrader-c801d.firebaseio.com",
+    "project_id": "localtrader-c801d",
+    "storage_bucket": "localtrader-c801d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:816148248056:android:7c4cedc0be1f73a555120d",
+        "android_client_info": {
+          "package_name": "com.e.kalaka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "816148248056-rarbr1o74lgfqcji966h26kd2ir9mncs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3-s5E3QPDR4X0aunKwOzJF5v9NFNR0v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "816148248056-rarbr1o74lgfqcji966h26kd2ir9mncs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
