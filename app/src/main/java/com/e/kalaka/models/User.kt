@@ -5,7 +5,7 @@ data class User (
     var email : String,
     var favorites : MutableList<Int>,
     var firstName : String,
-    var userId : Int,
+    var userId : String,
     var lastName : String,
     var orders : MutableList<UserOrder>,
     var photoURL : String
