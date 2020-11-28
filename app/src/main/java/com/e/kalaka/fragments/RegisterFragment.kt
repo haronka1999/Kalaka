@@ -30,6 +30,10 @@ class RegisterFragment : Fragment() {
         private val IMAGE_PICK_CODE = 1000;
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
