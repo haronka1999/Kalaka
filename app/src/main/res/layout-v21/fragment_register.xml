@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        tools:context="fragments.RegisterFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/registerFragment"
         android:layout_width="match_parent"
@@ -14,6 +20,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColorHint="@color/white"
             android:text="Regisztráció"
             android:textSize="28sp"
             app:layout_constraintBottom_toTopOf="@id/firstNameEditText"
@@ -23,8 +30,10 @@
 
         <EditText
             android:id="@+id/lastNameEditText"
-            android:layout_width="212dp"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
             android:autofillHints="Username"
@@ -38,59 +47,65 @@
 
         <EditText
             android:id="@+id/firstNameEditText"
-            android:layout_width="212dp"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="32dp"
             android:autofillHints="Username"
             android:drawablePadding="10dp"
             android:hint="Keresztnév"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/lastNameEditText"
+            app:layout_constraintStart_toStartOf="@id/lastNameEditText"
             app:layout_constraintTop_toBottomOf="@id/lastNameEditText"
             tools:ignore="LabelFor" />
 
 
         <EditText
             android:id="@+id/emailEditText"
-            android:layout_width="220dp"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:autofillHints="Email"
             android:drawablePadding="10dp"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/firstNameEditText"
+            app:layout_constraintStart_toStartOf="@id/firstNameEditText"
             app:layout_constraintTop_toBottomOf="@id/firstNameEditText"
             tools:ignore="LabelFor" />
 
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+
+        <TextView
+            android:id="@+id/addPictureTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@id/passwordEditText"
+            android:layout_marginStart="32dp"
+            android:text="Kép feltöltése"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/emailEditText"
+            />
 
-            app:layout_constraintStart_toEndOf="@id/chooseImageButton"
-
-            app:layout_constraintTop_toBottomOf="@id/emailEditText" />
-
-
-        <Button
+        <ImageButton
             android:id="@+id/chooseImageButton"
-            android:layout_width="110dp"
+            android:layout_width="70dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/szin3"
-            app:layout_constraintStart_toStartOf="@id/emailEditText"
-            app:layout_constraintEnd_toStartOf="@id/imageView"
-            android:text="Választ"
-            app:layout_constraintTop_toBottomOf="@id/emailEditText" />
+            app:srcCompat="@drawable/ic_add"
+           android:backgroundTint="@color/background"
+            app:layout_constraintStart_toEndOf="@+id/addPictureTextView"
+            app:layout_constraintTop_toBottomOf="@id/addPictureTextView"
+            app:layout_constraintBottom_toBottomOf="@id/addPictureTextView"
+            android:contentDescription="kephozaadas" />
 
         <EditText
 
@@ -104,22 +119,22 @@
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="@id/emailEditText"
             app:layout_constraintStart_toStartOf="@id/emailEditText"
-            app:layout_constraintTop_toBottomOf="@id/imageView"
+            app:layout_constraintTop_toBottomOf="@id/chooseImageButton"
             tools:ignore="LabelFor" />
 
 
         <Button
             android:id="@+id/saveButton"
             android:layout_width="140dp"
+            android:layout_marginTop="32dp"
             android:layout_height="40dp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/szin3"
             android:text="Mentés"
             app:backgroundTint="#44BEED"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/passwordEditText" />
+            app:layout_constraintTop_toBottomOf="@id/passwordEditText" />
 
         <TextView
             android:id="@+id/gotoLoginButton"
@@ -135,5 +150,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </ScrollView>
 </layout>
 
