@@ -31,7 +31,6 @@ class RegisterFragment : Fragment() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
-
     private lateinit var imageUri: Uri
     private lateinit var userId: String
     private lateinit var lastName: String

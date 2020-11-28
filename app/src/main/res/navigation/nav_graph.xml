@@ -88,7 +88,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailsProductFragment"
-        android:name="com.e.kalaka.DetailsProductFragment"
+        android:name="com.e.kalaka.fragments.DetailsProductFragment"
         android:label="fragment_details_product"
         tools:layout="@layout/fragment_details_product" >
         <action
@@ -97,7 +97,7 @@
     </fragment>
     <fragment
         android:id="@+id/orderProductFragment"
-        android:name="com.e.kalaka.OrderProductFragment"
+        android:name="com.e.kalaka.fragments.OrderProductFragment"
         android:label="fragment_order_product"
         tools:layout="@layout/fragment_order_product" >
         <action
