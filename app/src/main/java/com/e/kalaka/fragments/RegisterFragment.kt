@@ -12,11 +12,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentRegisterBinding
 import com.e.kalaka.models.User
 import com.e.kalaka.utils.Validation
+import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -39,6 +41,7 @@ class RegisterFragment : Fragment() {
     private lateinit var password: String
     var database = FirebaseDatabase.getInstance()
     var myRef = database.reference
+    private val preloadedData: PreloadViewModel by activityViewModels()
 
     companion object {
         //image pick code
@@ -135,6 +138,7 @@ class RegisterFragment : Fragment() {
                     ).show()
 
                     putUserDataIntoRealTimeDatabase(user)
+                    preloadedData.user.value=user
                     navController.navigate(R.id.homeFragment)
                 } else {
                     Log.d("Helo", task.exception.toString())
