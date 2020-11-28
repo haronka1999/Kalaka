@@ -59,7 +59,7 @@ class ProfileFragment : Fragment() {
                 Log.d("value", "ott")
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                val value = dataSnapshot.getValue(String::class.java)!!
+                val value = dataSnapshot.child("0")
                 Log.d("value", "Value is: $value")
             }
 

@@ -74,6 +74,11 @@
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment
+        tools:layout="@layout/fragment_business_profile"
+        android:id="@+id/businessProfile"
+        android:name="com.e.kalaka.fragments.BusinessProfile"
+        android:label="BusinessProfile" />
+    <fragment
         android:id="@+id/createBusinessFragment"
         android:name="com.e.kalaka.fragments.CreateBusinessFragment"
         android:label="fragment_create_business"
