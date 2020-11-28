@@ -60,7 +60,7 @@
             android:layout_marginTop="32dp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/szin3"
-            android:text="Mentés"
+            android:text="Belépés"
             app:backgroundTint="#44BEED"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
