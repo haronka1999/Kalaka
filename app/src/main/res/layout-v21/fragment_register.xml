@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/registerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".authentication.register.RegisterFragment">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Regisztráció"
+            android:textSize="28sp"
+            app:layout_constraintBottom_toTopOf="@id/firstNameEditText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/lastNameEditText"
+            android:layout_width="212dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:autofillHints="Username"
+            android:drawablePadding="10dp"
+            android:hint="Vezetéknév"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView"
+            tools:ignore="LabelFor" />
+
+        <EditText
+            android:id="@+id/firstNameEditText"
+            android:layout_width="212dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:autofillHints="Username"
+            android:drawablePadding="10dp"
+            android:hint="Keresztnév"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lastNameEditText"
+            tools:ignore="LabelFor" />
+
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="220dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:autofillHints="Email"
+            android:drawablePadding="10dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/firstNameEditText"
+            tools:ignore="LabelFor" />
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@id/passwordEditText"
+
+            app:layout_constraintStart_toEndOf="@id/chooseImageButton"
+
+            app:layout_constraintTop_toBottomOf="@id/emailEditText" />
+
+
+        <Button
+            android:id="@+id/chooseImageButton"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/szin3"
+            app:layout_constraintStart_toStartOf="@id/emailEditText"
+            app:layout_constraintEnd_toStartOf="@id/imageView"
+            android:text="Választ"
+            app:layout_constraintTop_toBottomOf="@id/emailEditText" />
+
+        <EditText
+
+            android:id="@+id/passwordEditText"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="32dp"
+            android:autofillHints="Password"
+            android:drawablePadding="10dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="@id/emailEditText"
+            app:layout_constraintStart_toStartOf="@id/emailEditText"
+            app:layout_constraintTop_toBottomOf="@id/imageView"
+            tools:ignore="LabelFor" />
+
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/szin3"
+            android:text="Mentés"
+            app:backgroundTint="#44BEED"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/passwordEditText" />
+
+        <TextView
+            android:id="@+id/gotoLoginButton"
+            android:text="Már van fiókom"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/saveButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
+
