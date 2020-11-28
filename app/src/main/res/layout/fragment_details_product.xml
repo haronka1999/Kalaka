@@ -71,18 +71,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cardView"
             tools:layout_editor_absoluteX="28dp" />
 
-        <TextView
-            android:id="@+id/tagsTextView"
-            android:layout_width="355dp"
-            android:layout_height="50dp"
-            android:ems="10"
-            android:text="Cimkék"
-            android:layout_marginTop="32dp"
-            android:background="@color/item_background"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/descriptionTextView"
-            tools:layout_editor_absoluteX="28dp" />
+
 
         <Button
             android:id="@+id/orderButton"
@@ -93,7 +82,7 @@
             android:backgroundTint="@color/szin3"
             android:text="Rendelés"
             app:backgroundTint="#44BEED"
-            app:layout_constraintTop_toBottomOf="@id/tagsTextView"
+            app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             />
