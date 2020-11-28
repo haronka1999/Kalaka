@@ -55,7 +55,7 @@ class ProfileFragment : Fragment() {
     private fun showDatas() {
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val user = dataSnapshot.child("LVHz4KlAugVrDiM0PPEyf5oQoIZ2")
+                val user = dataSnapshot.child("userID")
                 binding.firstName.text=user.child("firstName").value.toString()
                 binding.lastName.text=user.child("lastName").value.toString()
                 binding.email.text=user.child("email").value.toString()
