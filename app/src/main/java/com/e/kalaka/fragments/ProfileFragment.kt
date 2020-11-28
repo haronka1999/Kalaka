@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -19,6 +20,7 @@ class ProfileFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+
     }
     private lateinit var database: FirebaseDatabase
     private lateinit var databaseRef: DatabaseReference
@@ -33,15 +35,12 @@ class ProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         val view = binding.root
 
-
-
         initializeDatabase()
         showDatas()
 
-
-
         return view
     }
+
 
 
     fun initializeDatabase(){
@@ -52,15 +51,19 @@ class ProfileFragment : Fragment() {
 
     private fun showDatas() {
         var userID = firebaseAuth.currentUser
-        Log.d("value", "itt")
-        Log.d("value", "database $databaseRef")
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.d("value", "ott")
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                val value = dataSnapshot.child("0")
-                Log.d("value", "Value is: $value")
+                //TODO: amikor elkeszul az authentication ki kell cserelni az alabbi path erteket 0-rol userID-ra
+                val user = dataSnapshot.child("0")
+                binding.firstName.text=user.child("firstName").value.toString()
+                binding.lastName.text=user.child("lastName").value.toString()
+                binding.email.text=user.child("email").value.toString()
+                context?.let {
+                    Glide.with(it)
+                        .load(user.child("photoURL").value.toString())
+                        .into(binding.profilePic)
+                }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -68,7 +71,6 @@ class ProfileFragment : Fragment() {
                 Log.w(TAG, "Failed to read value.", error.toException())
             }
         })
-        Log.d("value", "amott")
 
     }
 
