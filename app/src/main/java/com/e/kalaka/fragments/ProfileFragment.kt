@@ -46,11 +46,11 @@ class ProfileFragment : Fragment() {
 
 
             if (user?.businessId == 0) {
-//                Navigation.findNavController(binding.root)
-//                    .navigate(R.id.action_profileFragment_to_noBusinessFragment)
-
                 Navigation.findNavController(binding.root)
-                    .navigate(R.id.action_profileFragment_to_businessProfile)
+                    .navigate(R.id.action_profileFragment_to_noBusinessFragment)
+
+//                Navigation.findNavController(binding.root)
+//                    .navigate(R.id.action_profileFragment_to_businessProfile)
 
             } else {
                 Navigation.findNavController(binding.root)
