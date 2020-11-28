@@ -33,7 +33,6 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_splash, container, false)
 
         mAuth = FirebaseAuth.getInstance();
@@ -46,7 +45,8 @@ class SplashFragment : Fragment() {
                     findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
                 } else {
                     Log.d("RETURN", "showLoginScreen");
-                    findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+//                    findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+                    findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
                 }
             }
         }, 2000)
