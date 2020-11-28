@@ -18,6 +18,10 @@ import com.google.firebase.database.FirebaseDatabase
 
 class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+    }
     private lateinit var binding: FragmentHomeBinding
     private lateinit var recyclerView: RecyclerView
 
