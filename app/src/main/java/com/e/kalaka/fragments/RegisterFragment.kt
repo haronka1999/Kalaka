@@ -30,8 +30,13 @@ class RegisterFragment : Fragment() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
+
     private lateinit var imageUri: Uri
     private lateinit var userId: String
+    private lateinit var lastName: String
+    private lateinit var firstName: String
+    private lateinit var email: String
+    private lateinit var password: String
     var database = FirebaseDatabase.getInstance()
     var myRef = database.reference
 
@@ -62,18 +67,19 @@ class RegisterFragment : Fragment() {
         }
 
         binding.saveButton.setOnClickListener {
-            val lastName = binding.lastNameEditText.text.toString()
-            val firstName = binding.firstNameEditText.text.toString()
-            val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
+             lastName = binding.lastNameEditText.text.toString()
+             firstName = binding.firstNameEditText.text.toString()
+             email = binding.emailEditText.text.toString()
+             password = binding.passwordEditText.text.toString()
             // val image = binding.imageView.
 
             Log.d("helo", "Email : $email")
             Log.d("helo", "password : $password")
             if (!registrationValidation(lastName, firstName, email, password))
                 return@setOnClickListener
+
             registerUserInDataBase(email, password)
-            userId = mAuth.currentUser?.uid.toString()
+            userId = ""
             val user = User(
                 0,
                 email,
@@ -99,21 +105,23 @@ class RegisterFragment : Fragment() {
         // Log.d("Helo", "LastName: $lastName")
         //Log.d("Helo", "firstName: $firstName")
         Log.d("Helo", "imageUri: $imageUri")
+
+       userId =  mAuth.currentUser?.uid.toString()
         Log.d("Helo", "userId: $userId")
 
 
-        myRef.child("users").child(user.userId).setValue(user)
-//        myRef.child("users").child(user.userId).child("email").setValue(user.email)
-//        myRef.child("users").child(user.userId).child("username")
-//            .setValue(user.userName)
-
+        myRef.child("users").child(userId).setValue(user)
+        Toast.makeText(
+            activity,
+            "User created into realtime",
+            Toast.LENGTH_SHORT
+        ).show()
 
     }
 
     private fun registerUserInDataBase(email: String, password: String) {
         val navController = Navigation.findNavController(binding.root);
         mAuth = FirebaseAuth.getInstance();
-
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 // let the user know that the registration was successful
@@ -124,7 +132,7 @@ class RegisterFragment : Fragment() {
 
                     Toast.makeText(
                         activity,
-                        "User created",
+                        "User created into authentication",
                         Toast.LENGTH_SHORT
                     ).show()
                     navController.navigate(R.id.homeFragment)
