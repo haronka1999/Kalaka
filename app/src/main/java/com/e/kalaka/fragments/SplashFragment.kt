@@ -42,11 +42,12 @@ class SplashFragment : Fragment() {
             override fun run() {
                 if (mUser != null) {
                     Log.d("RETURN", "mainScreen");
-                    findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+                 //   findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+                    findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
                 } else {
                     Log.d("RETURN", "showLoginScreen");
-//                    findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
-                    findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+                    findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+                   // findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
                 }
             }
         }, 2000)
