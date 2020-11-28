@@ -45,7 +45,7 @@ class RegisterFragment : Fragment() {
 
     companion object {
         //image pick code
-        private val IMAGE_PICK_CODE = 1;
+        val IMAGE_PICK_CODE = 1;
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

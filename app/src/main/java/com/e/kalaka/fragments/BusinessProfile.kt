@@ -1,6 +1,7 @@
 package com.e.kalaka.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.adapters.BusinessProfileAdapter
 import com.e.kalaka.databinding.FragmentBusinessProfileBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.e.kalaka.viewModels.PreloadViewModel
 
 
@@ -23,6 +25,7 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
     private lateinit var binding : FragmentBusinessProfileBinding
     private val preloadedData : PreloadViewModel by activityViewModels()
 
+    private lateinit var mAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
