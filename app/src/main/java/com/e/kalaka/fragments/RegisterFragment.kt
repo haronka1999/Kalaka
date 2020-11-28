@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.*
+import kotlin.concurrent.schedule
 
 
 class RegisterFragment : Fragment() {
@@ -32,6 +33,10 @@ class RegisterFragment : Fragment() {
     private lateinit var storageReference: StorageReference
     private lateinit var imageUri: Uri
     private lateinit var userId: String
+    private lateinit var lastName: String
+    private lateinit var firstName: String
+    private lateinit var email: String
+    private lateinit var password: String
     var database = FirebaseDatabase.getInstance()
     var myRef = database.reference
 
@@ -50,42 +55,29 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false)
-
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
 
-
-
         binding.chooseImageButton.setOnClickListener {
             pickImageFromGallery()
-
+            //binding.imageView.setImageURI(imageUri)
         }
 
         binding.saveButton.setOnClickListener {
-            val lastName = binding.lastNameEditText.text.toString()
-            val firstName = binding.firstNameEditText.text.toString()
-            val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
-            // val image = binding.imageView.
+            lastName = binding.lastNameEditText.text.toString()
+            firstName = binding.firstNameEditText.text.toString()
+            email = binding.emailEditText.text.toString()
+            password = binding.passwordEditText.text.toString()
 
             Log.d("helo", "Email : $email")
             Log.d("helo", "password : $password")
             if (!registrationValidation(lastName, firstName, email, password))
                 return@setOnClickListener
+
+            //authentication
             registerUserInDataBase(email, password)
-            userId = mAuth.currentUser?.uid.toString()
-            val user = User(
-                0,
-                email,
-                arrayListOf(),
-                firstName,
-                userId,
-                lastName,
-                arrayListOf(),
-                imageUri.toString()
-            )
-            putUserDataIntoRealTimeDatabase(user)
         }
+
         binding.gotoLoginButton.setOnClickListener {
             Navigation.findNavController(binding.root)
                 .navigate(R.id.action_registerFragment_to_loginFragment)
@@ -99,13 +91,17 @@ class RegisterFragment : Fragment() {
         // Log.d("Helo", "LastName: $lastName")
         //Log.d("Helo", "firstName: $firstName")
         Log.d("Helo", "imageUri: $imageUri")
+
+        userId = mAuth.currentUser?.uid.toString()
+        user.userId = userId
         Log.d("Helo", "userId: $userId")
+        myRef.child("users").child(userId).setValue(user)
 
-
-        myRef.child("users").child(user.userId).setValue(user)
-//        myRef.child("users").child(user.userId).child("email").setValue(user.email)
-//        myRef.child("users").child(user.userId).child("username")
-//            .setValue(user.userName)
+        Toast.makeText(
+            activity,
+            "User created into realtime",
+            Toast.LENGTH_SHORT
+        ).show()
 
 
     }
@@ -113,7 +109,6 @@ class RegisterFragment : Fragment() {
     private fun registerUserInDataBase(email: String, password: String) {
         val navController = Navigation.findNavController(binding.root);
         mAuth = FirebaseAuth.getInstance();
-
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 // let the user know that the registration was successful
@@ -121,12 +116,25 @@ class RegisterFragment : Fragment() {
 
                 if (task.isSuccessful) {
                     Log.d("Helo", "successfull")
-
+                    userId = ""
+                    val user = User(
+                        0,
+                        email,
+                        arrayListOf(),
+                        firstName,
+                        userId,
+                        lastName,
+                        arrayListOf(),
+                        imageUri.toString()
+                    )
+                    //realtime
                     Toast.makeText(
                         activity,
-                        "User created",
+                        "User created into authentication",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    putUserDataIntoRealTimeDatabase(user)
                     navController.navigate(R.id.homeFragment)
                 } else {
                     Log.d("Helo", task.exception.toString())

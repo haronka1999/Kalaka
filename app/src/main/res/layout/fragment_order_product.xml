@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/registerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".authentication.register.RegisterFragment">
+
+        <TextView
+            android:layout_marginTop="50dp"
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rendelés"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/telEditText"
+            android:layout_width="212dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:autofillHints="Username"
+            android:drawablePadding="10dp"
+            android:hint="Telefomszám"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="@+id/textView"
+            app:layout_constraintStart_toStartOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@id/textView"
+            tools:ignore="LabelFor" />
+
+        <EditText
+            android:id="@+id/cityEditText"
+            android:layout_width="212dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:autofillHints="Username"
+            android:drawablePadding="10dp"
+            android:hint="Város"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/telEditText"
+            app:layout_constraintStart_toStartOf="@+id/telEditText"
+            app:layout_constraintTop_toBottomOf="@id/telEditText"
+            tools:ignore="LabelFor" />
+
+
+        <EditText
+            android:id="@+id/addressEditText"
+            android:layout_width="220dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:autofillHints="Email"
+            android:drawablePadding="10dp"
+            android:hint="Cím"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/cityEditText"
+            app:layout_constraintStart_toStartOf="@+id/cityEditText"
+            app:layout_constraintTop_toBottomOf="@id/cityEditText"
+            tools:ignore="LabelFor" />
+
+        <EditText
+            android:id="@+id/postalCodeEditText"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:autofillHints="Password"
+            android:drawablePadding="10dp"
+            android:hint="Postakód"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="@id/addressEditText"
+            app:layout_constraintStart_toStartOf="@id/addressEditText"
+            app:layout_constraintTop_toBottomOf="@id/addressEditText"
+            tools:ignore="LabelFor" />
+
+        <EditText
+            android:id="@+id/quantity"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:autofillHints="Password"
+            android:drawablePadding="10dp"
+            android:hint="Darabszám"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="@+id/postalCodeEditText"
+            app:layout_constraintStart_toStartOf="@+id/postalCodeEditText"
+            app:layout_constraintTop_toBottomOf="@id/postalCodeEditText"
+            tools:ignore="LabelFor" />
+
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:autofillHints="Password"
+            android:drawablePadding="10dp"
+            android:hint="Összeg"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="@+id/quantity"
+            app:layout_constraintStart_toStartOf="@+id/quantity"
+            app:layout_constraintTop_toBottomOf="@id/quantity"
+            tools:ignore="LabelFor" />
+
+
+        <EditText
+            android:id="@+id/commentEditText"
+            android:layout_width="218dp"
+            android:layout_height="104dp"
+            android:ems="10"
+            android:hint="Megjegyzés"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@id/price"
+            app:layout_constraintStart_toStartOf="@id/price"
+            app:layout_constraintEnd_toEndOf="@id/price"
+        android:background="@drawable/comment_border"
+            tools:layout_editor_absoluteX="96dp"
+            tools:layout_editor_absoluteY="497dp" />
+
+        <Button
+            android:id="@+id/orderButton"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/szin3"
+            app:backgroundTint="#44BEED"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/commentEditText"
+            app:layout_constraintHorizontal_bias="0.453"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="650dp" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
+
