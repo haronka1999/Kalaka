@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentAddProductBinding
 import com.e.kalaka.databinding.FragmentOrderProductBinding
@@ -72,23 +73,35 @@ class AddProductFragment : Fragment() {
             price = binding.priceEditText.text.toString().toDouble()
             val businessId = userCredentials?.businessId.toString()
             val productId = UUID.randomUUID().toString()
+
+
+            //put productId into the business
+           val actualBusiness =  preloadedData.business.value
+
+            Log.d("Helo", "productID $productId")
+            Log.d("Helo", "actualBusiness?.businessId ${actualBusiness?.businessId}")
+            Log.d("Helo", "userCredentials?.businessId ${userCredentials?.businessId}")
+            myRef.child("business").child(userCredentials?.businessId.toString()).child("productIds").push().setValue(productId)
+
+
             if (!isValidForm()) {
                 return@setOnClickListener
             }
 
 
             val product = Product(businessId,description,name,imageUri.toString(),price,productId)
+            preloadedData.productList.value?.add(product)
             writeProductIntoDataBase(product)
         }
-
 
         return binding.root
 
     }
 
     private fun writeProductIntoDataBase(product: Product) {
-        preloadedData.productList
         myRef.child("products").child(product.productId).setValue(product)
+        Toast.makeText(activity, "Sikeresen hozzáadva ", Toast.LENGTH_SHORT).show()
+        findNavController().navigate(R.id.action_addProductFragment_to_businessProfile)
     }
 
     private fun isValidForm(): Boolean {

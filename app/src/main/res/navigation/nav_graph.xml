@@ -118,13 +118,21 @@
         android:id="@+id/addProductFragment"
         android:name="com.e.kalaka.fragments.AddProductFragment"
         android:label="fragment_add_product"
-        tools:layout="@layout/fragment_add_product" />
+        tools:layout="@layout/fragment_add_product" >
+        <action
+            android:id="@+id/action_addProductFragment_to_businessProfile"
+            app:destination="@id/businessProfile" />
+    </fragment>
         android:label="BusinessProfile" />
     <fragment
         android:id="@+id/noBusinessFragment"
         android:name="com.e.kalaka.fragments.NoBusinessFragment"
         android:label="fragment_no_business"
-        tools:layout="@layout/fragment_no_business" />
+        tools:layout="@layout/fragment_no_business" >
+        <action
+            android:id="@+id/action_noBusinessFragment_to_businessProfile2"
+            app:destination="@id/businessProfile" />
+    </fragment>
     <fragment
         android:id="@+id/createBusinessFragment"
         android:name="com.e.kalaka.fragments.CreateBusinessFragment"

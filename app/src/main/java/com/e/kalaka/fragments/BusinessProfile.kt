@@ -1,5 +1,6 @@
 package com.e.kalaka.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,6 +34,7 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+
     }
 
     override fun onCreateView(
@@ -45,6 +47,13 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
             container,
             false
         )
+        val products = preloadedData.productList.value
+        Log.d("Helo","product: ******   " + products.toString())
+//        context?.let {
+//            Glide.with(it)
+//                .load(Uri.parse(businesses.))
+//                .into(binding.profilePic)
+//        };
 
         binding.addButton.setOnClickListener {
             findNavController().navigate(R.id.action_businessProfile_to_addProductFragment)
