@@ -1,6 +1,7 @@
 package com.e.kalaka.fragments
 
 import android.app.Activity.RESULT_OK
+import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,13 +13,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentRegisterBinding
 import com.e.kalaka.models.User
+import com.e.kalaka.models.UserOrder
 import com.e.kalaka.utils.Validation
+import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.*
@@ -26,6 +31,11 @@ import java.util.*
 
 class RegisterFragment : Fragment() {
 
+    private lateinit var datab: FirebaseDatabase
+    private lateinit var databaseRef: DatabaseReference
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var userID: FirebaseUser
+    private val preloadedData: PreloadViewModel by activityViewModels()
     private lateinit var binding: FragmentRegisterBinding
     private lateinit var mAuth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
@@ -127,6 +137,27 @@ class RegisterFragment : Fragment() {
                         "User created",
                         Toast.LENGTH_SHORT
                     ).show()
+                    datab = FirebaseDatabase.getInstance()
+                    databaseRef = database.getReference("users")
+                    firebaseAuth = FirebaseAuth.getInstance()
+                    userID = firebaseAuth.currentUser!!
+                    databaseRef.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val user = dataSnapshot.child("userID")
+                            val u = User(0,user.child("email").value.toString(),
+                                mutableListOf(),user.child("firsName").value.toString(),user.child("userId").value.toString(),user.child("lastName").value.toString(),
+                                mutableListOf(),user.child("photoUrl").value.toString()
+                                )
+                            Log.d("user","val: $u")
+                            preloadedData.user.value=u
+
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            // Failed to read value
+                            Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
+                        }
+                    })
                     navController.navigate(R.id.homeFragment)
                 } else {
                     Log.d("Helo", task.exception.toString())
