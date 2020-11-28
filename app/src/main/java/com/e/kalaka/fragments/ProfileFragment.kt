@@ -16,6 +16,10 @@ import com.google.firebase.database.*
 
 class ProfileFragment : Fragment() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+    }
     private lateinit var database: FirebaseDatabase
     private lateinit var databaseRef: DatabaseReference
     private lateinit var firebaseAuth: FirebaseAuth
