@@ -6,17 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.e.kalaka.R
 import com.e.kalaka.adapters.FavoriteListAdapter
 import com.e.kalaka.databinding.FragmentFavouritesBinding
+import com.e.kalaka.viewModels.PreloadViewModel
 
 class FavouritesFragment : Fragment(), FavoriteListAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentFavouritesBinding
     private lateinit var recyclerView: RecyclerView
-
+    private val preloadedData : PreloadViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +40,8 @@ class FavouritesFragment : Fragment(), FavoriteListAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        TODO("Not yet implemented")
+        preloadedData.currentProduct = preloadedData.favoriteProductlist.value!![position]
+        Navigation.findNavController(requireView()).navigate(R.id.detailsProductFragment)
     }
 
 }
