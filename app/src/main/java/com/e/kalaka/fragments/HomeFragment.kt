@@ -13,6 +13,8 @@ import com.e.kalaka.R
 import com.e.kalaka.adapters.TagListAdapter
 import com.e.kalaka.databinding.FragmentHomeBinding
 import com.e.kalaka.utils.Tag
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
@@ -34,7 +36,20 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
         val adapter = TagListAdapter(Tag.getTags(), this, binding.root.context)
         recyclerView.adapter = adapter
 
+        setOrderButton()
+
+        if(binding.pendingOrdersButton.visibility == View.VISIBLE) {
+            binding.pendingOrdersButton.setOnClickListener{
+                // TODO: navigate to orders
+            }
+        }
+
         return binding.root
+    }
+
+    private fun setOrderButton() {
+        val user = FirebaseAuth.getInstance().currentUser ?: return
+        val database = FirebaseDatabase.getInstance()
     }
 
     override fun onItemClick(position: Int) {
