@@ -15,7 +15,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
-
 class OrderProductFragment : Fragment() {
     //for realtime database
     var database = FirebaseDatabase.getInstance()
@@ -40,7 +39,18 @@ class OrderProductFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_order_product, container, false)
 
+        binding.orderButton.setOnClickListener{
+            number = binding.telEditText.text.toString()
+            city = binding.cityEditText.text.toString()
+            address = binding.addressEditText.text.toString()
+            postalCode = binding.postalCodeEditText.text.toString()
+            number = binding.telEditText.text.toString()
+            number = binding.telEditText.text.toString()
 
+
+
+
+        }
         return binding.root
     }
 
