@@ -70,7 +70,8 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        TODO("Not yet implemented")
+       // TODO("Not yet implemented")
+        //helo
     }
 
 
