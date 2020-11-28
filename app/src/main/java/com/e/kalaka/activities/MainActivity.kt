@@ -2,12 +2,16 @@ package com.e.kalaka.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.e.kalaka.R
 import com.e.kalaka.databinding.ActivityMainBinding
+import com.e.kalaka.models.User
+import com.e.kalaka.models.UserOrder
+import com.e.kalaka.utils.Database
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
