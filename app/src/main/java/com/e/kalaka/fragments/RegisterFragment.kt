@@ -33,7 +33,6 @@ class RegisterFragment : Fragment() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
-
     private lateinit var imageUri: Uri
     private lateinit var userId: String
     private lateinit var lastName: String
@@ -140,7 +139,6 @@ class RegisterFragment : Fragment() {
 
                     putUserDataIntoRealTimeDatabase(user)
                     preloadedData.user.value=user
-                    Log.d("user","val: $user")
                     navController.navigate(R.id.homeFragment)
                 } else {
                     Log.d("Helo", task.exception.toString())
