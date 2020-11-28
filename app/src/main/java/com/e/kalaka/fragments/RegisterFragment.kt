@@ -15,8 +15,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentRegisterBinding
+import com.e.kalaka.models.User
 import com.e.kalaka.utils.Validation
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.*
@@ -29,6 +31,9 @@ class RegisterFragment : Fragment() {
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
     private lateinit var imageUri: Uri
+    private lateinit var userId: String
+    var database = FirebaseDatabase.getInstance()
+    var myRef = database.reference
 
     companion object {
         //image pick code
@@ -68,19 +73,40 @@ class RegisterFragment : Fragment() {
             if (!registrationValidation(lastName, firstName, email, password))
                 return@setOnClickListener
             registerUserInDataBase(email, password)
-
-            // putUserDataIntoRealTimeDatabase(lastName,firstName,)
-
+            userId = mAuth.currentUser?.uid.toString()
+            val user = User(
+                0,
+                email,
+                arrayListOf(),
+                firstName,
+                userId,
+                lastName,
+                arrayListOf(),
+                imageUri.toString()
+            )
+            putUserDataIntoRealTimeDatabase(user)
         }
-
-
-
         binding.gotoLoginButton.setOnClickListener {
             Navigation.findNavController(binding.root)
                 .navigate(R.id.action_registerFragment_to_loginFragment)
         }
-
         return binding.root
+    }
+
+    private fun putUserDataIntoRealTimeDatabase(
+        user: User
+    ) {
+        // Log.d("Helo", "LastName: $lastName")
+        //Log.d("Helo", "firstName: $firstName")
+        Log.d("Helo", "imageUri: $imageUri")
+        Log.d("Helo", "userId: $userId")
+
+
+        myRef.child("users").child(user.userId).setValue(user)
+//        myRef.child("users").child(user.userId).child("email").setValue(user.email)
+//        myRef.child("users").child(user.userId).child("username")
+//            .setValue(user.userName)
+
 
     }
 
@@ -136,7 +162,7 @@ class RegisterFragment : Fragment() {
         riversRef.putFile(imageUri)
             .addOnSuccessListener { taskSnapshot -> // Get a URL to the uploaded content
                 Log.d("Helo", "kep sikeresen feltoltve")
-                Toast.makeText(activity, "Sikeres hozzáadás", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Kép sikeresen feltöltve", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 Log.d("Helo", "valami hiba a kepfeltoltesnel")
