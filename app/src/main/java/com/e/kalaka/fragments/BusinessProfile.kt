@@ -58,23 +58,15 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         val business = preloadedData.business.value
-        Log.d("Helo", "business?.description" + business?.description)
-
-        mAuth = FirebaseAuth.getInstance()
-        val mUser = mAuth.currentUser
-        Log.d("Helo", "userID: " + mAuth.currentUser?.uid.toString())
-
         binding.businessDescription.text = business?.description
         binding.businessEmail.text = business?.email
         binding.businessLabels.text = business?.tags?.joinToString(", ")
         binding.businessTelephone.text = business?.phone
         binding.location.text = business?.location
-        Log.d("Helo", "business?.logoURL:  ${business?.logoURL.toString()}")
         Glide.with(this).load(business?.logoURL).into(binding.businessProfile)
 
 
-        val userCredentials = preloadedData.user.value
-        Log.d("Helo", "businessID " + userCredentials?.businessId)
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
         val recycle_view = binding.recycleView
 
 
@@ -88,12 +80,10 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
         })
 
 
+
     }
 
     override fun onItemClick(position: Int) {
-        // TODO("Not yet implemented")
-        //helo
+        preloadedData.currentProduct = preloadedData.productList.value!![position]
     }
-
-
 }

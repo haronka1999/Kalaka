@@ -3,11 +3,12 @@ package com.e.kalaka.models
 data class UserOrder (
     var address : String,
     var city : String,
+    var clientId: String,
     var comment : String,
-    var number : Int,
-    var orderId : Int,
+    var number : String,
+    var orderId : String,
     var postcode : String,
-    var productId : Int,
+    var productId : String,
     var productName : String,
     var time : String,
     var total : Double

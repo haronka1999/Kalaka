@@ -11,5 +11,5 @@ class PreloadViewModel : ViewModel(){
     var user : MutableLiveData<User> = MutableLiveData<User>()
     var business : MutableLiveData<Business> = MutableLiveData<Business>()
     var productList : MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
-
+    lateinit var currentProduct: Product
 }
