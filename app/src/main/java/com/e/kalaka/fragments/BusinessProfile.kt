@@ -8,17 +8,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.e.kalaka.R
-import com.e.kalaka.adapters.BusinessProfileAdapter
+import com.e.kalaka.adapters.ProductAdapter
 import com.e.kalaka.databinding.FragmentBusinessProfileBinding
 import com.e.kalaka.viewModels.PreloadViewModel
 
 
-class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
+class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
 
     private lateinit var binding : FragmentBusinessProfileBinding
     private val preloadedData : PreloadViewModel by activityViewModels()
@@ -58,7 +56,7 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
 
 
         preloadedData.productList.observe(viewLifecycleOwner, Observer { list ->
-            val adapter = BusinessProfileAdapter(list, this)
+            val adapter = ProductAdapter(list, this)
             recycle_view.adapter = adapter
             val HorizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             recycle_view.layoutManager = HorizontalLayout
@@ -71,7 +69,6 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
 
     override fun onItemClick(position: Int) {
        // TODO("Not yet implemented")
-        //helo
     }
 
 

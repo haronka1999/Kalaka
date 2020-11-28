@@ -6,14 +6,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.models.Product
 
-class BusinessProfileAdapter (
+class ProductAdapter (
     private val items : List <Product>,
-    private val listener : BusinessProfileAdapter.OnItemClickListener
-        ):  RecyclerView.Adapter<BusinessProfileAdapter.DataViewHolder>() {
+    private val listener : ProductAdapter.OnItemClickListener
+        ):  RecyclerView.Adapter<ProductAdapter.DataViewHolder>() {
 
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
@@ -43,6 +42,7 @@ class BusinessProfileAdapter (
         holder.productDescription.text = currentItem.description
         holder.productName.text = currentItem.name
         holder.productPrice.text = currentItem.price.toString() + " RON"
+        //TODO GLIDE
         //Glide.with()
 
     }
