@@ -54,17 +54,18 @@
                     app:layout_constraintTop_toBottomOf="@id/business_profile" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.cardview.widget.CardView>
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:layout_constraintBottom_toTopOf="@id/upperConstraintLayout"
-            />
-
-
-
-
+            android:id="@+id/editTextTextPersonName"
+            android:layout_width="355dp"
+            android:layout_height="162dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name"
+            tools:layout_editor_absoluteX="41dp"
+            tools:layout_editor_absoluteY="326dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

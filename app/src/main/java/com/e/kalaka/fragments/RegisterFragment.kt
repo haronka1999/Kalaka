@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.*
+import kotlin.concurrent.schedule
 
 
 class RegisterFragment : Fragment() {
@@ -55,43 +56,29 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false)
-
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
 
-
-
         binding.chooseImageButton.setOnClickListener {
             pickImageFromGallery()
-
+            //binding.imageView.setImageURI(imageUri)
         }
 
         binding.saveButton.setOnClickListener {
-             lastName = binding.lastNameEditText.text.toString()
-             firstName = binding.firstNameEditText.text.toString()
-             email = binding.emailEditText.text.toString()
-             password = binding.passwordEditText.text.toString()
-            // val image = binding.imageView.
+            lastName = binding.lastNameEditText.text.toString()
+            firstName = binding.firstNameEditText.text.toString()
+            email = binding.emailEditText.text.toString()
+            password = binding.passwordEditText.text.toString()
 
             Log.d("helo", "Email : $email")
             Log.d("helo", "password : $password")
             if (!registrationValidation(lastName, firstName, email, password))
                 return@setOnClickListener
 
+            //authentication
             registerUserInDataBase(email, password)
-            userId = ""
-            val user = User(
-                0,
-                email,
-                arrayListOf(),
-                firstName,
-                userId,
-                lastName,
-                arrayListOf(),
-                imageUri.toString()
-            )
-            putUserDataIntoRealTimeDatabase(user)
         }
+
         binding.gotoLoginButton.setOnClickListener {
             Navigation.findNavController(binding.root)
                 .navigate(R.id.action_registerFragment_to_loginFragment)
@@ -106,16 +93,17 @@ class RegisterFragment : Fragment() {
         //Log.d("Helo", "firstName: $firstName")
         Log.d("Helo", "imageUri: $imageUri")
 
-       userId =  mAuth.currentUser?.uid.toString()
+        userId = mAuth.currentUser?.uid.toString()
+        user.userId = userId
         Log.d("Helo", "userId: $userId")
-
-
         myRef.child("users").child(userId).setValue(user)
+
         Toast.makeText(
             activity,
             "User created into realtime",
             Toast.LENGTH_SHORT
         ).show()
+
 
     }
 
@@ -129,12 +117,25 @@ class RegisterFragment : Fragment() {
 
                 if (task.isSuccessful) {
                     Log.d("Helo", "successfull")
-
+                    userId = ""
+                    val user = User(
+                        0,
+                        email,
+                        arrayListOf(),
+                        firstName,
+                        userId,
+                        lastName,
+                        arrayListOf(),
+                        imageUri.toString()
+                    )
+                    //realtime
                     Toast.makeText(
                         activity,
                         "User created into authentication",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    putUserDataIntoRealTimeDatabase(user)
                     navController.navigate(R.id.homeFragment)
                 } else {
                     Log.d("Helo", task.exception.toString())
