@@ -109,7 +109,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             recycle_view.layoutManager = HorizontalLayout
             recycle_view.setHasFixedSize(true)
         })
-        loadProducts(business.productIds)
+        loadProducts(business.productIds, business.businessId)
 
     }
 
@@ -123,7 +123,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
         binding.statisticsButton.visibility = View.GONE
     }
 
-    private fun loadProducts(list : List<String>){
+    private fun loadProducts(list : List<String>, id : String){
         database = FirebaseDatabase.getInstance()
 
         database.getReference("products").addValueEventListener(object : ValueEventListener{
@@ -131,6 +131,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
                 val list = mutableListOf<Product>()
 
                 for (product in snapshot.children){
+                    if (id == product.child("businessId").value.toString())
                     list.add(
                         Product(
                             product.child("businessId").value.toString(),
