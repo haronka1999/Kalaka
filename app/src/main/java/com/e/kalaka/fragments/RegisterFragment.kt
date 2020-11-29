@@ -244,7 +244,7 @@ class RegisterFragment : Fragment() {
         var callbackCounter = 0
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             if (callbackCounter == 0) {
-                Toast.makeText(requireContext(), "Press again to exit", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Nyomja meg újra a kilépéshez!", Toast.LENGTH_SHORT).show()
                 Timer().schedule(timerTask {
                     callbackCounter = 0
                 }, 2000)
