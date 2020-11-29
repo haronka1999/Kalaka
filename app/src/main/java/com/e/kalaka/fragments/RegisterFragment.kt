@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -25,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.*
+import kotlin.concurrent.timerTask
 
 
 class RegisterFragment : Fragment() {
@@ -234,5 +236,21 @@ class RegisterFragment : Fragment() {
 
 
         return true
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        var callbackCounter = 0
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (callbackCounter == 0) {
+                Toast.makeText(requireContext(), "Press again to exit", Toast.LENGTH_SHORT).show()
+                Timer().schedule(timerTask {
+                    callbackCounter = 0
+                }, 2000)
+
+                callbackCounter++
+            } else requireActivity().finish()
+        }
     }
 }
