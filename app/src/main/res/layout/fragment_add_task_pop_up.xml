@@ -7,26 +7,27 @@
     android:padding="2dp">
 
 
-
     <TextView
         android:id="@+id/vallalomTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:background="@drawable/comment_border"
         android:backgroundTint="@color/white"
-        android:layout_centerInParent="true"
         android:padding="15sp"
         android:text="Vállalom" />
 
     <TextView
         android:id="@+id/keszTextView"
         android:layout_width="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/comment_border"
-        android:layout_centerInParent="true"
-        android:backgroundTint="@color/white"
         android:layout_below="@id/vallalomTextView"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/comment_border"
+        android:backgroundTint="@color/white"
+        android:clickable="true"
+        android:focusable="true"
         android:padding="15sp"
         android:text="Kész" />
 
@@ -34,23 +35,27 @@
         android:id="@+id/postazvaTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
+        android:layout_below="@id/keszTextView"
         android:layout_centerInParent="true"
         android:layout_marginTop="32dp"
-        android:layout_below="@id/keszTextView"
         android:background="@drawable/comment_border"
+        android:backgroundTint="@color/white"
+        android:clickable="true"
+        android:focusable="true"
         android:padding="15sp"
         android:text="Postázva" />
 
     <TextView
         android:id="@+id/torlesTextView"
         android:layout_width="wrap_content"
-        android:backgroundTint="@color/white"
         android:layout_height="wrap_content"
-        android:background="@drawable/comment_border"
         android:layout_below="@id/postazvaTextView"
-        android:layout_marginTop="32dp"
         android:layout_centerInParent="true"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/comment_border"
+        android:backgroundTint="@color/white"
+        android:clickable="true"
+        android:focusable="true"
         android:padding="15sp"
-        android:text="törlés" />
+        android:text="Törlés" />
 </RelativeLayout>
