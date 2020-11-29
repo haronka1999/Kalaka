@@ -18,10 +18,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:text="Termék neve"
+                android:text="@string/product_name_placeholder"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
 
             <TextView
                 android:id="@+id/personNameTextView"
@@ -29,7 +28,7 @@
                 android:textColor="@color/white"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/prdouctNameTextView"
-                android:text="Rendelte: "
+                android:text="@string/product_orderer_placeholder"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -40,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/personNameTextView"
                 android:layout_marginStart="3dp"
-                android:text="Darabszám:"
+                android:text="@string/quantity_placeholder"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -50,10 +49,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/countProducts"
-                android:text="Cím: "
+                android:text="@string/address_placeholder"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
 
             <TextView
                 android:id="@+id/numberTextView"
@@ -61,11 +59,9 @@
                 android:textColor="@color/white"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/addressTextView"
-                android:text="Telefonszám: "
+                android:text="@string/phone_placeholder"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
-
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

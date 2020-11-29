@@ -12,7 +12,7 @@
         android:id="@+id/favoritesTitleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Még nincsenek kedvenc vállalkozásai"
+        android:text="@string/noBusinnesTitle"
         android:textSize="24sp"
         android:textColor="@color/white"
         android:gravity="center"
