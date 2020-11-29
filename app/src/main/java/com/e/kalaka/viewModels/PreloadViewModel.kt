@@ -30,4 +30,5 @@ class PreloadViewModel : ViewModel(){
     var favoriteProductlist: MutableLiveData<MutableList<Product>> = MutableLiveData<MutableList<Product>>()
     var userEmails: MutableLiveData<MutableList<Pair<String,String>>> = MutableLiveData<MutableList<Pair<String,String>>>()
     lateinit var currentProduct: Product
+    var businessName : MutableLiveData<String> = MutableLiveData<String>()
 }

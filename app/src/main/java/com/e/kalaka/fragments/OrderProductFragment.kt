@@ -1,6 +1,7 @@
 package com.e.kalaka.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +10,17 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentOrderProductBinding
 import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.models.UserOrder
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,6 +28,7 @@ class OrderProductFragment : Fragment() {
     //for realtime database
     var database = FirebaseDatabase.getInstance()
     private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val preloadedBusinessName: PreloadViewModel by activityViewModels()
 
     //form datas
     private lateinit var number: String
@@ -44,6 +50,11 @@ class OrderProductFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_product, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.quantityPicker.minValue = 0
         binding.quantityPicker.maxValue = 10
@@ -70,7 +81,7 @@ class OrderProductFragment : Fragment() {
             val productId = currentProduct.productId
 
             if (!validateOrder(number, city, address, postalCode)) {
-                    return@setOnClickListener
+                return@setOnClickListener
             }
 
             if (quantity == 0) {
@@ -82,16 +93,43 @@ class OrderProductFragment : Fragment() {
             price = quantity*productPrice
             binding.price.text=price.toString()
             val randomKey = UUID.randomUUID().toString()
-            val currentTime = SimpleDateFormat("YYYY.MM.DD").toString()
+            val currentTime = SimpleDateFormat("yyyy.MM.dd").format(Date())
 
             userId = mAuth.currentUser?.uid.toString()
 
+            preloadedBusinessName.businessName.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                val userOrder = UserOrder(address, city, userId,preloadedBusinessName.businessName.value!!, comment, number, randomKey, postalCode, productId, productName, currentTime, price)
+                val businessOrder = BusinessOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, 0 , currentTime, price, "")
+                uploadOrder(userOrder, businessOrder, businessId)
+                findNavController().navigate(R.id.action_orderProductFragment_to_homeFragment)
+            })
+            getBusinessName(businessId);
 
-            val userOrder = UserOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, currentTime, price)
-            val businessOrder = BusinessOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, 0 , currentTime, price, "")
-            uploadOrder(userOrder, businessOrder, businessId)
         }
-        return binding.root
+    }
+
+    private fun getBusinessName(businessId: String) {
+        val businessRef = database.getReference("business")
+        businessRef.addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (business in dataSnapshot.children) {
+                    if (business.child("businessId").value.toString() == businessId) {
+                        preloadedBusinessName.businessName.value=business.child("name").value.toString()
+                        break;
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w(
+                    "TAG",
+                    "Failed to read value.",
+                    error.toException()
+                )
+            }
+        })
     }
 
     private fun uploadOrder(order: UserOrder, businessOrder: BusinessOrder, businessId: String) {
@@ -100,8 +138,6 @@ class OrderProductFragment : Fragment() {
         myRef.child("business").child(businessId).child("orders").child(order.orderId).setValue(businessOrder)
         myRef.child("users").child(userId).child("orders").child(order.orderId).setValue(order)
         Toast.makeText(activity, "Rendelés sikeresen leadva!", Toast.LENGTH_SHORT).show()
-        Navigation.findNavController(binding.root)
-            .navigate(R.id.action_orderProductFragment_to_homeFragment)
     }
 
     private fun validateOrder(number: String, city: String, address: String, postalCode: String): Boolean {
