@@ -54,24 +54,21 @@ class AddProductFragment : Fragment() {
     ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_add_product, container, false)
-
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
 
-
         binding.imageButton.setOnClickListener {
             pickImageFromGallery()
-
         }
 
         binding.addProductButton.setOnClickListener {
-
             val userCredentials = preloadedData.user.value
-
             name = binding.productNameEditText.text.toString()
             description = binding.descriptionEditText.text.toString()
             price = binding.priceEditText.text.toString().toDouble()
-            val businessId = userCredentials?.businessId.toString()
+            val businessId = preloadedData.business.value?.businessId
+            Log.d("Helo", "Business id: $businessId")
+
             val productId = UUID.randomUUID().toString()
 
 
@@ -81,7 +78,9 @@ class AddProductFragment : Fragment() {
             Log.d("Helo", "productID $productId")
             Log.d("Helo", "actualBusiness?.businessId ${actualBusiness?.businessId}")
             Log.d("Helo", "userCredentials?.businessId ${userCredentials?.businessId}")
-            myRef.child("business").child(userCredentials?.businessId.toString()).child("productIds").push().setValue(productId)
+
+
+            //myRef.child("business").child(userCredentials?.businessId.toString()).child("productIds").push().setValue(productId)
 
 
             if (!isValidForm()) {
@@ -89,9 +88,10 @@ class AddProductFragment : Fragment() {
             }
 
             val photoURL = "product_image/$productId"
-            val product = Product(businessId, description, name, photoURL, price, productId)
-            preloadedData.productList.value?.add(product)
-            writeProductIntoDataBase(product)
+            val product =
+                businessId?.let { it1 -> Product(it1, description, name, photoURL, price, productId) }
+            product?.let { it1 -> preloadedData.productList.value?.add(it1) }
+            product?.let { it1 -> writeProductIntoDataBase(it1) }
         }
 
         return binding.root

@@ -17,8 +17,6 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentCreateBusinessBinding
@@ -57,7 +55,7 @@ class CreateBusinessFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        emails = preloadedData.userEmails.value!!
+     //   emails = preloadedData.userEmails.value!!
     }
 
     override fun onCreateView(
@@ -75,7 +73,7 @@ class CreateBusinessFragment : Fragment() {
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
 
-        setupAutoCompleteView()
+      //  setupAutoCompleteView()
 
         binding.chooseLogoButton.setOnClickListener {
             pickImageFromGallery()
@@ -105,6 +103,7 @@ class CreateBusinessFragment : Fragment() {
 
             val randomKey = UUID.randomUUID().toString()
             val logoPath: String = "business_image/$randomKey"
+            val EmptyorderList : MutableList<BusinessOrder> = arrayListOf()
             val business = Business(randomKey,
                                     description,
                                     email,
@@ -114,7 +113,7 @@ class CreateBusinessFragment : Fragment() {
                                     logoPath,
                                     members,
                                     name,
-                                    mutableListOf<BusinessOrder>(),
+                                    EmptyorderList,
                                     userId!!,
                                     phoneNumber,
                                     listOf(),
@@ -280,9 +279,9 @@ class CreateBusinessFragment : Fragment() {
 
     private fun setupAutoCompleteView() {
         val userEmails = mutableListOf<String>()
-        emails.forEach {
-            userEmails.add(it.second)
-        }
+//        emails.forEach {
+//            userEmails.add(it.second)
+//        }
 
         val autoComplete = binding.userAutoComplete
         val adapter = ArrayAdapter(
