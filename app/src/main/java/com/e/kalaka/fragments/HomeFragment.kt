@@ -24,6 +24,7 @@ import com.e.kalaka.databinding.FragmentHomeBinding
 import com.e.kalaka.models.Business
 import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.utils.Tag
+import com.e.kalaka.viewModels.PreloadViewModel
 import com.e.kalaka.viewModels.TopicViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -39,15 +40,26 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var recyclerView: RecyclerView
     private val topicViewModel : TopicViewModel by activityViewModels()
+    private val preloadViewModel : PreloadViewModel by activityViewModels()
     private lateinit var database : FirebaseDatabase
-
+    private lateinit var businessId : String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         topicViewModel.filteredList.value = Tag.getTags()
+        businessId = preloadViewModel.user.value!!.businessId
+        Log.d("Helo", "BusinessID $businessId")
+        if ( businessId == "0"){
+            binding.pendingOrdersButton.visibility=View.GONE
+        }else{
+            binding.pendingOrdersButton.visibility=View.VISIBLE
+        }
 
         // refresh topics based on search input
         binding.topicSearchBar.addTextChangedListener{
@@ -200,6 +212,5 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
             } else requireActivity().finish()
         }
 
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
     }
 }
