@@ -168,7 +168,7 @@
         tools:layout="@layout/fragment_pending_order" />
     <fragment
         android:id="@+id/addTaskPopUpFragment"
-        android:name="com.e.kalaka.AddTaskPopUpFragment"
+        android:name="com.e.kalaka.fragments.AddTaskPopUpFragment"
         android:label="fragment_add_task_pop_up"
         tools:layout="@layout/fragment_add_task_pop_up" />
 </navigation>
