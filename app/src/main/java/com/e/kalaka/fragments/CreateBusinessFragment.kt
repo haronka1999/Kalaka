@@ -16,11 +16,16 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.observe
+import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentCreateBusinessBinding
 import com.e.kalaka.models.Business
 import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.utils.Tag
+import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -36,10 +41,12 @@ class CreateBusinessFragment : Fragment() {
 
     private lateinit var binding: FragmentCreateBusinessBinding
     private var tags = mutableListOf<String>()
-    private val emails= mutableListOf<String>()
+    private var members = mutableListOf<String>()
     private var imageUri: Uri? = null
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
+    private val preloadedData : PreloadViewModel by activityViewModels()
+    private lateinit var emails: List<Pair<String, String>>
 
     companion object {
         //image pick code
@@ -48,7 +55,7 @@ class CreateBusinessFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getUserEmails()
+        emails = preloadedData.userEmails.value!!
     }
 
     override fun onCreateView(
@@ -66,13 +73,14 @@ class CreateBusinessFragment : Fragment() {
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
 
-        //setupAutoCompleteView()
+        setupAutoCompleteView()
+
         binding.chooseLogoButton.setOnClickListener{
             pickImageFromGallery()
         }
 
         binding.createBusinessButton.setOnClickListener{
-            val name = binding.createBusinessNameText.toString()
+            val name = binding.createBusinessNameText.text.toString()
             val email = binding.createBusinessEmailText.text.toString()
             val phoneNumber = binding.createBusinessPhoneText.text.toString()
             val address = binding.createBusinessAddressText.text.toString()
@@ -80,11 +88,13 @@ class CreateBusinessFragment : Fragment() {
             val fbAddress = binding.createBusinessFbText.text.toString()
             val instaAddress = binding.createBusinessInstaText.text.toString()
 
+
             if(!businessValidation(name, email, phoneNumber, address, description)) {
                 return@setOnClickListener
             }
 
             val userId = FirebaseAuth.getInstance().currentUser?.uid
+
             val logoUri: String = if(imageUri == null) {
                 ""
             } else {
@@ -99,30 +109,30 @@ class CreateBusinessFragment : Fragment() {
                                     instaAddress,
                                     address,
                                     logoUri,
-                                    listOf(userId!!) as MutableList<String>,
+                                    members,
                                     name,
-                                    listOf<BusinessOrder>() as MutableList<BusinessOrder>,
-                                    userId,
+                                    mutableListOf<BusinessOrder>(),
+                                    userId!!,
                                     phoneNumber,
                                     listOf(),
                                     tags
                                     )
+            uploadPicture()
             uploadBusiness(business)
+            Toast.makeText(binding.root.context, "Sikeresen létrehozta a vállalkozást", Toast.LENGTH_SHORT).show()
+            Navigation.findNavController(requireView()).navigate(R.id.businessProfile)
 
         }
 
         setUpSpinner()
 
-        binding.createBusinessTagContainer.removeAllViews()
-
         return binding.root
     }
 
     private fun uploadBusiness(business: Business) {
-        //uploadPicture()
         val database = FirebaseDatabase.getInstance()
         val myRef = database.reference
-        myRef.child("users").child(business.businessId).setValue(business)
+        myRef.child("business").child(business.businessId).setValue(business)
     }
 
     private fun businessValidation(name: String, email: String, phoneNumber: String, address: String, description: String): Boolean {
@@ -146,11 +156,11 @@ class CreateBusinessFragment : Fragment() {
             Toast.makeText(binding.root.context, "A leiras tul rovid", Toast.LENGTH_SHORT).show()
             return false
         }
-        /*
+
         if(imageUri == null) {
-            Toast.makeText(binding.root.context, "Valasszon kepet", Toast.LENGTH_SHORT).show()
+            Toast.makeText(binding.root.context, "Válasszon képet", Toast.LENGTH_SHORT).show()
             return false
-        }*/
+        }
         return true
     }
 
@@ -164,10 +174,8 @@ class CreateBusinessFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+        if (requestCode == 1000 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data!!
-            uploadPicture()
-            //Log.d("------", imageUri.toString())
         }
     }
 
@@ -178,8 +186,8 @@ class CreateBusinessFragment : Fragment() {
         imageUri?.let {
             riversRef.putFile(it)
                 .addOnSuccessListener {   // Get a URL to the uploaded content
-                    Log.d("Helo", "kep sikeresen feltoltve")
-                    Toast.makeText(activity, "Kép sikeresen feltöltve", Toast.LENGTH_SHORT).show()
+                    //Log.d("Helo", "kep sikeresen feltoltve")
+                    //Toast.makeText(activity, "Kép sikeresen feltöltve", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener {
                     Log.d("Helo", "valami hiba a kepfeltoltesnel")
@@ -188,44 +196,52 @@ class CreateBusinessFragment : Fragment() {
     }
 
     private fun setupAutoCompleteView() {
+        val userEmails = mutableListOf<String>()
+        emails.forEach {
+            userEmails.add(it.second)
+        }
+
         val autoComplete = binding.userAutoComplete
-        val adapter = ArrayAdapter(binding.root.context, R.layout.spinner_item_layout, emails)
+        val adapter = ArrayAdapter(binding.root.context, R.layout.support_simple_spinner_dropdown_item,
+            userEmails
+        )
         autoComplete.setAdapter(adapter)
-        autoComplete.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
+        autoComplete.onItemClickListener = object: AdapterView.OnItemClickListener {
+            override fun onItemClick(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
                 val email = emails[position]
-                addUserChip(email)
+                if(!members.contains(email.first)) {
+                    autoComplete.hint = ""
+                    members.add(email.first)
+                    addUserChip(email)
+                }
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
-    private fun addUserChip(email: Any) {
-
-    }
-
-    private fun getUserEmails() {
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("users")
-        myRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (data in dataSnapshot.children) {
-                    val email = data.child("email").value.toString()
-                    emails.add(email)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                Log.w("--------", "Failed to read value.", error.toException())
-            }
-        })
+    private fun addUserChip(email: Pair<String, String>) {
+        val chipGroup = binding.createBusinessMemberContainer
+        val chip = Chip(binding.root.context)
+        val paddingDp: Int = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            10F,
+            resources.displayMetrics
+        ).toInt()
+        chip.setPadding(paddingDp, paddingDp, paddingDp, paddingDp)
+        chip.text = email.second
+        chip.isCloseIconVisible = true
+        chip.setCloseIconResource(R.drawable.ic_action_close)
+        chip.setOnCloseIconClickListener {
+            it as TextView
+            val userid = emails.filter { (_, value) -> value == it.text }
+            members.remove(userid[0].first)
+            chipGroup.removeView(chip)
+        }
+        chipGroup.addView(chip)
     }
 
     private fun setUpSpinner() {
@@ -237,6 +253,7 @@ class CreateBusinessFragment : Fragment() {
         )
         spinner.adapter = arrayAdapter
 
+        spinner.setSelection(0, false)
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,

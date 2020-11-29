@@ -142,7 +142,7 @@
 
         <EditText
             android:id="@+id/commentEditText"
-            android:layout_width="218dp"
+            android:layout_width="wrap_content"
             android:layout_height="104dp"
             android:layout_marginTop="28dp"
             android:background="@drawable/comment_border"
