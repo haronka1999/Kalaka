@@ -142,7 +142,7 @@ class RegisterFragment : Fragment() {
 
         Toast.makeText(
             activity,
-            "User created into realtime",
+            "Felhasználó sikeresen regisztrálva",
             Toast.LENGTH_SHORT
         ).show()
 
@@ -172,11 +172,6 @@ class RegisterFragment : Fragment() {
                         imageUri.toString()
                     )
                     //realtime
-                    Toast.makeText(
-                        activity,
-                        "User created into authentication",
-                        Toast.LENGTH_SHORT
-                    ).show()
 
                     putUserDataIntoRealTimeDatabase(user)
                     preloadedData.user.value = user

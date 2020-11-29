@@ -47,11 +47,11 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
     ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
-        topicViewModel.filteredList.value = Tag.getTags()
+        topicViewModel.filteredTagList.value = Tag.getTags()
 
         // refresh topics based on search input
         binding.topicSearchBar.addTextChangedListener{
-            topicViewModel.filteredList.value = Tag.getTags().filter { pair ->
+            topicViewModel.filteredTagList.value = Tag.getTags().filter { pair ->
                 pair.second.contains(it.toString())
             }
         }
@@ -60,11 +60,11 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
         recyclerView = binding.tagRecycler
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(binding.root.context, 3)
-        recyclerView.addItemDecoration(SpaceGrid(3, topicViewModel.filteredList.value!!.size, true))
-        val adapter = TagListAdapter(topicViewModel.filteredList.value!!, this, binding.root.context)
+        recyclerView.addItemDecoration(SpaceGrid(3, topicViewModel.filteredTagList.value!!.size, true))
+        val adapter = TagListAdapter(listOf(), this, binding.root.context)
         recyclerView.adapter = adapter
 
-        topicViewModel.filteredList.observe(viewLifecycleOwner) {
+        topicViewModel.filteredTagList.observe(viewLifecycleOwner) {
             adapter.setData(it)
         }
 

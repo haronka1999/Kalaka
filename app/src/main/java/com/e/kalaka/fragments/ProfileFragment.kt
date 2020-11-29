@@ -94,9 +94,8 @@ class ProfileFragment : Fragment() {
 
     private fun showDatas() {
         val user = preloadedData.user.value
-        binding.firstName.text=user?.firstName
-        binding.lastName.text=user?.lastName
-        binding.email.text=user?.email
+        binding.name.text = "Név: ${user?.lastName} ${user?.firstName}"
+        binding.email.text= "Email: ${user?.email}"
         if (user != null) {
             setProfileImage(user.photoURL, binding.profilePic)
         }
