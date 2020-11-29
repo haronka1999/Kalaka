@@ -6,6 +6,7 @@ import com.e.kalaka.models.Business
 import com.e.kalaka.utils.Tag
 
 class TopicViewModel : ViewModel() {
+    var choosedTask : MutableLiveData<Int> = MutableLiveData<Int>()
     var list : MutableLiveData<MutableList<Business>> = MutableLiveData()
     var filteredBusinesslist: MutableLiveData<MutableList<Business>> = MutableLiveData()
 
