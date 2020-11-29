@@ -2,26 +2,24 @@ package com.e.kalaka.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.e.kalaka.R
 import com.e.kalaka.adapters.PendingOrderAdapter
 import com.e.kalaka.databinding.FragmentPendingOrderBinding
-import com.e.kalaka.databinding.PendingOrderRecyclerItemBinding
 import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.viewModels.PreloadViewModel
+import com.e.kalaka.viewModels.TopicViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 
 class PendingOrderFragment : Fragment(), PendingOrderAdapter.OnItemClickListener {
@@ -33,31 +31,43 @@ class PendingOrderFragment : Fragment(), PendingOrderAdapter.OnItemClickListener
     var userId = mAuth.currentUser?.uid
     var myRefBusiness = database.getReference("business")
     private val preloadedData: PreloadViewModel by activityViewModels()
+    private val topicViewModel: TopicViewModel by activityViewModels()
+    private var task = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         businessOrders = preloadedData.pendingOrders.value!!
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_pending_order, container, false)
+
         val recyclerView = binding.recyclerView
-        Log.d("afaszomkivan", "$businessOrders")
         recyclerView.adapter = PendingOrderAdapter(businessOrders, this)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.setHasFixedSize(true)
+
+        topicViewModel.choosedTask.observe(viewLifecycleOwner, Observer {
+            task = topicViewModel.choosedTask.value?.toString()!!.toInt()
+            Log.d("Helo", "Task: $task")
+        })
+
+
         return binding.root
     }
 
     override fun onItemClick(position: Int) {
-
-            val fm = AddTaskPopUpFragment()
-            parentFragmentManager.let { it1 -> fm.show(it1, "") }
-
+        Log.d("Helo", "Positiion: ${position.toString()}")
+        val fm = AddTaskPopUpFragment()
+        parentFragmentManager.let { it1 ->
+            fm.show(it1, "")
+        }
     }
 }
+

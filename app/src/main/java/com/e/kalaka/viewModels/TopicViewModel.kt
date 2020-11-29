@@ -6,4 +6,5 @@ import com.e.kalaka.models.Business
 
 class TopicViewModel : ViewModel() {
     var list : MutableLiveData<List<Business>> = MutableLiveData()
+    var choosedTask : MutableLiveData<Int> = MutableLiveData<Int>()
 }

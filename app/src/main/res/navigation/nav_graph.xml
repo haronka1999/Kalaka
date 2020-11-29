@@ -168,11 +168,20 @@
         tools:layout="@layout/fragment_pending_order" >
         <action
             android:id="@+id/action_pendingOrderFragment_to_addTaskPopUpFragment"
-            app:destination="@id/addTaskPopUpFragment" />
+            app:destination="@id/addTaskPopUpFragment"
+            app:popUpTo="@id/pendingOrderFragment"
+            app:popUpToInclusive="true"
+            />
     </fragment>
     <fragment
         android:id="@+id/addTaskPopUpFragment"
         android:name="com.e.kalaka.fragments.AddTaskPopUpFragment"
         android:label="fragment_add_task_pop_up"
-        tools:layout="@layout/fragment_add_task_pop_up" />
+        tools:layout="@layout/fragment_add_task_pop_up" >
+        <action
+            android:id="@+id/action_addTaskPopUpFragment_to_pendingOrderFragment"
+            app:destination="@id/pendingOrderFragment"
+
+            />
+    </fragment>
 </navigation>
