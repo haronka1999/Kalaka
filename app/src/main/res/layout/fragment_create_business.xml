@@ -244,6 +244,12 @@
                 android:background="@android:color/transparent"
                 app:icon="@drawable/ic_add" />
 
+            <ImageView
+                android:id="@+id/createBusinessLogoView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/ic_logo_placeholder" />
+
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton

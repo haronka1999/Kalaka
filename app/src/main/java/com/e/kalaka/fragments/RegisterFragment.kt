@@ -104,6 +104,7 @@ class RegisterFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.data != null) {
             imageUri = data.data!!
+            binding.registerProfileImage.setImageURI(imageUri)
         }
     }
 

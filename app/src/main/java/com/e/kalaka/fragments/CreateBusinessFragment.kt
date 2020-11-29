@@ -259,6 +259,7 @@ class CreateBusinessFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1000 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data!!
+            binding.createBusinessLogoView.setImageURI(imageUri)
         }
     }
 
