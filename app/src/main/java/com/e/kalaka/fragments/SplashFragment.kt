@@ -10,21 +10,15 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.observe
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.e.kalaka.R
-import com.e.kalaka.databinding.FragmentRegisterBinding
 import com.e.kalaka.databinding.FragmentSplashBinding
-import com.e.kalaka.models.Business
+import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.models.Product
 import com.e.kalaka.models.User
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import java.util.*
-import kotlin.collections.HashMap
 
 
 class SplashFragment : Fragment() {
@@ -37,7 +31,7 @@ class SplashFragment : Fragment() {
     //firebase
     private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private lateinit var database: FirebaseDatabase
-    private lateinit var databaseRef: DatabaseReference
+    private lateinit var usersRef: DatabaseReference
     private val mUser = mAuth.currentUser
 
 
@@ -66,13 +60,13 @@ class SplashFragment : Fragment() {
 
     private fun loadUserData() {
         database = FirebaseDatabase.getInstance()
-        databaseRef = database.getReference("users")
+        usersRef = database.getReference("users")
 
         userID = mUser?.uid.toString()
         val emails = mutableListOf<Pair<String, String>>()
         val favoriteProductIds = mutableListOf<String>()
 
-        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        usersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // get all emails from database (is needed for autocomplete search)
                 for (user in dataSnapshot.children) {
@@ -93,7 +87,7 @@ class SplashFragment : Fragment() {
 
                 // create new User instance
                 val user = User(
-                    "0",
+                    userData.child("businessId").value.toString(),
                     userData.child("email").value.toString(),
                     mutableListOf(),
                     userData.child("firstName").value.toString(),
@@ -102,9 +96,10 @@ class SplashFragment : Fragment() {
                     mutableListOf(),
                     userData.child("photoURL").value.toString()
                 )
+                Log.d("afaszomkivan", "$user")
                 // set the User instance in the viewmodel
                 preloadedData.user.value = user
-
+                loadPendingOrders(user.userId)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -118,13 +113,52 @@ class SplashFragment : Fragment() {
         })
     }
 
+    private fun loadPendingOrders(userId: String) {
+
+        preloadedData.pendingOrders.value = mutableListOf()
+        val myRefBusiness = database.getReference("business")
+
+        myRefBusiness.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(business in snapshot.children) {
+                    if (business.child("ownerId").value.toString() == userId) {
+                        if( business.child("orders").value != null) {
+                            for(orders in business.child("orders").children ) {
+                                if(orders.child("status").value.toString() == "0") {
+                                    val order = BusinessOrder(
+                                        orders.child("address").value.toString(),
+                                        orders.child("city").value.toString(),
+                                        orders.child("clientId").value.toString(),
+                                        orders.child("comment").value.toString(),
+                                        orders.child("number").value.toString(),
+                                        orders.child("orderId").value.toString(),
+                                        orders.child("postcode").value.toString(),
+                                        orders.child("productId").value.toString(),
+                                        orders.child("productName").value.toString(),
+                                        orders.child("status").value.toString().toInt(),
+                                        orders.child("time").value.toString(),
+                                        orders.child("total").value.toString().toDouble(),
+                                        orders.child("worker").value.toString()
+                                    )
+                                        Log.d("afaszomkivan", "$order")
+                                        preloadedData.pendingOrders.value!!.add(order)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
 
     private fun addFavoriteProductToViewModel(productId: String) {
         database = FirebaseDatabase.getInstance()
-        databaseRef = database.getReference("products").child(productId)
-        Log.d("************",databaseRef.toString())
+        val productsRef = database.getReference("products")
 
-        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        productsRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 //val productData = snapshot.child(productId)
                 Log.d("************",snapshot.toString())

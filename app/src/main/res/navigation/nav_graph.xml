@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_homeFragment_to_mainSearch"
             app:destination="@id/mainSearch" />
+        <action
+            android:id="@+id/action_homeFragment_to_pendingOrderFragment"
+            app:destination="@id/pendingOrderFragment" />
     </fragment>
     <fragment
         android:id="@+id/favouritesFragment"
@@ -158,4 +161,14 @@
         android:name="com.e.kalaka.fragments.CreateBusinessFragment"
         android:label="fragment_create_business"
         tools:layout="@layout/fragment_create_business" />
+    <fragment
+        android:id="@+id/pendingOrderFragment"
+        android:name="com.e.kalaka.fragments.PendingOrderFragment"
+        android:label="fragment_pending_order"
+        tools:layout="@layout/fragment_pending_order" />
+    <fragment
+        android:id="@+id/addTaskPopUpFragment"
+        android:name="com.e.kalaka.fragments.AddTaskPopUpFragment"
+        android:label="fragment_add_task_pop_up"
+        tools:layout="@layout/fragment_add_task_pop_up" />
 </navigation>

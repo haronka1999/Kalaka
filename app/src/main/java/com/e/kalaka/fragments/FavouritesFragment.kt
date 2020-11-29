@@ -34,6 +34,7 @@ class FavouritesFragment : Fragment(), FavoriteListAdapter.OnItemClickListener {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

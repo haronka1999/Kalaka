@@ -14,11 +14,10 @@
         android:id="@+id/pendingOrdersButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:srcCompat="@drawable/ic_note"
-        android:contentDescription="Order"
         android:layout_gravity="end|top"
-        android:visibility="gone"/>
+        android:clickable="true"
+        android:contentDescription="Order"
+        app:srcCompat="@drawable/ic_note" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tagRecycler"

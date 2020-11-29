@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentOrderProductBinding
+import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.models.UserOrder
 import com.e.kalaka.viewModels.PreloadViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,6 +22,7 @@ import java.util.*
 class OrderProductFragment : Fragment() {
     //for realtime database
     var database = FirebaseDatabase.getInstance()
+    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     //form datas
     private lateinit var number: String
@@ -44,8 +48,13 @@ class OrderProductFragment : Fragment() {
         binding.quantityPicker.minValue = 0
         binding.quantityPicker.maxValue = 10
         binding.quantityPicker.wrapSelectorWheel = true
+
+        val currentProduct = preloadedData.currentProduct
+        val productPrice = currentProduct.price
+
         binding.quantityPicker.setOnValueChangedListener{ _, _, value ->
             quantity = value
+            binding.price.text = "Összeg: ${quantity*productPrice} RON"
         }
 
         binding.orderButton.setOnClickListener{
@@ -56,7 +65,6 @@ class OrderProductFragment : Fragment() {
             comment = binding.commentEditText.text.toString()
 
 
-            val currentProduct = preloadedData.currentProduct
             val businessId = currentProduct.businessId
             val productName = currentProduct.name
             val productId = currentProduct.productId
@@ -72,21 +80,28 @@ class OrderProductFragment : Fragment() {
 
             val productPrice = currentProduct.price
             price = quantity*productPrice
+            binding.price.text=price.toString()
             val randomKey = UUID.randomUUID().toString()
             val currentTime = SimpleDateFormat("YYYY.MM.DD").toString()
 
+            userId = mAuth.currentUser?.uid.toString()
 
-            val order = UserOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, currentTime, price)
-            uploadOrder(order, businessId)
 
+            val userOrder = UserOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, currentTime, price)
+            val businessOrder = BusinessOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, 0 , currentTime, price, "")
+            uploadOrder(userOrder, businessOrder, businessId)
         }
         return binding.root
     }
 
-    private fun uploadOrder(order: UserOrder, businessId: String) {
+    private fun uploadOrder(order: UserOrder, businessOrder: BusinessOrder, businessId: String) {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.reference
-        myRef.child("business").child(businessId).child(order.orderId).setValue(order)
+        myRef.child("business").child(businessId).child("orders").child(order.orderId).setValue(businessOrder)
+        myRef.child("users").child(userId).child("orders").child(order.orderId).setValue(order)
+        Toast.makeText(activity, "Rendelés sikeresen leadva!", Toast.LENGTH_SHORT).show()
+        Navigation.findNavController(binding.root)
+            .navigate(R.id.action_orderProductFragment_to_homeFragment)
     }
 
     private fun validateOrder(number: String, city: String, address: String, postalCode: String): Boolean {

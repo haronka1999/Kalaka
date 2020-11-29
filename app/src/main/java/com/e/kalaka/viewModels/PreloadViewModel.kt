@@ -2,9 +2,7 @@ package com.e.kalaka.viewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.e.kalaka.models.Business
-import com.e.kalaka.models.Product
-import com.e.kalaka.models.User
+import com.e.kalaka.models.*
 
 class PreloadViewModel : ViewModel(){
 
@@ -12,8 +10,10 @@ class PreloadViewModel : ViewModel(){
 
     //profilnak
     var business : MutableLiveData<Business> = MutableLiveData<Business>()
+
     //listazasbol
     var searchedBusiness : MutableLiveData<Business> = MutableLiveData<Business>()
+
 
     /*
     an integer indicator from where the user goes to the business profile
@@ -22,6 +22,9 @@ class PreloadViewModel : ViewModel(){
      */
     var indicator : MutableLiveData<Int> = MutableLiveData<Int>()
 
+
+    //this will be initalized in the
+    var pendingOrders: MutableLiveData<MutableList<BusinessOrder>> = MutableLiveData<MutableList<BusinessOrder>>()
 
     var productList : MutableLiveData<MutableList<Product>> = MutableLiveData<MutableList<Product>>()
     var favoriteProductlist: MutableLiveData<MutableList<Product>> = MutableLiveData<MutableList<Product>>()

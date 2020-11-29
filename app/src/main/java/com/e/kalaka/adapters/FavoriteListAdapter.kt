@@ -48,16 +48,20 @@ class FavoriteListAdapter(private var favorites: MutableList<Product>, private v
     private fun removeFavoriteItemFromDatabase(currentItem: Product) {
         val mUser = FirebaseAuth.getInstance().currentUser
         val database = FirebaseDatabase.getInstance()
-        val databaseRef = database.getReference("users")
+        val databaseRef = database.getReference("users").child(mUser!!.uid).child(currentItem.productId)
+        databaseRef.removeValue()
 
+        /*
         databaseRef.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val userData = mUser?.let { snapshot.child(it.uid).child("favorites") }
+                val userData = mUser?.let { snapshot.child(it.uid).child(currentItem.productId) }
                 Log.d("DELETE", "$userData")
+                Log.d("DELETE", "${userData?.ref}")
+                userData?.ref?.removeValue()
             }
-
             override fun onCancelled(error: DatabaseError) {}
         })
+        */
     }
 
     override fun getItemCount(): Int = favorites.size

@@ -2,6 +2,7 @@ package com.e.kalaka.fragments
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,10 +55,8 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
         setOrderButton()
 
-        if(binding.pendingOrdersButton.visibility == View.VISIBLE) {
-            binding.pendingOrdersButton.setOnClickListener{
-                // TODO: navigate to orders
-            }
+        binding.pendingOrdersButton.setOnClickListener{
+            Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_pendingOrderFragment)
         }
 
         return binding.root
@@ -118,9 +118,11 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                             val productIds = mutableListOf<String>()
                             val orders = mutableListOf<BusinessOrder>()
 
+
                             for (tag in business.child("tags").children){
                                 tags.add(tag.value.toString())
                             }
+
                             for (memberId in business.child("memberIds").children){
                                 memberIds.add(memberId.value.toString())
                             }
@@ -128,21 +130,23 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                                 productIds.add(productId.value.toString())
                             }
                             for (order in business.child("orders").children){
+                                Log.d("Helo",  order.toString())
                                 val ord = BusinessOrder(
                                     order.child("address").value.toString(),
                                     order.child("city").value.toString(),
                                     order.child("clientId").value.toString(),
                                     order.child("comment").value.toString(),
-                                    order.child("number").value.toString().toInt(),
+                                    order.child("number").value.toString(),
                                     order.child("orderId").value.toString(),
                                     order.child("postcode").value.toString(),
                                     order.child("productId").value.toString(),
                                     order.child("productName").value.toString(),
-                                    order.child("status").value.toString(),
+                                    order.child("status").value.toString().toInt(),
                                     order.child("time").value.toString(),
                                     order.child("total").value.toString().toDouble(),
                                     order.child("worker").value.toString()
                                 )
+                                Log.d("Helo",  "Order: $order")
                                 orders.add(ord)
                             }
 
