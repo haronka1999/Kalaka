@@ -42,7 +42,6 @@ class MainSearch : Fragment(), BusinessAdapter.OnItemClickListener {
         topicViewModel.filteredBusinesslist = topicViewModel.list
 
         binding.searchInput.addTextChangedListener{
-            /*
             val newList = mutableListOf<Business>()
             topicViewModel.list.value?.forEach{ business->
                 if(business.name.contains(it.toString())) {
@@ -50,9 +49,6 @@ class MainSearch : Fragment(), BusinessAdapter.OnItemClickListener {
                 }
             }
             topicViewModel.filteredBusinesslist.value = newList
-            Log.d("-------", it.toString());
-            Log.d("-------", "$newList");
-             */
         }
         val adapter = BusinessAdapter(mutableListOf(), this)
         binding.recycleView.adapter = adapter

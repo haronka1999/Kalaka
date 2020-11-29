@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:drawableTint="#FFFFFF"
-    android:hint="Írjon be email címet"
     android:gravity="center"
     android:padding="5dp"
     android:textColor="@color/background"

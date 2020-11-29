@@ -16,7 +16,7 @@
                 android:id="@+id/timeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Időpont: "
+                android:text="@string/time_placeholder"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/timeTextView"
-                android:text="Vállalkozás: "
+                android:text="@string/business_placeholder"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/businessTextView"
-                android:text="Összeg: "
+                android:text="@string/sum_text"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -69,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/totalTextView"
-                android:text="Termék: "
+                android:text="@string/productName_placeholder"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
