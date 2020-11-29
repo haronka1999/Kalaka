@@ -71,14 +71,15 @@ class ProfileFragment : Fragment() {
     private fun showDatas() {
 
         val user = preloadedData.user.value
-        binding.firstName.text=user?.firstName
-        binding.lastName.text=user?.lastName
-        binding.email.text=user?.email
-        context?.let {
-            Glide.with(it)
-                .load(Uri.parse(user?.photoURL))
-                .into(binding.profilePic)
-        };
+        Log.d("Helo", "PHOTOURL : " + user?.photoURL.toString())
+        binding.firstName.text = user?.firstName
+        binding.lastName.text = user?.lastName
+        binding.email.text = user?.email
+//        context?.let {
+//            Glide.with(it)
+//                .load(Uri.parse(user?.photoURL))
+//                .into(binding.profilePic)
+//        };
     }
 
 }

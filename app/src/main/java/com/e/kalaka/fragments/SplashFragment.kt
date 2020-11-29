@@ -80,7 +80,7 @@ class SplashFragment : Fragment() {
                                 user.child("photoURL").value.toString()
                             )
                             preloadedData.user.value = u
-                            Log.d("preloadedData","login: ${dataSnapshot.child(userID).child("favorites").value}")
+                            Log.d("Helo","splash: ${dataSnapshot.child(userID).child("favorites").value}")
                         }
 
                         override fun onCancelled(error: DatabaseError) {

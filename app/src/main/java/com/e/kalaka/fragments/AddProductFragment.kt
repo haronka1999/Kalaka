@@ -71,7 +71,7 @@ class AddProductFragment : Fragment() {
             name = binding.productNameEditText.text.toString()
             description = binding.descriptionEditText.text.toString()
             price = binding.priceEditText.text.toString().toDouble()
-            val businessId = userCredentials?.businessId.toString()
+          //  val businessId = preloadedData?.business.toString()
             val productId = UUID.randomUUID().toString()
 
 
@@ -89,9 +89,11 @@ class AddProductFragment : Fragment() {
             }
 
 
-            val product = Product(businessId,description,name,imageUri.toString(),price,productId)
-            preloadedData.productList.value?.add(product)
-            writeProductIntoDataBase(product)
+//          /  val product = Product(businessId,description,name,imageUri.toString(),price,productId)
+//            val valami = preloadedData.productList.value
+//            valami?.add(product)
+//            preloadedData.productList.value = valami
+//            writeProductIntoDataBase(product)
         }
 
         return binding.root
@@ -99,7 +101,10 @@ class AddProductFragment : Fragment() {
     }
 
     private fun writeProductIntoDataBase(product: Product) {
+        Log.d("Helo", "preloadedData.business.value?.businessId -----" + preloadedData.business.value?.businessId)
+        val actualBusiness = preloadedData.business.value?.businessId
         myRef.child("products").child(product.productId).setValue(product)
+        myRef.child("business").child(actualBusiness.toString()).setValue(product)
         Toast.makeText(activity, "Sikeresen hozzáadva ", Toast.LENGTH_SHORT).show()
         findNavController().navigate(R.id.action_addProductFragment_to_businessProfile)
     }

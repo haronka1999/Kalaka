@@ -33,7 +33,17 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+
+        val products = preloadedData.productList.value
+     //   val current = preloadedData.currentProduct
+       val bus =  preloadedData.business
+
+        Log.d("Helo", "products: $products")
+       // Log.d("Helo", "current: $current")
+        Log.d("Helo", "bus: $bus")
+
+
 
     }
 
@@ -48,7 +58,8 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
             false
         )
         val products = preloadedData.productList.value
-        Log.d("Helo","product: ******   " + products.toString())
+        Log.d("Helo", "product: ******   " + products.toString())
+
 //        context?.let {
 //            Glide.with(it)
 //                .load(Uri.parse(businesses.))
@@ -75,7 +86,7 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
         Glide.with(this).load(business?.logoURL).into(binding.businessProfile)
 
 
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+
         val recycle_view = binding.recycleView
 
 
@@ -87,7 +98,6 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
             recycle_view.layoutManager = HorizontalLayout
             recycle_view.setHasFixedSize(true)
         })
-
 
 
     }

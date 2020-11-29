@@ -44,6 +44,7 @@ class CreateBusinessFragment : Fragment() {
     private var members = mutableListOf<String>()
     private var imageUri: Uri? = null
     private lateinit var storage: FirebaseStorage
+    private var  userId  = FirebaseAuth.getInstance().currentUser?.uid
     private lateinit var storageReference: StorageReference
     private val preloadedData : PreloadViewModel by activityViewModels()
     private lateinit var emails: List<Pair<String, String>>
@@ -93,7 +94,7 @@ class CreateBusinessFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
+           //  userId = FirebaseAuth.getInstance().currentUser?.uid
 
             val logoUri: String = if(imageUri == null) {
                 ""
@@ -132,7 +133,9 @@ class CreateBusinessFragment : Fragment() {
     private fun uploadBusiness(business: Business) {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.reference
+
         myRef.child("business").child(business.businessId).setValue(business)
+        myRef.child("users").child(userId.toString()).child("businessId").setValue(business.businessId)
     }
 
     private fun businessValidation(name: String, email: String, phoneNumber: String, address: String, description: String): Boolean {

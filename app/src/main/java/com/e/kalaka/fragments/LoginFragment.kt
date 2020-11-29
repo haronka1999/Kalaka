@@ -82,7 +82,7 @@ class LoginFragment : Fragment() {
                                     user.child("photoURL").value.toString()
                                 )
                                 preloadedData.user.value = u
-                                Log.d("preloadedData","login: $u")
+                                Log.d("Helo","login: $u")
 
                             }
 
