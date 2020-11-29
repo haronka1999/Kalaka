@@ -23,6 +23,7 @@ import com.e.kalaka.adapters.BusinessAdapter
 import com.e.kalaka.adapters.ProductAdapter
 import com.e.kalaka.databinding.FragmentBusinessProfileBinding
 import com.e.kalaka.models.Business
+import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.models.Product
 import com.e.kalaka.models.User
 import com.google.firebase.auth.FirebaseAuth
@@ -39,13 +40,31 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentBusinessProfileBinding
     private val preloadedData: PreloadViewModel by activityViewModels()
-    private lateinit var database : FirebaseDatabase
 
+    //firebase
+    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    var database = FirebaseDatabase.getInstance()
+    var myRefBusiness = database.getReference("business")
+    var userId = mAuth.currentUser?.uid
+    var myRef = database.getReference("users")
+    private lateinit var businessId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
 
+                //get the current user's business
+                businessId =
+                    dataSnapshot.child(userId.toString()).child("businessId").value.toString()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w("abc", "Failed to read value.", error.toException())
+            }
+        })
     }
 
     override fun onCreateView(
@@ -70,77 +89,71 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             findNavController().navigate(R.id.action_businessProfile_to_addProductFragment)
         }
 
-        var business : Business
-        val indicator = preloadedData.indicator.value
-        when(indicator){
-            1 -> {
-                business = preloadedData.business.value!!
+        preloadedData.business.observe(viewLifecycleOwner, Observer {
+            var business: Business
+            val indicator = preloadedData.indicator.value
+            when (indicator) {
+                1 -> {
+
+                    business = preloadedData.business.value!!
+                }
+                2 -> {
+                    business = preloadedData.searchedBusiness.value!!
+                    hideEditButtons()
+                }
+                else -> {
+                    business = preloadedData.business.value!!
+                }
             }
-            2 -> {
-                business = preloadedData.searchedBusiness.value!!
-                hideEditButtons()
-            }
-            else -> {
-                business= preloadedData.business.value!!
-            }
-        }
 
+            binding.businessName.text = business?.name
+            binding.businessDescription.text = business?.description
+            binding.businessEmail.text = business?.email
+            binding.businessLabels.text = business?.tags?.joinToString(", ")
+            binding.businessTelephone.text = business?.phone
+            binding.location.text = business?.location
+            setItemImage(business.logoURL, binding.businessProfile)
 
-
-        binding.businessName.text = business?.name
-        binding.businessDescription.text = business?.description
-        binding.businessEmail.text = business?.email
-        binding.businessLabels.text = business?.tags?.joinToString(", ")
-        binding.businessTelephone.text = business?.phone
-        binding.location.text = business?.location
-        setItemImage(business.logoURL,binding.businessProfile)
-
-
-
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
-        val recycle_view = binding.recycleView
-
-
-        preloadedData.productList.observe(viewLifecycleOwner, Observer { list ->
-            val adapter = indicator?.let { ProductAdapter(list, this, requireActivity(), it) }
-            recycle_view.adapter = adapter
-            val HorizontalLayout =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            recycle_view.layoutManager = HorizontalLayout
-            recycle_view.setHasFixedSize(true)
+            val recycle_view = binding.recycleView
+            preloadedData.productList.observe(viewLifecycleOwner, Observer { list ->
+                val adapter = indicator?.let { ProductAdapter(list, this, requireActivity(), it) }
+                recycle_view.adapter = adapter
+                val HorizontalLayout =
+                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                recycle_view.layoutManager = HorizontalLayout
+                recycle_view.setHasFixedSize(true)
+            })
+            loadProducts(business.productIds, business.businessId)
         })
-        loadProducts(business.productIds, business.businessId)
 
-
+        loadBusiness(userId)
     }
 
     override fun onItemClick(position: Int) {
         preloadedData.currentProduct = preloadedData.productList.value!![position]
     }
 
-    private fun hideEditButtons(){
+    private fun hideEditButtons() {
         binding.editBusiness.visibility = View.GONE
         binding.addButton.visibility = View.GONE
         binding.statisticsButton.visibility = View.GONE
     }
 
-    private fun loadProducts(list : List<String>, id : String){
-        database = FirebaseDatabase.getInstance()
-
-        database.getReference("products").addValueEventListener(object : ValueEventListener{
+    private fun loadProducts(list: List<String>, id: String) {
+        database.getReference("products").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val list = mutableListOf<Product>()
 
-                for (product in snapshot.children){
+                for (product in snapshot.children) {
                     if (id == product.child("businessId").value.toString())
-                    list.add(
-                        Product(
-                            product.child("businessId").value.toString(),
-                            product.child("description").value.toString(),
-                            product.child("name").value.toString(),
-                            product.child("photoURL").value.toString(),
-                            product.child("price").value.toString().toDouble(),
-                            product.child("productId").value.toString()
+                        list.add(
+                            Product(
+                                product.child("businessId").value.toString(),
+                                product.child("description").value.toString(),
+                                product.child("name").value.toString(),
+                                product.child("photoURL").value.toString(),
+                                product.child("price").value.toString().toDouble(),
+                                product.child("productId").value.toString()
                             )
                         )
 
@@ -153,6 +166,62 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             }
 
         })
+    }
+
+    private fun loadBusiness(userId: String?) {
+        myRefBusiness.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                //search for the user's business
+                for (business in dataSnapshot.children) {
+                    if (businessId == business.key) {
+                        val myBusinessId =
+                            dataSnapshot.child(businessId).child("businessId").value.toString()
+                        val description =
+                            dataSnapshot.child(businessId).child("description").value.toString()
+                        val email = dataSnapshot.child(businessId).child("email").value.toString()
+                        val facebookURL =
+                            dataSnapshot.child(businessId).child("facebookURL").value.toString()
+                        val instagramURL =
+                            dataSnapshot.child(businessId).child("instagramURL").value.toString()
+                        val location =
+                            dataSnapshot.child(businessId).child("location").value.toString()
+                        val logoURL =
+                            dataSnapshot.child(businessId).child("logoURL").value.toString()
+                        val name = dataSnapshot.child(businessId).child("name").value.toString()
+                        val ownerId =
+                            dataSnapshot.child(businessId).child("ownerId").value.toString()
+                        val phone = dataSnapshot.child(businessId).child("phone").value.toString()
+
+                        //TODO: push businessOrder
+                        val EmptyorderList: MutableList<BusinessOrder> = arrayListOf()
+                        val business = Business(
+                            businessId,
+                            description,
+                            email,
+                            facebookURL,
+                            instagramURL,
+                            location,
+                            logoURL,
+                            mutableListOf("member1", "member2"),
+                            name,
+                            EmptyorderList,
+                            ownerId,
+                            phone,
+                            listOf("ds", "sds"),
+                            listOf("tag1", "tag2")
+                        )
+                        preloadedData.business.value = business
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w("abc", "Failed to read value.", error.toException())
+            }
+        })
+
+
     }
 
     private fun setItemImage(logoURL: String, holder: ImageView) {

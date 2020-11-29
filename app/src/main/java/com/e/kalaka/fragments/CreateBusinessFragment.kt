@@ -17,8 +17,6 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentCreateBusinessBinding
@@ -44,6 +42,7 @@ class CreateBusinessFragment : Fragment() {
     private var members = mutableListOf<String>()
     private var imageUri: Uri? = null
     private lateinit var storage: FirebaseStorage
+    private var  userId  = FirebaseAuth.getInstance().currentUser?.uid
     private lateinit var storageReference: StorageReference
     private val preloadedData: PreloadViewModel by activityViewModels()
     private val preloadedUserData: PreloadViewModel by activityViewModels()
@@ -56,8 +55,7 @@ class CreateBusinessFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //emails = preloadedData.userEmails.value!!
-        emails = mutableListOf()
+     //   emails = preloadedData.userEmails.value!!
     }
 
     override fun onCreateView(
@@ -75,7 +73,7 @@ class CreateBusinessFragment : Fragment() {
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
 
-        setupAutoCompleteView()
+      //  setupAutoCompleteView()
 
         binding.chooseLogoButton.setOnClickListener {
             pickImageFromGallery()
@@ -95,7 +93,7 @@ class CreateBusinessFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
+           //  userId = FirebaseAuth.getInstance().currentUser?.uid
 
             val logoUri: String = if (imageUri == null) {
                 ""
@@ -105,6 +103,7 @@ class CreateBusinessFragment : Fragment() {
 
             val randomKey = UUID.randomUUID().toString()
             val logoPath: String = "business_image/$randomKey"
+            val EmptyorderList : MutableList<BusinessOrder> = arrayListOf()
             val business = Business(randomKey,
                                     description,
                                     email,
@@ -114,7 +113,7 @@ class CreateBusinessFragment : Fragment() {
                                     logoPath,
                                     members,
                                     name,
-                                    mutableListOf<BusinessOrder>(),
+                                    EmptyorderList,
                                     userId!!,
                                     phoneNumber,
                                     listOf(),
@@ -207,7 +206,9 @@ class CreateBusinessFragment : Fragment() {
     private fun uploadBusiness(business: Business) {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.reference
+
         myRef.child("business").child(business.businessId).setValue(business)
+        myRef.child("users").child(userId.toString()).child("businessId").setValue(business.businessId)
     }
 
     private fun businessValidation(
@@ -278,9 +279,9 @@ class CreateBusinessFragment : Fragment() {
 
     private fun setupAutoCompleteView() {
         val userEmails = mutableListOf<String>()
-        emails.forEach {
-            userEmails.add(it.second)
-        }
+//        emails.forEach {
+//            userEmails.add(it.second)
+//        }
 
         val autoComplete = binding.userAutoComplete
         val adapter = ArrayAdapter(
