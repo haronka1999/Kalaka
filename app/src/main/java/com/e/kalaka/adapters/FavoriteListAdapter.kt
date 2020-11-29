@@ -1,5 +1,6 @@
 package com.e.kalaka.adapters
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import com.e.kalaka.R
 import com.e.kalaka.models.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 
 class FavoriteListAdapter(private var favorites: MutableList<Product>, private val listener: OnItemClickListener): RecyclerView.Adapter<FavoriteListAdapter.FavoriteListHolder>() {
 
@@ -37,26 +39,26 @@ class FavoriteListAdapter(private var favorites: MutableList<Product>, private v
             favorites.remove(currentItem)
             removeFavoriteItemFromDatabase(currentItem)
         }
+        setItemImage(currentItem.photoURL, holder.itemView.findViewById(R.id.product_image))
     }
 
     private fun removeFavoriteItemFromDatabase(currentItem: Product) {
         val mUser = FirebaseAuth.getInstance().currentUser
         val database = FirebaseDatabase.getInstance()
-        val databaseRef = database.getReference("users").child(mUser!!.uid).child(currentItem.productId)
+        val databaseRef = database.getReference("users").child(mUser!!.uid).child("favorites").child(currentItem.productId)
         databaseRef.removeValue()
-
-        /*
-        databaseRef.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val userData = mUser?.let { snapshot.child(it.uid).child(currentItem.productId) }
-                Log.d("DELETE", "$userData")
-                Log.d("DELETE", "${userData?.ref}")
-                userData?.ref?.removeValue()
-            }
-            override fun onCancelled(error: DatabaseError) {}
-        })
-        */
     }
+
+    private fun setItemImage(logoURL: String, imageView: ImageView) {
+        val storage = FirebaseStorage.getInstance()
+        val storageReference = storage.reference.child(logoURL)
+        val ONE_MEGABYTE = (1024 * 1024).toLong()
+        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytesPrm ->
+            val bmp = BitmapFactory.decodeByteArray(bytesPrm, 0, bytesPrm.size)
+            imageView.setImageBitmap(bmp)
+        }
+    }
+
 
     override fun getItemCount(): Int = favorites.size
 
