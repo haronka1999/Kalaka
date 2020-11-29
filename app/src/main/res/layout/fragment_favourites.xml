@@ -15,7 +15,9 @@
         android:text="Még nincsenek kedvenc vállalkozásai"
         android:textSize="24sp"
         android:textColor="@color/white"
-        android:layout_gravity="center"/>
+        android:gravity="center"
+        android:layout_margin="30dp"
+        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favoritesRecycler"

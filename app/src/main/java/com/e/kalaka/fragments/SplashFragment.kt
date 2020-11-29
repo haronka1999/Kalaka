@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentRegisterBinding
 import com.e.kalaka.databinding.FragmentSplashBinding
+import com.e.kalaka.models.Product
 import com.e.kalaka.models.User
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -43,44 +44,56 @@ class SplashFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_splash, container, false)
 
+        // get current user
         mAuth = FirebaseAuth.getInstance();
         val mUser = mAuth.currentUser
 
         Timer().schedule(object : TimerTask() {
             override fun run() {
+                // if user is logged in, initialize attributes for viewmodel
                 if (mUser != null) {
+                    // get reference for users document
                     database = FirebaseDatabase.getInstance()
                     databaseRef = database.getReference("users")
 
+                    userID = mUser.uid.toString()
                     val emails = mutableListOf<Pair<String, String>>()
+                    val favoriteProductIds = mutableListOf<String>()
 
-                    firebaseAuth = FirebaseAuth.getInstance()
-                    userID = firebaseAuth.currentUser?.uid.toString()
                     databaseRef.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            // get all emails from database (is needed for autocomplete search)
                             for (user in dataSnapshot.children) {
                                 val newValue = Pair(user.child("userId").value.toString(),user.child("email").value.toString())
                                 emails.add(newValue)
                             }
                             preloadedData.userEmails.value = emails
 
-                            val user = dataSnapshot.child(userID)
-                            val u = User(
+                            // retrieve user data from database
+                            val userData = dataSnapshot.child(userID)
+                             userData.child("favorites").children.forEach{
+                                 val productId = it.value.toString()
+                                 addFavoriteProductToViewModel(productId)
+                            }
+
+                            // create new User instance
+                            val user = User(
                                 0,
-                                user.child("email").value.toString(),
+                                userData.child("email").value.toString(),
                                 mutableListOf(),
-                                user.child("firstName").value.toString(),
-                                user.child("userId").value.toString(),
-                                user.child("lastName").value.toString(),
+                                userData.child("firstName").value.toString(),
+                                userData.child("userId").value.toString(),
+                                userData.child("lastName").value.toString(),
                                 mutableListOf(),
-                                user.child("photoURL").value.toString()
+                                userData.child("photoURL").value.toString()
                             )
-                            preloadedData.user.value = u
-                            Log.d("preloadedData","login: ${dataSnapshot.child(userID).child("favorites").value}")
+                            // set the User instance in the viewmodel
+                            preloadedData.user.value = user
+
                         }
 
                         override fun onCancelled(error: DatabaseError) {
@@ -94,11 +107,9 @@ class SplashFragment : Fragment() {
                     })
                     Log.d("RETURN", "mainScreen");
                     findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
-                    //findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
                 } else {
                     Log.d("RETURN", "showLoginScreen");
                     findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
-                  //  findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
                 }
 
             }
@@ -107,5 +118,29 @@ class SplashFragment : Fragment() {
         return binding.root
     }
 
+    private fun addFavoriteProductToViewModel(productId: String) {
+        database = FirebaseDatabase.getInstance()
+        databaseRef = database.getReference("products")
 
+        databaseRef.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productData = snapshot.child(productId)
+                val product = Product(productData.child("businessId").value.toString(),
+                                    productData.child("description").value.toString(),
+                                    productData.child("name").value.toString(),
+                                    productData.child("photoUrl").value.toString(),
+                                    productData.child("price").value.toString().toDouble(),
+                                    productData.child("productId").value.toString()
+                )
+                if(preloadedData.favoriteProductlist.value == null) {
+                    preloadedData.favoriteProductlist.value = mutableListOf(product)
+                }
+                else {
+                    preloadedData.favoriteProductlist.value!!.add(product)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
 }
