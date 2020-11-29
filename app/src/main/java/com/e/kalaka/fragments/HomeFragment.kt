@@ -71,7 +71,6 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
         val selectedTopic = Tag.getTags()[position].second
         startLoadingData(selectedTopic)
-        topicViewModel.list.value = listOf()
         findNavController().navigate(R.id.action_homeFragment_to_mainSearch)
     }
 
@@ -101,12 +100,12 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
     private fun startLoadingData(selectedTopic : String){
         database = FirebaseDatabase.getInstance()
-
+        topicViewModel.list.value = mutableListOf()
         val reference = database.getReference("business")
         reference.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                val list = mutableListOf<Business>()
+                //val list = mutableListOf<Business>()
 
                 for (business in snapshot.children ){
 
@@ -130,7 +129,6 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                                 productIds.add(productId.value.toString())
                             }
                             for (order in business.child("orders").children){
-                                Log.d("Helo",  order.toString())
                                 val ord = BusinessOrder(
                                     order.child("address").value.toString(),
                                     order.child("city").value.toString(),
@@ -146,7 +144,6 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                                     order.child("total").value.toString().toDouble(),
                                     order.child("worker").value.toString()
                                 )
-                                Log.d("Helo",  "Order: $order")
                                 orders.add(ord)
                             }
 
@@ -166,17 +163,16 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                                 productIds,
                                 tags
                             )
-
-                            list.add(item)
+                            ///list.add(item)
+                            topicViewModel.list.value!!.add(item)
+                            Log.d("Helo",  "Order: $item")
                         }
                     }
                 }
-                topicViewModel.list.value = list
+                //topicViewModel.list.value = list
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
 
     }

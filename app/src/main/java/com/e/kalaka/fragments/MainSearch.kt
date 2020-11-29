@@ -31,7 +31,7 @@ class MainSearch : Fragment(), BusinessAdapter.OnItemClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_main_search,container,false)
         return binding.root
     }
@@ -40,11 +40,17 @@ class MainSearch : Fragment(), BusinessAdapter.OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
 
+        binding.recycleView.adapter = BusinessAdapter(topicViewModel.list.value!!, this, requireActivity())
+        binding.recycleView.layoutManager = LinearLayoutManager(context)
+        binding.recycleView.setHasFixedSize(true)
+        /*
         topicViewModel.list.observe(viewLifecycleOwner, Observer { list ->
             binding.recycleView.adapter = BusinessAdapter(list, this, requireActivity())
             binding.recycleView.layoutManager = LinearLayoutManager(context)
             binding.recycleView.setHasFixedSize(true)
         })
+
+         */
 
     }
 

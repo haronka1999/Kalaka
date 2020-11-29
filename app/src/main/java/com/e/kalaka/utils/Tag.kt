@@ -8,7 +8,7 @@ class Tag {
                     Pair("ic_bag", "Szatyrok"),
                     Pair("ic_cup",  "Bögrék"),
                     Pair("ic_shirt", "Pólók"),
-                    Pair("ic_shirt", "Gyertyák"),
+                    Pair("ic_candle", "Gyertyák"),
                     Pair("ic_wreath", "Koszorúk"),
                     Pair("ic_dog_house", "Kutyaházak"),
                     Pair("ic_decoration", "Dekoráció"),

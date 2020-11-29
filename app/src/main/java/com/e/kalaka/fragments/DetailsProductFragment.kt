@@ -3,6 +3,7 @@ package com.e.kalaka.fragments
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,17 +24,14 @@ class DetailsProductFragment : Fragment() {
     private lateinit var binding: FragmentDetailsProductBinding
     private val preloadedData : PreloadViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_details_product, container, false)
 
         val currentProduct = preloadedData.currentProduct
+        Log.d("-------", "$currentProduct")
 
         binding.productNameTextView.text = currentProduct.name.plus(" ").plus(currentProduct.price).plus("RON")
         binding.descriptionTextView.text = currentProduct.description
