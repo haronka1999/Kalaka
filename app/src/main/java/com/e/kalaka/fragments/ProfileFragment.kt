@@ -86,13 +86,13 @@ class ProfileFragment : Fragment() {
 
 
     private fun showDatas() {
-
         val user = preloadedData.user.value
         binding.firstName.text=user?.firstName
         binding.lastName.text=user?.lastName
         binding.email.text=user?.email
-        Log.d("-----", user!!.photoURL)
-        setProfileImage(user.photoURL, binding.profilePic)
+        if (user != null) {
+            setProfileImage(user.photoURL, binding.profilePic)
+        }
     }
 
     private fun setProfileImage(logoURL: String, view: ImageView) {

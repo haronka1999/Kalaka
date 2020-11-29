@@ -32,18 +32,19 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
     var myRefBusiness = FirebaseDatabase.getInstance().getReference("business")
     var myRefProducts = FirebaseDatabase.getInstance().getReference("products")
     var userId = mAuth.currentUser?.uid
-    private lateinit var businessId: String
-    private lateinit var business: Business
+    private var lateinit business : Business()
+    private var businessId: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
         myRefUsers.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 //get the current user's businessId
-                businessId = dataSnapshot.child(userId.toString()).child("businessId").value.toString()
+                businessId =
+                    dataSnapshot.child(userId.toString()).child("businessId").value.toString()
                 Log.d("Helo", "businessID in oncreate : $businessId")
             }
 
@@ -60,19 +61,26 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
                     Log.d("Helo", "business.key  in oncreateview : ${business.key}")
                     if (businessId == business.key) {
                         Log.d("Helo", "Megvagy")
-                        val businessId = dataSnapshot.child(businessId).child("businessId").value.toString()
+                        val businessId =
+                            dataSnapshot.child(businessId).child("businessId").value.toString()
                         Log.d("Helo", "businessID in oncreateview : $businessId")
-                        val description = dataSnapshot.child(businessId).child("description").value.toString()
+                        val description =
+                            dataSnapshot.child(businessId).child("description").value.toString()
                         val email = dataSnapshot.child(businessId).child("email").value.toString()
-                        val facebookURL = dataSnapshot.child(businessId).child("facebookURL").value.toString()
-                        val instagramURL = dataSnapshot.child(businessId).child("instagramURL").value.toString()
-                        val location = dataSnapshot.child(businessId).child("location").value.toString()
-                        val logoURL = dataSnapshot.child(businessId).child("logoURL").value.toString()
+                        val facebookURL =
+                            dataSnapshot.child(businessId).child("facebookURL").value.toString()
+                        val instagramURL =
+                            dataSnapshot.child(businessId).child("instagramURL").value.toString()
+                        val location =
+                            dataSnapshot.child(businessId).child("location").value.toString()
+                        val logoURL =
+                            dataSnapshot.child(businessId).child("logoURL").value.toString()
                         val name = dataSnapshot.child(businessId).child("name").value.toString()
-                        val ownerId = dataSnapshot.child(businessId).child("ownerId").value.toString()
+                        val ownerId =
+                            dataSnapshot.child(businessId).child("ownerId").value.toString()
                         val phone = dataSnapshot.child(businessId).child("phone").value.toString()
-                        val EmptyorderList : MutableList<BusinessOrder> = arrayListOf()
-                        val business = Business(
+                        val EmptyorderList: MutableList<BusinessOrder> = arrayListOf()
+                        business = Business(
                             businessId,
                             description,
                             email,
@@ -83,12 +91,12 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
                             mutableListOf("member1", "member2"),
                             name,
                             EmptyorderList,
-                            userId.toString(),
+                            ownerId,
                             phone,
                             listOf("ds", "sds"),
                             listOf("tag1", "tag2")
                         )
-                        myRefUsers.child(userId.toString()).setValue(business)
+                        //  myRefBusiness.child(userId.toString()).setValue(business)
                         Log.d("Helo", "Business: $business")
                     }
                 }
@@ -100,6 +108,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             }
         })
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -115,6 +124,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
         binding.addButton.setOnClickListener {
             findNavController().navigate(R.id.action_businessProfile_to_addProductFragment)
 
+
         }
 
         return binding.root
@@ -124,35 +134,34 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
 
-        //        val indicator = preloadedData.indicator.value
-//        when(indicator){
-//            1 -> {
-//                business = preloadedData.business.value!!
-//            }
-//            2 -> {
-//                business = preloadedData.searchedBusiness.value!!
-//                hideEditButtons()
-//            }
-//            else -> {
-//                business= preloadedData.business.value!!
-//            }
-//        }
+        val indicator = preloadedData.indicator.value
+        when (indicator) {
+            1 -> {
+                business = preloadedData.business.value!!
+            }
+            2 -> {
+                business = preloadedData.searchedBusiness.value!!
+                hideEditButtons()
+            }
+            else -> {
+                business = preloadedData.business.value!!
+            }
+        }
 
 
-        // var business : Business = preloadedData.business.value!!
-//       Log.d("Helo", "ownerId: " + business.ownerId)
-//        binding.businessName.text = business?.name
-//        binding.businessDescription.text = business?.description
-//        binding.businessEmail.text = business?.email
-//        binding.businessLabels.text = business?.tags?.joinToString(", ")
-//        binding.businessTelephone.text = business?.phone
-//        binding.location.text = business?.location
-//        Glide.with(this).load(Uri.parse(business?.logoURL))
-//            .circleCrop()
-//            .into(binding.businessProfile)
+        var business: Business = preloadedData.business.value!!
+        Log.d("Helo", "ownerId: " + business.ownerId)
+        binding.businessName.text = business?.name
+        binding.businessDescription.text = business?.description
+        binding.businessEmail.text = business?.email
+        binding.businessLabels.text = business?.tags?.joinToString(", ")
+        binding.businessTelephone.text = business?.phone
+        binding.location.text = business?.location
+        Glide.with(this).load(Uri.parse(business?.logoURL))
+            .circleCrop()
+            .into(binding.businessProfile)
 
 
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
         val recycle_view = binding.recycleView
 
 
