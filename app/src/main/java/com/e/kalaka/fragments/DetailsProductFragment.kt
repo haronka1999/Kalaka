@@ -31,16 +31,15 @@ class DetailsProductFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_details_product, container, false)
 
         val currentProduct = preloadedData.currentProduct
-        Log.d("-------", "$currentProduct")
 
-        binding.productNameTextView.text = currentProduct.name.plus(" ").plus(currentProduct.price).plus("RON")
+        binding.productNameTextView.text = "Termék neve: ${currentProduct.name}"
+        binding.productPriceTextView.text = "Ár: ${currentProduct.price} RON"
         binding.descriptionTextView.text = currentProduct.description
         setProfileImage(currentProduct.photoURL, binding.businessProfile)
 
         binding.orderButton.setOnClickListener {
             findNavController().navigate(R.id.action_detailsProductFragment_to_orderProductFragment)
         }
-
 
         return binding.root
     }
