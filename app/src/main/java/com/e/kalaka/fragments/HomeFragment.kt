@@ -7,10 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -44,16 +47,26 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
     ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        topicViewModel.filteredList.value = Tag.getTags()
+
+        // refresh topics based on search input
+        binding.topicSearchBar.addTextChangedListener{
+            topicViewModel.filteredList.value = Tag.getTags().filter { pair ->
+                pair.second.contains(it.toString())
+            }
+        }
 
         // initialize recyclerview
         recyclerView = binding.tagRecycler
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(binding.root.context, 3)
-        recyclerView.addItemDecoration(SpaceGrid(3,Tag.tagCount(), true))
-        val adapter = TagListAdapter(Tag.getTags(), this, binding.root.context)
+        recyclerView.addItemDecoration(SpaceGrid(3, topicViewModel.filteredList.value!!.size, true))
+        val adapter = TagListAdapter(topicViewModel.filteredList.value!!, this, binding.root.context)
         recyclerView.adapter = adapter
 
-        setOrderButton()
+        topicViewModel.filteredList.observe(viewLifecycleOwner) {
+            adapter.setData(it)
+        }
 
         binding.pendingOrdersButton.setOnClickListener{
             Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_pendingOrderFragment)
@@ -62,16 +75,10 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
         return binding.root
     }
 
-    private fun setOrderButton() {
-        val user = FirebaseAuth.getInstance().currentUser ?: return
-        val database = FirebaseDatabase.getInstance()
-    }
-
     override fun onItemClick(position: Int) {
 
         val selectedTopic = Tag.getTags()[position].second
         startLoadingData(selectedTopic)
-        topicViewModel.list.value = listOf()
         findNavController().navigate(R.id.action_homeFragment_to_mainSearch)
     }
 
@@ -101,12 +108,12 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
     private fun startLoadingData(selectedTopic : String){
         database = FirebaseDatabase.getInstance()
-
+        topicViewModel.list.value = mutableListOf()
         val reference = database.getReference("business")
         reference.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                val list = mutableListOf<Business>()
+                //val list = mutableListOf<Business>()
 
                 for (business in snapshot.children ){
 
@@ -130,7 +137,6 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                                 productIds.add(productId.value.toString())
                             }
                             for (order in business.child("orders").children){
-                                Log.d("Helo",  order.toString())
                                 val ord = BusinessOrder(
                                     order.child("address").value.toString(),
                                     order.child("city").value.toString(),
@@ -146,7 +152,6 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                                     order.child("total").value.toString().toDouble(),
                                     order.child("worker").value.toString()
                                 )
-                                Log.d("Helo",  "Order: $order")
                                 orders.add(ord)
                             }
 
@@ -166,17 +171,16 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                                 productIds,
                                 tags
                             )
-
-                            list.add(item)
+                            ///list.add(item)
+                            topicViewModel.list.value!!.add(item)
+                            Log.d("Helo",  "Order: $item")
                         }
                     }
                 }
-                topicViewModel.list.value = list
+                //topicViewModel.list.value = list
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
 
     }
@@ -198,7 +202,4 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
     }
-
-
-
 }

@@ -82,7 +82,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             findNavController().navigate(R.id.action_businessProfile_to_addProductFragment)
         }
 
-        preloadedData.business.observe(viewLifecycleOwner, Observer {
+        preloadedData.searchedBusiness.observe(viewLifecycleOwner, Observer {
             val business: Business
             val indicator = preloadedData.indicator.value
             when (indicator) {
@@ -169,9 +169,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
                 preloadedData.productList.value = list
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
+            override fun onCancelled(error: DatabaseError) {}
 
         })
     }
