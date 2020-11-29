@@ -4,6 +4,7 @@ data class UserOrder (
     var address : String,
     var city : String,
     var clientId: String,
+    var businessName: String,
     var comment : String,
     var number : String,
     var orderId : String,
