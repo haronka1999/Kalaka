@@ -1,22 +1,26 @@
 package com.e.kalaka.fragments
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.e.kalaka.R
+import com.e.kalaka.adapters.BusinessAdapter
 import com.e.kalaka.databinding.FragmentProfileBinding
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 
 
 class ProfileFragment : Fragment() {
@@ -35,7 +39,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         val view = binding.root
@@ -75,11 +79,18 @@ class ProfileFragment : Fragment() {
         binding.firstName.text=user?.firstName
         binding.lastName.text=user?.lastName
         binding.email.text=user?.email
-        context?.let {
-            Glide.with(it)
-                .load(Uri.parse(user?.photoURL))
-                .into(binding.profilePic)
-        };
+        Log.d("-----", user!!.photoURL)
+        setProfileImage(user.photoURL, binding.profilePic)
+    }
+
+    private fun setProfileImage(logoURL: String, view: ImageView) {
+        val storage = FirebaseStorage.getInstance()
+        val storageReference = storage.reference.child(logoURL)
+        val ONE_MEGABYTE = (1024 * 1024).toLong()
+        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytesPrm ->
+            val bmp = BitmapFactory.decodeByteArray(bytesPrm, 0, bytesPrm.size)
+            view.setImageBitmap(bmp)
+        }
     }
 
 }

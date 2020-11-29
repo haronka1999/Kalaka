@@ -1,6 +1,7 @@
 package com.e.kalaka.adapters
 
 import android.app.Activity
+import android.graphics.BitmapFactory
 import android.media.Image
 import android.net.Uri
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.models.Product
+import com.google.firebase.storage.FirebaseStorage
 
 class ProductAdapter (
     private val items : List <Product>,
@@ -50,7 +52,8 @@ class ProductAdapter (
         holder.productDescription.text = currentItem.description
         holder.productName.text = currentItem.name
         holder.productPrice.text = currentItem.price.toString() + " RON"
-        Glide.with(activity).load(Uri.parse(currentItem.photoURL)).into(holder.productImage)
+        //Glide.with(activity).load(Uri.parse(currentItem.photoURL)).into(holder.productImage)
+        setProductImage(currentItem.photoURL, holder.productImage)
 
         if (indicator == 2){
             holder.deleteProduct.visibility = View.GONE
@@ -62,6 +65,16 @@ class ProductAdapter (
         }
         holder.favoriteProduct.setOnClickListener{
             // Todo
+        }
+    }
+
+    private fun setProductImage(photoURL: String, productImage: ImageView) {
+        val storage = FirebaseStorage.getInstance()
+        val storageReference = storage.reference.child(photoURL)
+        val ONE_MEGABYTE = (1024 * 1024).toLong()
+        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytesPrm ->
+            val bmp = BitmapFactory.decodeByteArray(bytesPrm, 0, bytesPrm.size)
+            productImage.setImageBitmap(bmp)
         }
     }
 

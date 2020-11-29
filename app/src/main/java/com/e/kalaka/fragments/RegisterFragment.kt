@@ -65,8 +65,6 @@ class RegisterFragment : Fragment() {
 
         binding.chooseImageButton.setOnClickListener {
             pickImageFromGallery()
-
-            //binding.imageView.setImageURI(imageUri)
         }
 
         binding.saveButton.setOnClickListener {
@@ -79,6 +77,7 @@ class RegisterFragment : Fragment() {
             Log.d("helo", "password : $password")
             if (!registrationValidation(lastName, firstName, email, password))
                 return@setOnClickListener
+
 
             //authentication
             registerUserInDataBase(email, password)
@@ -105,16 +104,13 @@ class RegisterFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.data != null) {
             imageUri = data.data!!
-
-            uploadPicture()
         }
     }
 
 
-    private fun uploadPicture() {
+    private fun uploadPicture(id: String) {
 
-        val randomKey = UUID.randomUUID().toString()
-        val riversRef: StorageReference = storageReference.child("profile_image/$randomKey")
+        val riversRef: StorageReference = storageReference.child("profile_image/$id")
 
         riversRef.putFile(imageUri)
             .addOnSuccessListener { taskSnapshot -> // Get a URL to the uploaded content
@@ -135,7 +131,11 @@ class RegisterFragment : Fragment() {
         Log.d("Helo", "imageUri: $imageUri")
 
         userId = mAuth.currentUser?.uid.toString()
+        // upload user image to firebase storage
+        uploadPicture(userId)
+
         user.userId = userId
+        user.photoURL = "profile_image/${userId}"
         Log.d("Helo", "userId: $userId")
         myRef.child("users").child(userId).setValue(user)
 
@@ -158,9 +158,6 @@ class RegisterFragment : Fragment() {
                 if (task.isSuccessful) {
                     Log.d("Helo", "successfull")
                     Log.d("Helo", "imageUri.toString() $imageUri")
-
-//                    val photoSplit=imageUri.toString().toArr("%3A");
-//                    imageUri="content://media/external/images/media/"+photoSplit[1];
 
                     userId = ""
                     val user = User(
