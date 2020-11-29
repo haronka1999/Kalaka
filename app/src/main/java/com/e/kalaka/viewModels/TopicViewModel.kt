@@ -7,5 +7,7 @@ import com.e.kalaka.utils.Tag
 
 class TopicViewModel : ViewModel() {
     var list : MutableLiveData<MutableList<Business>> = MutableLiveData()
-    var filteredList : MutableLiveData<List<Pair<String, String>>> = MutableLiveData()
+    var filteredBusinesslist: MutableLiveData<MutableList<Business>> = MutableLiveData()
+
+    var filteredTagList : MutableLiveData<List<Pair<String, String>>> = MutableLiveData()
 }
