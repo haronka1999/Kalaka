@@ -82,7 +82,7 @@ class SplashFragment : Fragment() {
 
                             // create new User instance
                             val user = User(
-                                0,
+                                "0",
                                 userData.child("email").value.toString(),
                                 mutableListOf(),
                                 userData.child("firstName").value.toString(),
@@ -110,6 +110,7 @@ class SplashFragment : Fragment() {
                 } else {
                     Log.d("RETURN", "showLoginScreen");
                     findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+                   //findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
                 }
 
             }

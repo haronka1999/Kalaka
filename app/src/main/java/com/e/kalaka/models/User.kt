@@ -1,7 +1,7 @@
 package com.e.kalaka.models
 
 data class User (
-    var businessId : Int,
+    var businessId : String,
     var email : String,
     var favorites : MutableList<Int>,
     var firstName : String,
