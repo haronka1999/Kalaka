@@ -1,7 +1,6 @@
 package com.e.kalaka.fragments
 
 import android.content.ContentValues
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -13,9 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
-import com.bumptech.glide.Glide
 import com.e.kalaka.R
-import com.e.kalaka.activities.MainActivity
 import com.e.kalaka.databinding.FragmentLoginBinding
 import com.e.kalaka.models.User
 import com.e.kalaka.utils.Validation
@@ -23,7 +20,6 @@ import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 
 
@@ -48,6 +44,7 @@ class LoginFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
 
         binding.saveButton.setOnClickListener {
+
             mAuth = FirebaseAuth.getInstance();
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
@@ -55,23 +52,29 @@ class LoginFragment : Fragment() {
             if (!isValidLoginFields(email, password))
                 return@setOnClickListener
 
-
+            //trying to sing-in
             mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task: Task<AuthResult?> ->
+
+                    //if successful, load the user data into preloadedData
                     if (task.isSuccessful) {
                         Toast.makeText(
                             context, "Sikeres bejelentkezés",
                             Toast.LENGTH_SHORT
                         ).show()
+
                         database = FirebaseDatabase.getInstance()
                         databaseRef = database.getReference("users")
                         firebaseAuth = FirebaseAuth.getInstance()
                         userID = firebaseAuth.currentUser?.uid.toString()
+
                         databaseRef.addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
+
                                 val user = dataSnapshot.child(userID)
                                 Log.d("user", "val: $user")
-                                val u = User(
+
+                                val newUser = User(
                                     "0",
                                     user.child("email").value.toString(),
                                     mutableListOf(),
@@ -81,8 +84,10 @@ class LoginFragment : Fragment() {
                                     mutableListOf(),
                                     user.child("photoURL").value.toString()
                                 )
-                                preloadedData.user.value = u
-                                Log.d("preloadedData","login: $u")
+
+                                //load user data into preloadedData
+                                preloadedData.user.value = newUser
+                                Log.d("preloadedData","login: $newUser")
 
                             }
 
@@ -95,9 +100,9 @@ class LoginFragment : Fragment() {
                                 )
                             }
                         })
+
                         // Sign in success, update UI with the signed-in user's information
-                        Navigation.findNavController(binding.root)
-                            .navigate(R.id.action_loginFragment_to_homeFragment)
+                        Navigation.findNavController(binding.root).navigate(R.id.action_loginFragment_to_homeFragment)
                     } else {
                         Toast.makeText(
                             context, "Sikertelen bejelentkezés.",

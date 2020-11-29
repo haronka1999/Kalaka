@@ -26,8 +26,6 @@ import kotlin.collections.HashMap
 
 
 class SplashFragment : Fragment() {
-
-
     private lateinit var mAuth: FirebaseAuth
     private lateinit var binding: FragmentSplashBinding
     private lateinit var database: FirebaseDatabase
@@ -54,6 +52,7 @@ class SplashFragment : Fragment() {
 
         Timer().schedule(object : TimerTask() {
             override fun run() {
+
                 // if user is logged in, initialize attributes for viewmodel
                 if (mUser != null) {
                     // get reference for users document
@@ -61,16 +60,20 @@ class SplashFragment : Fragment() {
                     databaseRef = database.getReference("users")
 
                     userID = mUser.uid.toString()
+
                     val emails = mutableListOf<Pair<String, String>>()
                     val favoriteProductIds = mutableListOf<String>()
 
                     databaseRef.addValueEventListener(object : ValueEventListener {
+
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
+
                             // get all emails from database (is needed for autocomplete search)
                             for (user in dataSnapshot.children) {
                                 val newValue = Pair(user.child("userId").value.toString(),user.child("email").value.toString())
                                 emails.add(newValue)
                             }
+
                             preloadedData.userEmails.value = emails
 
                             // retrieve user data from database
