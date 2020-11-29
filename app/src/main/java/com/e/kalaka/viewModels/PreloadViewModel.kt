@@ -25,6 +25,7 @@ class PreloadViewModel : ViewModel(){
 
     //this will be initalized in the
     var pendingOrders: MutableLiveData<MutableList<BusinessOrder>> = MutableLiveData<MutableList<BusinessOrder>>()
+    lateinit var currentPendingOrder: BusinessOrder
 
     var productList : MutableLiveData<MutableList<Product>> = MutableLiveData<MutableList<Product>>()
     var favoriteProductlist: MutableLiveData<MutableList<Product>> = MutableLiveData<MutableList<Product>>()
