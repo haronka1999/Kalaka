@@ -171,7 +171,6 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                         }
                     }
                 }
-                //Log.d("******",list.toString())
                 topicViewModel.list.value = list
             }
 

@@ -110,6 +110,15 @@
                     app:srcCompat="@drawable/ic_add"
                     tools:ignore="VectorDrawableCompat" />
 
+                <ImageView
+                    android:id="@+id/productImageView"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="36dp"
+                    app:layout_constraintStart_toEndOf="@+id/imageButton"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_logo_placeholder" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>

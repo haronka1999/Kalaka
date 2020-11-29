@@ -132,6 +132,7 @@ class AddProductFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data!!
+            binding.productImageView.setImageURI(imageUri)
         }
     }
 
