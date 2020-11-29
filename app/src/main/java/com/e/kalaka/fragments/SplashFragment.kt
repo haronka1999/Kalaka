@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class SplashFragment : Fragment() {
@@ -54,10 +55,19 @@ class SplashFragment : Fragment() {
                 if (mUser != null) {
                     database = FirebaseDatabase.getInstance()
                     databaseRef = database.getReference("users")
+
+                    val emails = mutableListOf<Pair<String, String>>()
+
                     firebaseAuth = FirebaseAuth.getInstance()
                     userID = firebaseAuth.currentUser?.uid.toString()
                     databaseRef.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            for (user in dataSnapshot.children) {
+                                val newValue = Pair(user.child("userId").value.toString(),user.child("email").value.toString())
+                                emails.add(newValue)
+                            }
+                            preloadedData.userEmails.value = emails
+
                             val user = dataSnapshot.child(userID)
                             val u = User(
                                 0,
@@ -70,8 +80,7 @@ class SplashFragment : Fragment() {
                                 user.child("photoURL").value.toString()
                             )
                             preloadedData.user.value = u
-                            Log.d("preloadedData","login: $u")
-
+                            Log.d("preloadedData","login: ${dataSnapshot.child(userID).child("favorites").value}")
                         }
 
                         override fun onCancelled(error: DatabaseError) {
@@ -84,13 +93,14 @@ class SplashFragment : Fragment() {
                         }
                     })
                     Log.d("RETURN", "mainScreen");
-                    //findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
-                    findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+                    findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+                    //findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
                 } else {
                     Log.d("RETURN", "showLoginScreen");
                     findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
                   //  findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
                 }
+
             }
         }, 2000)
 
