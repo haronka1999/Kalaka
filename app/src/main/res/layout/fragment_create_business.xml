@@ -168,7 +168,7 @@
                 android:hint="email cím"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#FFFFFF"
-                android:textEditSuggestionItemLayout="@layout/spinner_item_layout"/>
+                />
 
         </LinearLayout>
 

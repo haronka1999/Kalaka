@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout >
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.FavouritesFragment">
+    tools:context=".fragments.FavouritesFragment"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/favoritesTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Még nincsenek kedvenc vállalkozásai"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:layout_gravity="center"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favoritesRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Favorite" />
+        tools:listitem="@layout/product_recylce_item"
+        />
 
-</FrameLayout>
+</LinearLayout>
+</layout>
