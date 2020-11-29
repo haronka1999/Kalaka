@@ -122,6 +122,8 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             setItemImage(business.logoURL, binding.businessProfile)
 
             val recycleView = binding.recycleView
+
+
             preloadedData.productList.observe(viewLifecycleOwner, Observer {
                     list -> val adapter = indicator?.let { ProductAdapter(list, this, requireActivity(), it) }
                 recycleView.adapter = adapter
