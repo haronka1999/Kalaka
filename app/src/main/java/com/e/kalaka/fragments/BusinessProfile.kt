@@ -1,7 +1,6 @@
 package com.e.kalaka.fragments
 
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,29 +10,24 @@ import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.e.kalaka.R
-import com.e.kalaka.adapters.BusinessAdapter
 import com.e.kalaka.adapters.ProductAdapter
 import com.e.kalaka.databinding.FragmentBusinessProfileBinding
 import com.e.kalaka.models.Business
 import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.models.Product
-import com.e.kalaka.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 
 
@@ -55,7 +49,6 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-
                 //get the current user's business
                 businessId =
                     dataSnapshot.child(userId.toString()).child("businessId").value.toString()
@@ -79,7 +72,6 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             false
         )
 
-
         return binding.root
     }
 
@@ -95,7 +87,6 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             val indicator = preloadedData.indicator.value
             when (indicator) {
                 1 -> {
-
                     business = preloadedData.business.value!!
                 }
                 2 -> {
@@ -115,14 +106,13 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             binding.location.text = business?.location
             setItemImage(business.logoURL, binding.businessProfile)
 
-            val recycle_view = binding.recycleView
-            preloadedData.productList.observe(viewLifecycleOwner, Observer { list ->
-                val adapter = indicator?.let { ProductAdapter(list, this, requireActivity(), it) }
-                recycle_view.adapter = adapter
-                val HorizontalLayout =
-                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                recycle_view.layoutManager = HorizontalLayout
-                recycle_view.setHasFixedSize(true)
+            val recycleView = binding.recycleView
+            preloadedData.productList.observe(viewLifecycleOwner, Observer {
+                    list -> val adapter = indicator?.let { ProductAdapter(list, this, requireActivity(), it) }
+                recycleView.adapter = adapter
+                val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                recycleView.layoutManager = horizontalLayout
+                recycleView.setHasFixedSize(true)
             })
             loadProducts(business.productIds, business.businessId)
         })
