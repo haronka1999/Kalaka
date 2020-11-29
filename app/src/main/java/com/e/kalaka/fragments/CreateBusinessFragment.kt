@@ -95,20 +95,15 @@ class CreateBusinessFragment : Fragment() {
 
             val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-            val logoUri: String = if(imageUri == null) {
-                ""
-            } else {
-                imageUri.toString()
-            }
-
             val randomKey = UUID.randomUUID().toString()
+            val logoPath: String = "business_image/$randomKey"
             val business = Business(randomKey,
                                     description,
                                     email,
                                     fbAddress,
                                     instaAddress,
                                     address,
-                                    logoUri,
+                                    logoPath,
                                     members,
                                     name,
                                     mutableListOf<BusinessOrder>(),
@@ -117,11 +112,12 @@ class CreateBusinessFragment : Fragment() {
                                     listOf(),
                                     tags
                                     )
-            uploadPicture()
+            uploadPicture(randomKey)
             uploadBusiness(business)
+            preloadedData.business.value = business
+            preloadedData.indicator.value = 1
             Toast.makeText(binding.root.context, "Sikeresen létrehozta a vállalkozást", Toast.LENGTH_SHORT).show()
             Navigation.findNavController(requireView()).navigate(R.id.businessProfile)
-
         }
 
         setUpSpinner()
@@ -179,9 +175,8 @@ class CreateBusinessFragment : Fragment() {
         }
     }
 
-    private fun uploadPicture() {
-        val randomKey = UUID.randomUUID().toString()
-        val riversRef: StorageReference = storageReference.child("business_image/$randomKey")
+    private fun uploadPicture(key: String) {
+        val riversRef: StorageReference = storageReference.child("business_image/$key")
 
         imageUri?.let {
             riversRef.putFile(it)

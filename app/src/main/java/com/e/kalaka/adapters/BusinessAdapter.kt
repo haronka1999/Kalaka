@@ -45,7 +45,7 @@ class BusinessAdapter (
             val currentItem = items [position]
             holder.businessDescription.text = currentItem.description
             holder.businessName.text = currentItem.name
-            Glide.with(activity).load(Uri.parse(currentItem.logoURL)).into(holder.businessImage)
+            //Glide.with(activity).load(currentItem.logoURL).into(holder.businessImage)
         }
 
         override fun getItemCount(): Int = items.size
