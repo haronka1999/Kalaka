@@ -103,23 +103,23 @@ class CreateBusinessFragment : Fragment() {
             }
 
             val randomKey = UUID.randomUUID().toString()
-            val business = Business(
-                randomKey,
-                description,
-                email,
-                fbAddress,
-                instaAddress,
-                address,
-                logoUri,
-                members,
-                name,
-                mutableListOf<BusinessOrder>(),
-                userId!!,
-                phoneNumber,
-                listOf(),
-                tags
-            )
-            uploadPicture()
+            val logoPath: String = "business_image/$randomKey"
+            val business = Business(randomKey,
+                                    description,
+                                    email,
+                                    fbAddress,
+                                    instaAddress,
+                                    address,
+                                    logoPath,
+                                    members,
+                                    name,
+                                    mutableListOf<BusinessOrder>(),
+                                    userId!!,
+                                    phoneNumber,
+                                    listOf(),
+                                    tags
+                                    )
+            uploadPicture(randomKey)
             uploadBusiness(business)
             updateOwner(business)
             updateMembers(business)
@@ -132,8 +132,10 @@ class CreateBusinessFragment : Fragment() {
                 "Sikeresen létrehozta a vállalkozást",
                 Toast.LENGTH_SHORT
             ).show()
+            preloadedData.business.value = business
+            preloadedData.indicator.value = 1
+            Toast.makeText(binding.root.context, "Sikeresen létrehozta a vállalkozást", Toast.LENGTH_SHORT).show()
             Navigation.findNavController(requireView()).navigate(R.id.businessProfile)
-
         }
 
         setUpSpinner()
@@ -236,7 +238,7 @@ class CreateBusinessFragment : Fragment() {
             return false
         }
 
-        if (imageUri == null) {
+        if(imageUri == null) {
             Toast.makeText(binding.root.context, "Válasszon képet", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -258,9 +260,8 @@ class CreateBusinessFragment : Fragment() {
         }
     }
 
-    private fun uploadPicture() {
-        val randomKey = UUID.randomUUID().toString()
-        val riversRef: StorageReference = storageReference.child("business_image/$randomKey")
+    private fun uploadPicture(key: String) {
+        val riversRef: StorageReference = storageReference.child("business_image/$key")
 
         imageUri?.let {
             riversRef.putFile(it)

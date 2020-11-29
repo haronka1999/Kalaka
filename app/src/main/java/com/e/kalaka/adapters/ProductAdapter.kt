@@ -54,7 +54,14 @@ class ProductAdapter (
 
         if (indicator == 2){
             holder.deleteProduct.visibility = View.GONE
-            holder.favoriteProduct.visibility = View.GONE
+        }
+        else {
+            holder.deleteProduct.setOnClickListener {
+
+            }
+        }
+        holder.favoriteProduct.setOnClickListener{
+            // Todo
         }
     }
 
