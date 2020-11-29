@@ -118,9 +118,11 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                             val productIds = mutableListOf<String>()
                             val orders = mutableListOf<BusinessOrder>()
 
+
                             for (tag in business.child("tags").children){
                                 tags.add(tag.value.toString())
                             }
+
                             for (memberId in business.child("memberIds").children){
                                 memberIds.add(memberId.value.toString())
                             }
@@ -128,6 +130,7 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                                 productIds.add(productId.value.toString())
                             }
                             for (order in business.child("orders").children){
+                                Log.d("Helo",  order.toString())
                                 val ord = BusinessOrder(
                                     order.child("address").value.toString(),
                                     order.child("city").value.toString(),
@@ -143,6 +146,7 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                                     order.child("total").value.toString().toDouble(),
                                     order.child("worker").value.toString()
                                 )
+                                Log.d("Helo",  "Order: $order")
                                 orders.add(ord)
                             }
 
