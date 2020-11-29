@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentOrderProductBinding
 import com.e.kalaka.models.UserOrder
 import com.e.kalaka.viewModels.PreloadViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,6 +21,7 @@ import java.util.*
 class OrderProductFragment : Fragment() {
     //for realtime database
     var database = FirebaseDatabase.getInstance()
+    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     //form datas
     private lateinit var number: String
@@ -74,11 +77,13 @@ class OrderProductFragment : Fragment() {
                 return@setOnClickListener
             }
 
-
+            val productPrice = currentProduct.price
+            price = quantity*productPrice
+            binding.price.text=price.toString()
             val randomKey = UUID.randomUUID().toString()
             val currentTime = SimpleDateFormat("YYYY.MM.DD").toString()
 
-            price = quantity*productPrice
+            userId = mAuth.currentUser?.uid.toString()
             val order = UserOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, currentTime, price)
             uploadOrder(order, businessId)
 
@@ -89,7 +94,12 @@ class OrderProductFragment : Fragment() {
     private fun uploadOrder(order: UserOrder, businessId: String) {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.reference
-        myRef.child("business").child(businessId).child(order.orderId).setValue(order)
+        myRef.child("business").child(businessId).child("orders").child(order.orderId).setValue(order)
+        myRef.child("users").child(userId).child("orders").child(order.orderId).setValue(UserOrder(order.address,order.city,userId,order.comment,order.number,order.orderId,
+        order.postcode,order.productId,order.productName,order.time,order.total))
+        Toast.makeText(activity, "Rendelés sikeresen leadva!", Toast.LENGTH_SHORT).show()
+        Navigation.findNavController(binding.root)
+            .navigate(R.id.action_orderProductFragment_to_homeFragment)
     }
 
     private fun validateOrder(number: String, city: String, address: String, postalCode: String): Boolean {

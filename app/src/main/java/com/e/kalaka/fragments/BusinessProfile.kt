@@ -104,9 +104,21 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             binding.businessLabels.text = business.tags.joinToString(", ")
             binding.businessTelephone.text = business.phone
             binding.location.text = business.location
-            binding.facebookText.text = if(business.facebookURL.isEmpty()) {
-                ""
-            } else { business.facebookURL }
+
+            if(business.facebookURL.isEmpty()) {
+                binding.facebookText.visibility = View.INVISIBLE
+            }
+            else {
+                binding.facebookText.text = business.facebookURL
+            }
+
+            if(business.instagramURL.isEmpty()) {
+                binding.instagramText.visibility = View.INVISIBLE
+            }
+            else {
+                binding.instagramText.text = business.instagramURL
+            }
+
             setItemImage(business.logoURL, binding.businessProfile)
 
             val recycleView = binding.recycleView
