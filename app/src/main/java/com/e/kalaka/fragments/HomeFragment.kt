@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -20,6 +22,8 @@ import com.e.kalaka.utils.Tag
 import com.e.kalaka.viewModels.TopicViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.util.*
+import kotlin.concurrent.timerTask
 
 class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
@@ -172,6 +176,22 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
             }
         })
 
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        var callbackCounter = 0
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (callbackCounter == 0) {
+                Toast.makeText(requireContext(), "Press again to exit", Toast.LENGTH_SHORT).show()
+                Timer().schedule(timerTask {
+                    callbackCounter = 0
+                }, 2000)
+
+                callbackCounter++
+            } else requireActivity().finish()
+        }
     }
 
 
