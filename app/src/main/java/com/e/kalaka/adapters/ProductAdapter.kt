@@ -1,17 +1,21 @@
 package com.e.kalaka.adapters
 
+import android.app.Activity
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.models.Product
 
 class ProductAdapter (
     private val items : List <Product>,
-    private val listener : ProductAdapter.OnItemClickListener
+    private val listener : ProductAdapter.OnItemClickListener,
+    private val activity : Activity
         ):  RecyclerView.Adapter<ProductAdapter.DataViewHolder>() {
 
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -42,8 +46,7 @@ class ProductAdapter (
         holder.productDescription.text = currentItem.description
         holder.productName.text = currentItem.name
         holder.productPrice.text = currentItem.price.toString() + " RON"
-        //TODO GLIDE
-        //Glide.with()
+        Glide.with(activity).load(Uri.parse(currentItem.photoURL)).into(holder.productImage)
 
     }
 

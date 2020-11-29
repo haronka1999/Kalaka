@@ -1,17 +1,21 @@
 package com.e.kalaka.adapters
 
+import android.app.Activity
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.models.Business
 
 class BusinessAdapter (
     private val items : List <Business>,
-    private val listener : BusinessAdapter.OnItemClickListener
+    private val listener : BusinessAdapter.OnItemClickListener,
+    private val activity : Activity
 ):  RecyclerView.Adapter<BusinessAdapter.DataViewHolder>(){
 
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -41,7 +45,7 @@ class BusinessAdapter (
             val currentItem = items [position]
             holder.businessDescription.text = currentItem.description
             holder.businessName.text = currentItem.name
-            //TODO GLIDE
+            Glide.with(activity).load(Uri.parse(currentItem.logoURL)).into(holder.businessImage)
         }
 
         override fun getItemCount(): Int = items.size

@@ -5,5 +5,5 @@ import androidx.lifecycle.ViewModel
 import com.e.kalaka.models.Business
 
 class TopicViewModel : ViewModel() {
-    var data : MutableLiveData<List<Business>> = MutableLiveData()
+    var list : MutableLiveData<List<Business>> = MutableLiveData()
 }

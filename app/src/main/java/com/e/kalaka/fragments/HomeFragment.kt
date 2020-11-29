@@ -2,7 +2,6 @@ package com.e.kalaka.fragments
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +20,6 @@ import com.e.kalaka.utils.Tag
 import com.e.kalaka.viewModels.TopicViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.gson.Gson
 
 class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
@@ -69,6 +67,7 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
 
         val selectedTopic = Tag.getTags()[position].second
         startLoadingData(selectedTopic)
+        topicViewModel.list.value = listOf()
         findNavController().navigate(R.id.action_homeFragment_to_mainSearch)
     }
 
@@ -165,7 +164,7 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                     }
                 }
                 //Log.d("******",list.toString())
-                topicViewModel.data.value = list
+                topicViewModel.list.value = list
             }
 
             override fun onCancelled(error: DatabaseError) {

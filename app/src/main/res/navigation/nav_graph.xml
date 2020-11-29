@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -118,7 +118,11 @@
         tools:layout="@layout/business_recycle_item"
         android:id="@+id/mainSearch"
         android:name="com.e.kalaka.fragments.MainSearch"
-        android:label="MainSearch" />
+        android:label="MainSearch" >
+        <action
+            android:id="@+id/action_mainSearch_to_businessProfile"
+            app:destination="@id/businessProfile" />
+    </fragment>
     <fragment
         android:id="@+id/noBusinessFragment"
         android:name="com.e.kalaka.fragments.NoBusinessFragment"
