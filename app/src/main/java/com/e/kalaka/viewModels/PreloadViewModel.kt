@@ -9,7 +9,20 @@ import com.e.kalaka.models.User
 class PreloadViewModel : ViewModel(){
 
     var user : MutableLiveData<User> = MutableLiveData<User>()
+
+    //profilnak
     var business : MutableLiveData<Business> = MutableLiveData<Business>()
+    //listazasbol
+    var searchedBusiness : MutableLiveData<Business> = MutableLiveData<Business>()
+
+    /*
+    an integer indicator from where the user goes to the business profile
+    1 - preloaded, which is the user's own business
+    2 - searched business (the user doesn't own it)
+     */
+    var indicator : MutableLiveData<Int> = MutableLiveData<Int>()
+
+
     var productList : MutableLiveData<MutableList<Product>> = MutableLiveData<MutableList<Product>>()
     var favoriteProductlist: MutableLiveData<MutableList<Product>> = MutableLiveData<MutableList<Product>>()
     var userEmails: MutableLiveData<List<Pair<String,String>>> = MutableLiveData<List<Pair<String,String>>>()
