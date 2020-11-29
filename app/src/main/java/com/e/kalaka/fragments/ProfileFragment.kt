@@ -91,7 +91,7 @@ class ProfileFragment : Fragment() {
         binding.firstName.text=user?.firstName
         binding.lastName.text=user?.lastName
         binding.email.text=user?.email
-        Log.d("-----", user!!.photoURL)
+        Log.d("------", user!!.photoURL)
         setProfileImage(user.photoURL, binding.profilePic)
     }
 
