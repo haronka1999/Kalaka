@@ -64,6 +64,9 @@ class OrderFragment : Fragment() {
                    binding.recyclerView.visibility = View.GONE
                 }
 
+                if (orderList.size == 0){
+                    binding.noOrderText.visibility = View.GONE
+                }
                 binding.recyclerView.adapter = UserOrderAdapter(orderList)
             }
 
