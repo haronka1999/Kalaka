@@ -1,5 +1,6 @@
 package com.e.kalaka.fragments
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.e.kalaka.R
+import com.e.kalaka.adapters.BusinessAdapter
 import com.e.kalaka.adapters.ProductAdapter
 import com.e.kalaka.databinding.FragmentBusinessProfileBinding
 import com.e.kalaka.models.Business
@@ -91,9 +93,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
         binding.businessLabels.text = business?.tags?.joinToString(", ")
         binding.businessTelephone.text = business?.phone
         binding.location.text = business?.location
-        Glide.with(this).load(Uri.parse(business?.logoURL))
-            .circleCrop()
-            .into(binding.businessProfile)
+        setItemImage(business.logoURL,binding.businessProfile)
 
 
 
@@ -153,5 +153,15 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             }
 
         })
+    }
+
+    private fun setItemImage(logoURL: String, holder: ImageView) {
+        val storage = FirebaseStorage.getInstance()
+        val storageReference = storage.reference.child(logoURL)
+        val ONE_MEGABYTE = (500 * 500).toLong()
+        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytesPrm ->
+            val bmp = BitmapFactory.decodeByteArray(bytesPrm, 0, bytesPrm.size)
+            holder.setImageBitmap(bmp)
+        }
     }
 }
