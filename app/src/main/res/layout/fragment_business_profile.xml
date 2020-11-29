@@ -48,6 +48,7 @@
             </ImageView>
 
             <ImageView
+                android:scaleType="centerCrop"
                 android:id="@+id/business_profile"
                 android:layout_width="113dp"
                 android:layout_height="98dp"

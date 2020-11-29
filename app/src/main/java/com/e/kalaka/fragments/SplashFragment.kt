@@ -10,11 +10,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentRegisterBinding
 import com.e.kalaka.databinding.FragmentSplashBinding
+import com.e.kalaka.models.Business
 import com.e.kalaka.models.Product
 import com.e.kalaka.models.User
 import com.e.kalaka.viewModels.PreloadViewModel
@@ -27,14 +29,17 @@ import kotlin.collections.HashMap
 
 class SplashFragment : Fragment() {
 
-
-    private lateinit var mAuth: FirebaseAuth
+    //helpers
     private lateinit var binding: FragmentSplashBinding
-    private lateinit var database: FirebaseDatabase
-    private lateinit var databaseRef: DatabaseReference
-    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var userID: String
     private val preloadedData: PreloadViewModel by activityViewModels()
+
+    //firebase
+    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var database: FirebaseDatabase
+    private lateinit var databaseRef: DatabaseReference
+    private val mUser = mAuth.currentUser
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,95 +53,90 @@ class SplashFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_splash, container, false)
 
-        // get current user
-        mAuth = FirebaseAuth.getInstance();
-        val mUser = mAuth.currentUser
-
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                // if user is logged in, initialize attributes for viewmodel
-                if (mUser != null) {
-                    // get reference for users document
-                    database = FirebaseDatabase.getInstance()
-                    databaseRef = database.getReference("users")
-
-                    userID = mUser.uid.toString()
-                    val emails = mutableListOf<Pair<String, String>>()
-                    val favoriteProductIds = mutableListOf<String>()
-
-                    databaseRef.addValueEventListener(object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            // get all emails from database (is needed for autocomplete search)
-                            for (user in dataSnapshot.children) {
-                                val newValue = Pair(user.child("userId").value.toString(),user.child("email").value.toString())
-                                emails.add(newValue)
-                            }
-                            preloadedData.userEmails.value = emails
-
-                            // retrieve user data from database
-                            val userData = dataSnapshot.child(userID)
-                             userData.child("favorites").children.forEach{
-                                 val productId = it.value.toString()
-                                 addFavoriteProductToViewModel(productId)
-                            }
-
-                            // create new User instance
-                            val user = User(
-                                "0",
-                                userData.child("email").value.toString(),
-                                mutableListOf(),
-                                userData.child("firstName").value.toString(),
-                                userData.child("userId").value.toString(),
-                                userData.child("lastName").value.toString(),
-                                mutableListOf(),
-                                userData.child("photoURL").value.toString()
-                            )
-                            // set the User instance in the viewmodel
-                            preloadedData.user.value = user
-
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            // Failed to read value
-                            Log.w(
-                                ContentValues.TAG,
-                                "Failed to read value.",
-                                error.toException()
-                            )
-                        }
-                    })
-                    Log.d("RETURN", "mainScreen");
-                    findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
-                } else {
-                    Log.d("RETURN", "showLoginScreen");
-                    findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
-                   //findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
-                }
-
+        preloadedData.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (mUser != null) {
+                findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+            } else {
+                findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
             }
-        }, 2000)
-
+        })
+        loadUserData()
         return binding.root
     }
+
+    private fun loadUserData() {
+        database = FirebaseDatabase.getInstance()
+        databaseRef = database.getReference("users")
+
+        userID = mUser?.uid.toString()
+        val emails = mutableListOf<Pair<String, String>>()
+        val favoriteProductIds = mutableListOf<String>()
+
+        databaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // get all emails from database (is needed for autocomplete search)
+                for (user in dataSnapshot.children) {
+                    val newValue = Pair(
+                        user.child("userId").value.toString(),
+                        user.child("email").value.toString()
+                    )
+                    emails.add(newValue)
+                }
+                preloadedData.userEmails.value = emails
+
+                // retrieve user data from database
+                val userData = dataSnapshot.child(userID)
+                userData.child("favorites").children.forEach {
+                    val productId = it.value.toString()
+                    addFavoriteProductToViewModel(productId)
+                }
+
+                // create new User instance
+                val user = User(
+                    "0",
+                    userData.child("email").value.toString(),
+                    mutableListOf(),
+                    userData.child("firstName").value.toString(),
+                    userData.child("userId").value.toString(),
+                    userData.child("lastName").value.toString(),
+                    mutableListOf(),
+                    userData.child("photoURL").value.toString()
+                )
+                // set the User instance in the viewmodel
+                preloadedData.user.value = user
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w(
+                    ContentValues.TAG,
+                    "Failed to read value.",
+                    error.toException()
+                )
+            }
+        })
+    }
+
 
     private fun addFavoriteProductToViewModel(productId: String) {
         database = FirebaseDatabase.getInstance()
         databaseRef = database.getReference("products")
 
-        databaseRef.addValueEventListener(object: ValueEventListener {
+        databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val productData = snapshot.child(productId)
-                val product = Product(productData.child("businessId").value.toString(),
-                                    productData.child("description").value.toString(),
-                                    productData.child("name").value.toString(),
-                                    productData.child("photoUrl").value.toString(),
-                                    productData.child("price").value.toString().toDouble(),
-                                    productData.child("productId").value.toString()
+                val product = Product(
+                    productData.child("businessId").value.toString(),
+                    productData.child("description").value.toString(),
+                    productData.child("name").value.toString(),
+                    productData.child("photoUrl").value.toString(),
+                    productData.child("price").value.toString().toDouble(),
+                    productData.child("productId").value.toString()
                 )
-                if(preloadedData.favoriteProductlist.value == null) {
+                if (preloadedData.favoriteProductlist.value == null) {
                     preloadedData.favoriteProductlist.value = mutableListOf(product)
-                }
-                else {
+                } else {
                     preloadedData.favoriteProductlist.value!!.add(product)
                 }
             }
