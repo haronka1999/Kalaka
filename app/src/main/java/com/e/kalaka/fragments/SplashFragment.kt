@@ -68,6 +68,7 @@ class SplashFragment : Fragment() {
 
         usersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+
                 // get all emails from database (is needed for autocomplete search)
                 for (user in dataSnapshot.children) {
                     val newValue = Pair(
@@ -157,7 +158,8 @@ class SplashFragment : Fragment() {
 
     private fun addFavoriteProductToViewModel(productId: String) {
         database = FirebaseDatabase.getInstance()
-        val productsRef = database.getReference("products")
+        val productsRef = database.getReference("products").child(productId)
+        Log.d("************",productsRef.toString())
 
         productsRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

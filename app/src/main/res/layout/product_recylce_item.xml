@@ -29,10 +29,10 @@
 
         <ImageButton
             android:id="@+id/delete_product"
-            android:layout_width="38dp"
+            android:layout_width="48dp"
             android:tint="@color/red"
             android:background="@null"
-            android:layout_height="37dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -43,8 +43,8 @@
             android:id="@+id/favorite_product"
             android:background="@null"
             android:tint="@color/button_teal"
-            android:layout_width="38dp"
-            android:layout_height="39dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
