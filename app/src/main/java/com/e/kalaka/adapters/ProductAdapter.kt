@@ -55,7 +55,11 @@ class ProductAdapter (
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
         val currentItem = items [position]
-        
+        val userId = auth.currentUser?.uid.toString()
+        setIconColor(position,userId,holder.favoriteProduct)
+
+
+
         setProductImage(currentItem.photoURL, holder.productImage)
 
         if (indicator == 2){
@@ -105,11 +109,11 @@ class ProductAdapter (
 
                 if (isLiked){
                     database.child(userId).child("favorites").child(favId!!).removeValue()
-                    //icon.setColorFilter(Color.argb(255, 255, 255, 255))
+                    icon.setColorFilter(Color.argb(255, 68, 190, 237))
                 }
                 else{
                     database.child(userId).child("favorites").child(items[position].productId).setValue(items[position].productId)
-
+                    icon.setColorFilter(Color.argb(255, 194, 39, 72))
                 }
             }
 
@@ -117,6 +121,34 @@ class ProductAdapter (
                 TODO("Not yet implemented")
             }
 
+        })
+    }
+
+    private fun setIconColor(position : Int, userId : String, icon : ImageButton){
+
+        database.addListenerForSingleValueEvent(object : ValueEventListener{
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                var isLiked = false
+                for (favorite in snapshot.child(userId).child("favorites").children){
+                    if (favorite.value.toString() == items[position].productId)
+                    {
+                        isLiked = true
+                        break
+                    }
+                }
+                if (isLiked){
+                    icon.setColorFilter(Color.argb(255, 194, 39, 72))
+                }
+                else{
+                    icon.setColorFilter(Color.argb(255, 68, 190, 237))
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
         })
     }
 }
