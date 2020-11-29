@@ -23,6 +23,8 @@
             android:text="TextView"
             android:textColor="@color/white"
             android:textSize="16sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_gravity="center"
             app:drawableTopCompat="@drawable/ic_home" />
     </LinearLayout>
