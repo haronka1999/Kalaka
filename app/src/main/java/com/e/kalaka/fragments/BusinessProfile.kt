@@ -15,6 +15,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -131,6 +132,8 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
 
     override fun onItemClick(position: Int) {
         preloadedData.currentProduct = preloadedData.productList.value!![position]
+        Navigation.findNavController(binding.root)
+            .navigate(R.id.action_businessProfile_to_detailsProductFragment)
     }
 
     private fun hideEditButtons() {
