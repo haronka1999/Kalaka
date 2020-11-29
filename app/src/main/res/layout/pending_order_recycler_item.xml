@@ -13,9 +13,10 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/nameTextView"
+                android:id="@+id/prdouctNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 android:text="Termék neve"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -24,14 +25,16 @@
             <TextView
                 android:id="@+id/personNameTextView"
                 android:layout_width="wrap_content"
+                android:textColor="@color/white"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/nameTextView"
+                android:layout_below="@+id/prdouctNameTextView"
                 android:text="Rendelte: "
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/countProducts"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/personNameTextView"
@@ -42,6 +45,7 @@
 
             <TextView
                 android:id="@+id/addressTextView"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/countProducts"
@@ -53,6 +57,7 @@
             <TextView
                 android:id="@+id/numberTextView"
                 android:layout_width="wrap_content"
+                android:textColor="@color/white"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/addressTextView"
                 android:text="Telefonszám: "
