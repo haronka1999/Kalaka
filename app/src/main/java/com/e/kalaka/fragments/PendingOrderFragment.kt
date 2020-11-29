@@ -43,9 +43,12 @@ class PendingOrderFragment : Fragment() {
 
     private fun generateDummyList(size: Int): List<BusinessOrder> {
         val list = ArrayList<BusinessOrder>()
+
+
 //        loadDatas(){
 //
 //        }
+
 
         for (i in 0 until size) {
             val businessOrder =

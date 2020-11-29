@@ -113,9 +113,9 @@ class SplashFragment : Fragment() {
 
     private fun addFavoriteProductToViewModel(productId: String) {
         database = FirebaseDatabase.getInstance()
-        usersRef = database.getReference("products")
+        val productsRef = database.getReference("products")
 
-        usersRef.addValueEventListener(object : ValueEventListener {
+        productsRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val productData = snapshot.child(productId)
                 val product = Product(
