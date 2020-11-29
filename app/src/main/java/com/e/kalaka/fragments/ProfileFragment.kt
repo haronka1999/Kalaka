@@ -40,10 +40,7 @@ class ProfileFragment : Fragment() {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-
                 businessId =  dataSnapshot.child(userId.toString()).child("businessId").value.toString()
-
             }
 
             override fun onCancelled(error: DatabaseError) {
