@@ -33,7 +33,7 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
 
     }
 
@@ -75,7 +75,6 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
         Glide.with(this).load(business?.logoURL).into(binding.businessProfile)
 
 
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
         val recycle_view = binding.recycleView
 
 

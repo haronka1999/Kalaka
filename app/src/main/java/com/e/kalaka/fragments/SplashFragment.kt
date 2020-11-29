@@ -70,7 +70,7 @@ class SplashFragment : Fragment() {
 
                             val user = dataSnapshot.child(userID)
                             val u = User(
-                                0,
+                                "0",
                                 user.child("email").value.toString(),
                                 mutableListOf(),
                                 user.child("firstName").value.toString(),
