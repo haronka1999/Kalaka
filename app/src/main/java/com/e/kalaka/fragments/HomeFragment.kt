@@ -192,6 +192,8 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
                 callbackCounter++
             } else requireActivity().finish()
         }
+
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
     }
 
 

@@ -38,6 +38,7 @@ class MainSearch : Fragment(), BusinessAdapter.OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
 
         topicViewModel.list.observe(viewLifecycleOwner, Observer { list ->
             binding.recycleView.adapter = BusinessAdapter(list, this, requireActivity())
@@ -48,7 +49,8 @@ class MainSearch : Fragment(), BusinessAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        preloadedData.business.value = topicViewModel.list.value?.get(position)
+        preloadedData.indicator.value = 2
+        preloadedData.searchedBusiness.value = topicViewModel.list.value?.get(position)
         findNavController().navigate(R.id.action_mainSearch_to_businessProfile)
     }
 }
