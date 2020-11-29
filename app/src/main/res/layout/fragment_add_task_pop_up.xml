@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_custom_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:padding="2dp">
+
+
+
+    <TextView
+        android:id="@+id/vallalomTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/comment_border"
+        android:backgroundTint="@color/white"
+        android:layout_centerInParent="true"
+        android:padding="15sp"
+        android:text="Vállalom" />
+
+    <TextView
+        android:id="@+id/keszTextView"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/comment_border"
+        android:layout_centerInParent="true"
+        android:backgroundTint="@color/white"
+        android:layout_below="@id/vallalomTextView"
+        android:padding="15sp"
+        android:text="Kész" />
+
+    <TextView
+        android:id="@+id/postazvaTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="32dp"
+        android:layout_below="@id/keszTextView"
+        android:background="@drawable/comment_border"
+        android:padding="15sp"
+        android:text="Postázva" />
+
+    <TextView
+        android:id="@+id/torlesTextView"
+        android:layout_width="wrap_content"
+        android:backgroundTint="@color/white"
+        android:layout_height="wrap_content"
+        android:background="@drawable/comment_border"
+        android:layout_below="@id/postazvaTextView"
+        android:layout_marginTop="32dp"
+        android:layout_centerInParent="true"
+        android:padding="15sp"
+        android:text="törlés" />
+</RelativeLayout>
