@@ -10,14 +10,23 @@ import com.e.kalaka.R
 import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.viewModels.PreloadViewModel
 
-class PendingOrderAdapter(private val list: List<BusinessOrder>) :
+class PendingOrderAdapter(private val list: List<BusinessOrder>, private val listener: OnItemClickListener) :
     RecyclerView.Adapter<PendingOrderAdapter.DataViewHolder>() {
-
 
 //    private val preloadedData : PreloadViewModel by activityViewModels()
 
     // 1. user defined ViewHolder type
-    class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            val position: Int = adapterPosition
+            if(position != RecyclerView.NO_POSITION) {
+                listener.onItemClick(position)
+            }
+        }
         val productNameTextView: TextView = itemView.findViewById(R.id.prdouctNameTextView)
         val personNameTextView: TextView = itemView.findViewById(R.id.personNameTextView)
         val countProductsTextView: TextView = itemView.findViewById(R.id.countProducts)
@@ -44,11 +53,12 @@ class PendingOrderAdapter(private val list: List<BusinessOrder>) :
         holder.addressTextView.text = "Kliens címe: ${currentItem.city}, ${currentItem.address}, ${currentItem.postcode} "
         holder.countProductsTextView.text = "Darabszám:  ${currentItem.total}"
         holder.numberTextView.text  = "Összeg: 100 RON"
-
-
     }
-
 
     // 4.
     override fun getItemCount() = list.size
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
 }

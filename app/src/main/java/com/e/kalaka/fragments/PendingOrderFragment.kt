@@ -15,8 +15,7 @@ import com.e.kalaka.databinding.PendingOrderRecyclerItemBinding
 import com.e.kalaka.models.BusinessOrder
 
 
-class PendingOrderFragment : Fragment() {
-
+class PendingOrderFragment : Fragment(), PendingOrderAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentPendingOrderBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,28 +26,25 @@ class PendingOrderFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_pending_order, container, false)
         val list = generateDummyList(10)
         val recyclerView = binding.recyclerView
-        recyclerView.adapter = PendingOrderAdapter(list)
+        recyclerView.adapter = PendingOrderAdapter(list, this)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.setHasFixedSize(true)
 
         return binding.root
     }
 
-
     private fun generateDummyList(size: Int): List<BusinessOrder> {
         val list = ArrayList<BusinessOrder>()
-
 
 //        loadDatas(){
 //
 //        }
-
 
         for (i in 0 until size) {
             val businessOrder =
@@ -59,4 +55,7 @@ class PendingOrderFragment : Fragment() {
         return list
     }
 
+    override fun onItemClick(position: Int) {
+        // TODO
+    }
 }
