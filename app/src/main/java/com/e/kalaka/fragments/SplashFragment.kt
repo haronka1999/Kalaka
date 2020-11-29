@@ -161,18 +161,14 @@ class SplashFragment : Fragment() {
 
         productsRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                //val productData = snapshot.child(productId)
-                Log.d("************",snapshot.toString())
-
-
-
+                val prod = snapshot.child(productId)
                 val product = Product(
-                    snapshot.child("businessId").value.toString(),
-                    snapshot.child("description").value.toString(),
-                    snapshot.child("name").value.toString(),
-                    snapshot.child("photoURL").value.toString(),
-                    snapshot.child("price").value.toString().toDouble(),
-                    snapshot.child("productId").value.toString()
+                    prod.child("businessId").value.toString(),
+                    prod.child("description").value.toString(),
+                    prod.child("name").value.toString(),
+                    prod.child("photoURL").value.toString(),
+                    prod.child("price").value.toString().toDouble(),
+                    prod.child("productId").value.toString()
                 )
                 if (preloadedData.favoriteProductlist.value == null) {
                     preloadedData.favoriteProductlist.value = mutableListOf(product)
