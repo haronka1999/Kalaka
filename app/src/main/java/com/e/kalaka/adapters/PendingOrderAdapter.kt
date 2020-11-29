@@ -12,7 +12,6 @@ import com.e.kalaka.models.BusinessOrder
 class PendingOrderAdapter(private val list: List<BusinessOrder>, private val listener: OnItemClickListener) :
     RecyclerView.Adapter<PendingOrderAdapter.DataViewHolder>() {
 
-
     // 1. user defined ViewHolder type
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         init {

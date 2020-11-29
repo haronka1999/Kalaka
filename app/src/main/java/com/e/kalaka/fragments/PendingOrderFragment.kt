@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.e.kalaka.R
@@ -50,11 +51,13 @@ class PendingOrderFragment : Fragment(), PendingOrderAdapter.OnItemClickListener
         recyclerView.adapter = PendingOrderAdapter(businessOrders, this)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.setHasFixedSize(true)
-
         return binding.root
     }
 
     override fun onItemClick(position: Int) {
-        // TODO
+
+            val fm = AddTaskPopUpFragment()
+            parentFragmentManager.let { it1 -> fm.show(it1, "") }
+
     }
 }
