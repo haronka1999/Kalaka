@@ -6,17 +6,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.e.kalaka.R
 import com.e.kalaka.adapters.FavoriteListAdapter
 import com.e.kalaka.databinding.FragmentFavouritesBinding
 import com.e.kalaka.viewModels.PreloadViewModel
+import java.util.*
+import kotlin.concurrent.timerTask
 
 class FavouritesFragment : Fragment(), FavoriteListAdapter.OnItemClickListener {
 
@@ -58,4 +63,11 @@ class FavouritesFragment : Fragment(), FavoriteListAdapter.OnItemClickListener {
         Navigation.findNavController(requireView()).navigate(R.id.detailsProductFragment)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            findNavController().navigate(R.id.action_favouritesFragment_to_homeFragment)
+        }
+    }
 }

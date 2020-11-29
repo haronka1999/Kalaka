@@ -78,7 +78,6 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             false
         )
 
-
         return binding.root
     }
 

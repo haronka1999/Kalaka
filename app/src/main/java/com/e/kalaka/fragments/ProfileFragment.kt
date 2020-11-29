@@ -9,10 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.adapters.BusinessAdapter
@@ -107,6 +109,14 @@ class ProfileFragment : Fragment() {
         storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytesPrm ->
             val bmp = BitmapFactory.decodeByteArray(bytesPrm, 0, bytesPrm.size)
             view.setImageBitmap(bmp)
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
         }
     }
 

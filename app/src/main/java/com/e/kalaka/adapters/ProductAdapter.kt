@@ -22,9 +22,6 @@ class ProductAdapter (
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         val productImage = itemView.findViewById<ImageView>(R.id.product_image)
-        val productDescription = itemView.findViewById<TextView>(R.id.product_description)
-        val productName = itemView.findViewById<TextView>(R.id.product_name)
-        val productPrice = itemView.findViewById<TextView>(R.id.product_price)
         val deleteProduct = itemView.findViewById<ImageView>(R.id.delete_product)
         val favoriteProduct = itemView.findViewById<ImageView>(R.id.favorite_product)
 
@@ -46,9 +43,6 @@ class ProductAdapter (
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
         val currentItem = items [position]
-        holder.productDescription.text = currentItem.description
-        holder.productName.text = currentItem.name
-        holder.productPrice.text = currentItem.price.toString() + " RON"
         
         setProductImage(currentItem.photoURL, holder.productImage)
 
