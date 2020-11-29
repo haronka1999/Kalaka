@@ -36,7 +36,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
 
     }
 
@@ -94,13 +94,14 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
 
 
         preloadedData.productList.observe(viewLifecycleOwner, Observer { list ->
-            val adapter = ProductAdapter(list, this, requireActivity(), indicator!!)
+            val adapter = ProductAdapter(list, this, requireActivity(),indicator)
             recycle_view.adapter = adapter
             val HorizontalLayout =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             recycle_view.layoutManager = HorizontalLayout
             recycle_view.setHasFixedSize(true)
         })
+
     }
 
     override fun onItemClick(position: Int) {
