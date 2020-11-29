@@ -61,9 +61,9 @@ class SplashFragment : Fragment() {
         database = FirebaseDatabase.getInstance()
         usersRef = database.getReference("users")
 
+        preloadedData.userEmails.value = mutableListOf()
+
         userID = mUser?.uid.toString()
-        val emails = mutableListOf<Pair<String, String>>()
-        val favoriteProductIds = mutableListOf<String>()
 
         usersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -73,9 +73,8 @@ class SplashFragment : Fragment() {
                         user.child("userId").value.toString(),
                         user.child("email").value.toString()
                     )
-                    emails.add(newValue)
+                    preloadedData.userEmails.value!!.add(newValue)
                 }
-                preloadedData.userEmails.value = emails
 
                 // retrieve user data from database
                 val userData = dataSnapshot.child(userID)
@@ -95,7 +94,6 @@ class SplashFragment : Fragment() {
                     mutableListOf(),
                     userData.child("photoURL").value.toString()
                 )
-                Log.d("afaszomkivan", "$user")
                 // set the User instance in the viewmodel
                 preloadedData.user.value = user
                 loadPendingOrders(user.userId)
@@ -119,10 +117,14 @@ class SplashFragment : Fragment() {
 
         myRefBusiness.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+
+                // hosszan megyünk a vállalkozásokon
                 for(business in snapshot.children) {
-                    if (business.child("ownerId").value.toString() == userId) {
-                        if( business.child("orders").value != null) {
-                            for(orders in business.child("orders").children ) {
+                    // hosszan megyünk egy vállalkozás tagjain
+                    for(member in business.child("memberIds").children) {
+                        // ha a user tagja a vállalkozásnak, akkor a vállalkozás rendelései hozzá tartoznak
+                        if(member.value.toString() == userId) {
+                            for(orders in business.children ) {
                                 if(orders.child("status").value.toString() == "0") {
                                     val order = BusinessOrder(
                                         orders.child("address").value.toString(),
@@ -139,8 +141,7 @@ class SplashFragment : Fragment() {
                                         orders.child("total").value.toString().toDouble(),
                                         orders.child("worker").value.toString()
                                     )
-                                        Log.d("afaszomkivan", "$order")
-                                        preloadedData.pendingOrders.value!!.add(order)
+                                    preloadedData.pendingOrders.value!!.add(order)
                                 }
                             }
                         }

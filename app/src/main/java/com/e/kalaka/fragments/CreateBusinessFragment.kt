@@ -46,7 +46,7 @@ class CreateBusinessFragment : Fragment() {
     private lateinit var storageReference: StorageReference
     private val preloadedData: PreloadViewModel by activityViewModels()
     private val preloadedUserData: PreloadViewModel by activityViewModels()
-    private lateinit var emails: List<Pair<String, String>>
+    private lateinit var emails: MutableList<Pair<String, String>>
 
     companion object {
         //image pick code
@@ -55,7 +55,7 @@ class CreateBusinessFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-     //   emails = preloadedData.userEmails.value!!
+        emails = preloadedData.userEmails.value!!
     }
 
     override fun onCreateView(
@@ -73,7 +73,7 @@ class CreateBusinessFragment : Fragment() {
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
 
-      //  setupAutoCompleteView()
+        setupAutoCompleteView()
 
         binding.chooseLogoButton.setOnClickListener {
             pickImageFromGallery()
@@ -279,9 +279,9 @@ class CreateBusinessFragment : Fragment() {
 
     private fun setupAutoCompleteView() {
         val userEmails = mutableListOf<String>()
-//        emails.forEach {
-//            userEmails.add(it.second)
-//        }
+        emails.forEach {
+            userEmails.add(it.second)
+        }
 
         val autoComplete = binding.userAutoComplete
         val adapter = ArrayAdapter(
@@ -296,9 +296,17 @@ class CreateBusinessFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                val email = emails[position]
+                view as TextView
+                val emailText = view.text.toString()
+                var email = Pair("", "")
+                emails.forEach{
+                    if(it.second == emailText) {
+                       email = it
+                        Log.d("-----", "$email")
+                    }
+                }
+
                 if (!members.contains(email.first)) {
-                    autoComplete.hint = ""
                     members.add(email.first)
                     addUserChip(email)
                 }
@@ -307,6 +315,7 @@ class CreateBusinessFragment : Fragment() {
     }
 
     private fun addUserChip(email: Pair<String, String>) {
+        Log.d("qqqqqqq", "$email")
         val chipGroup = binding.createBusinessMemberContainer
         val chip = Chip(binding.root.context)
         val paddingDp: Int = TypedValue.applyDimension(
