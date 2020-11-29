@@ -2,10 +2,7 @@ package com.e.kalaka.viewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.e.kalaka.models.Business
-import com.e.kalaka.models.Product
-import com.e.kalaka.models.User
-import com.e.kalaka.models.UserOrder
+import com.e.kalaka.models.*
 
 class PreloadViewModel : ViewModel(){
 
@@ -27,7 +24,7 @@ class PreloadViewModel : ViewModel(){
 
 
     //this will be initalized in the
-    var pendingOrders: MutableLiveData<MutableList<UserOrder>> = MutableLiveData<MutableList<UserOrder>>()
+    var pendingOrders: MutableLiveData<MutableList<BusinessOrder>> = MutableLiveData<MutableList<BusinessOrder>>()
 
     var productList : MutableLiveData<MutableList<Product>> = MutableLiveData<MutableList<Product>>()
     var favoriteProductlist: MutableLiveData<MutableList<Product>> = MutableLiveData<MutableList<Product>>()

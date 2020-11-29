@@ -8,12 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.e.kalaka.R
 import com.e.kalaka.models.BusinessOrder
-import com.e.kalaka.viewModels.PreloadViewModel
 
 class PendingOrderAdapter(private val list: List<BusinessOrder>, private val listener: OnItemClickListener) :
     RecyclerView.Adapter<PendingOrderAdapter.DataViewHolder>() {
 
-//    private val preloadedData : PreloadViewModel by activityViewModels()
 
     // 1. user defined ViewHolder type
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
