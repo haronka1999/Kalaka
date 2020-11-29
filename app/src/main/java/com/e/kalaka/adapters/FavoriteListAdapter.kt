@@ -1,20 +1,14 @@
 package com.e.kalaka.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.e.kalaka.R
 import com.e.kalaka.models.Product
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class FavoriteListAdapter(private var favorites: MutableList<Product>, private val listener: OnItemClickListener): RecyclerView.Adapter<FavoriteListAdapter.FavoriteListHolder>() {
 

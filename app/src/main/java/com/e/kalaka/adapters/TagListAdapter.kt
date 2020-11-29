@@ -47,4 +47,9 @@ class TagListAdapter(private var tags: List<Pair<String, String>>, private val l
         fun onItemClick(position: Int)
     }
 
+    fun setData(newTags: List<Pair<String, String>>) {
+        tags = newTags
+        notifyDataSetChanged()
+    }
+
 }
