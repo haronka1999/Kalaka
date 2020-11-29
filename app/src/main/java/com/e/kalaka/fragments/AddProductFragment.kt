@@ -51,7 +51,7 @@ class AddProductFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_add_product, container, false)
 
@@ -71,7 +71,7 @@ class AddProductFragment : Fragment() {
             name = binding.productNameEditText.text.toString()
             description = binding.descriptionEditText.text.toString()
             price = binding.priceEditText.text.toString().toDouble()
-          //  val businessId = preloadedData?.business.toString()
+            val businessId = userCredentials?.businessId.toString()
             val productId = UUID.randomUUID().toString()
 
 
@@ -88,12 +88,10 @@ class AddProductFragment : Fragment() {
                 return@setOnClickListener
             }
 
-
-//          /  val product = Product(businessId,description,name,imageUri.toString(),price,productId)
-//            val valami = preloadedData.productList.value
-//            valami?.add(product)
-//            preloadedData.productList.value = valami
-//            writeProductIntoDataBase(product)
+            val photoURL = "product_image/$productId"
+            val product = Product(businessId, description, name, photoURL, price, productId)
+            preloadedData.productList.value?.add(product)
+            writeProductIntoDataBase(product)
         }
 
         return binding.root
@@ -101,10 +99,8 @@ class AddProductFragment : Fragment() {
     }
 
     private fun writeProductIntoDataBase(product: Product) {
-        Log.d("Helo", "preloadedData.business.value?.businessId -----" + preloadedData.business.value?.businessId)
-        val actualBusiness = preloadedData.business.value?.businessId
+        uploadPicture(product.photoURL)
         myRef.child("products").child(product.productId).setValue(product)
-        myRef.child("business").child(actualBusiness.toString()).setValue(product)
         Toast.makeText(activity, "Sikeresen hozzáadva ", Toast.LENGTH_SHORT).show()
         findNavController().navigate(R.id.action_addProductFragment_to_businessProfile)
     }
@@ -139,15 +135,13 @@ class AddProductFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+        if (requestCode == IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data!!
-            uploadPicture()
         }
     }
 
-    private fun uploadPicture() {
-        val randomKey = UUID.randomUUID().toString()
-        val riversRef: StorageReference = storageReference.child("profile_image/" + randomKey)
+    private fun uploadPicture(photoUrl: String) {
+        val riversRef: StorageReference = storageReference.child(photoUrl)
 
         riversRef.putFile(imageUri)
             .addOnSuccessListener { taskSnapshot -> // Get a URL to the uploaded content

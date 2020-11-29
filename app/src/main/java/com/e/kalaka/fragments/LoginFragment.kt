@@ -72,7 +72,7 @@ class LoginFragment : Fragment() {
                                 val user = dataSnapshot.child(userID)
                                 Log.d("user", "val: $user")
                                 val u = User(
-                                    0,
+                                    "0",
                                     user.child("email").value.toString(),
                                     mutableListOf(),
                                     user.child("firstName").value.toString(),

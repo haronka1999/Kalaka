@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -25,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.*
+import kotlin.concurrent.timerTask
 
 
 class RegisterFragment : Fragment() {
@@ -63,8 +65,6 @@ class RegisterFragment : Fragment() {
 
         binding.chooseImageButton.setOnClickListener {
             pickImageFromGallery()
-
-            //binding.imageView.setImageURI(imageUri)
         }
 
         binding.saveButton.setOnClickListener {
@@ -77,6 +77,7 @@ class RegisterFragment : Fragment() {
             Log.d("helo", "password : $password")
             if (!registrationValidation(lastName, firstName, email, password))
                 return@setOnClickListener
+
 
             //authentication
             registerUserInDataBase(email, password)
@@ -103,16 +104,13 @@ class RegisterFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.data != null) {
             imageUri = data.data!!
-
-            uploadPicture()
         }
     }
 
 
-    private fun uploadPicture() {
+    private fun uploadPicture(id: String) {
 
-        val randomKey = UUID.randomUUID().toString()
-        val riversRef: StorageReference = storageReference.child("profile_image/$randomKey")
+        val riversRef: StorageReference = storageReference.child("profile_image/$id")
 
         riversRef.putFile(imageUri)
             .addOnSuccessListener { taskSnapshot -> // Get a URL to the uploaded content
@@ -133,7 +131,11 @@ class RegisterFragment : Fragment() {
         Log.d("Helo", "imageUri: $imageUri")
 
         userId = mAuth.currentUser?.uid.toString()
+        // upload user image to firebase storage
+        uploadPicture(userId)
+
         user.userId = userId
+        user.photoURL = "profile_image/${userId}"
         Log.d("Helo", "userId: $userId")
         myRef.child("users").child(userId).setValue(user)
 
@@ -157,12 +159,9 @@ class RegisterFragment : Fragment() {
                     Log.d("Helo", "successfull")
                     Log.d("Helo", "imageUri.toString() $imageUri")
 
-//                    val photoSplit=imageUri.toString().toArr("%3A");
-//                    imageUri="content://media/external/images/media/"+photoSplit[1];
-
                     userId = ""
                     val user = User(
-                        0,
+                        "0",
                         email,
                         arrayListOf(),
                         firstName,
@@ -234,5 +233,21 @@ class RegisterFragment : Fragment() {
 
 
         return true
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        var callbackCounter = 0
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (callbackCounter == 0) {
+                Toast.makeText(requireContext(), "Nyomja meg újra a kilépéshez!", Toast.LENGTH_SHORT).show()
+                Timer().schedule(timerTask {
+                    callbackCounter = 0
+                }, 2000)
+
+                callbackCounter++
+            } else requireActivity().finish()
+        }
     }
 }

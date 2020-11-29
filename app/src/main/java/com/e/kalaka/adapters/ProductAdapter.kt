@@ -1,19 +1,23 @@
 package com.e.kalaka.adapters
 
+import android.app.Activity
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.models.Product
+import com.google.firebase.storage.FirebaseStorage
 
-class BusinessProfileAdapter (
+class ProductAdapter (
     private val items : List <Product>,
-    private val listener : BusinessProfileAdapter.OnItemClickListener
-        ):  RecyclerView.Adapter<BusinessProfileAdapter.DataViewHolder>() {
+    private val listener : ProductAdapter.OnItemClickListener,
+    private val activity : Activity,
+    private val indicator : Int
+        ):  RecyclerView.Adapter<ProductAdapter.DataViewHolder>() {
 
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
@@ -21,6 +25,8 @@ class BusinessProfileAdapter (
         val productDescription = itemView.findViewById<TextView>(R.id.product_description)
         val productName = itemView.findViewById<TextView>(R.id.product_name)
         val productPrice = itemView.findViewById<TextView>(R.id.product_price)
+        val deleteProduct = itemView.findViewById<ImageView>(R.id.delete_product)
+        val favoriteProduct = itemView.findViewById<ImageView>(R.id.favorite_product)
 
         init {
             itemView.setOnClickListener(this)
@@ -43,8 +49,30 @@ class BusinessProfileAdapter (
         holder.productDescription.text = currentItem.description
         holder.productName.text = currentItem.name
         holder.productPrice.text = currentItem.price.toString() + " RON"
-        //Glide.with()
+        
+        setProductImage(currentItem.photoURL, holder.productImage)
 
+        if (indicator == 2){
+            holder.deleteProduct.visibility = View.GONE
+        }
+        else {
+            holder.deleteProduct.setOnClickListener {
+
+            }
+        }
+        holder.favoriteProduct.setOnClickListener{
+            // Todo
+        }
+    }
+
+    private fun setProductImage(photoURL: String, productImage: ImageView) {
+        val storage = FirebaseStorage.getInstance()
+        val storageReference = storage.reference.child(photoURL)
+        val ONE_MEGABYTE = (1024 * 1024).toLong()
+        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytesPrm ->
+            val bmp = BitmapFactory.decodeByteArray(bytesPrm, 0, bytesPrm.size)
+            productImage.setImageBitmap(bmp)
+        }
     }
 
     override fun getItemCount(): Int = items.size

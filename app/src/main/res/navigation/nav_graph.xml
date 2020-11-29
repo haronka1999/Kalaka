@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_favouritesFragment"
             app:destination="@id/favouritesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_mainSearch"
+            app:destination="@id/mainSearch" />
     </fragment>
     <fragment
         android:id="@+id/favouritesFragment"
@@ -123,6 +126,15 @@
             app:destination="@id/businessProfile" />
     </fragment>
         android:label="BusinessProfile" />
+    <fragment
+        tools:layout="@layout/business_recycle_item"
+        android:id="@+id/mainSearch"
+        android:name="com.e.kalaka.fragments.MainSearch"
+        android:label="MainSearch" >
+        <action
+            android:id="@+id/action_mainSearch_to_businessProfile"
+            app:destination="@id/businessProfile" />
+    </fragment>
     <fragment
         android:id="@+id/noBusinessFragment"
         android:name="com.e.kalaka.fragments.NoBusinessFragment"

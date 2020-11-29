@@ -1,12 +1,15 @@
 package com.e.kalaka.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,9 +36,20 @@ class FavouritesFragment : Fragment(), FavoriteListAdapter.OnItemClickListener {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourites, container, false)
 
+        if (preloadedData.favoriteProductlist.value == null) {
+            binding.favoritesTitleText.visibility = View.VISIBLE
+        }
+
         recyclerView = binding.favoritesRecycler
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(binding.root.context)
+        val adapter = FavoriteListAdapter(mutableListOf(), this)
+        recyclerView.adapter = adapter
+
+        preloadedData.favoriteProductlist.observe(viewLifecycleOwner) { products ->
+            adapter.setData(products)
+        }
+
         return binding.root
     }
 

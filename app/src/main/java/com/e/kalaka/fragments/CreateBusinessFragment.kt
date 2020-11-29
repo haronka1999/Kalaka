@@ -46,7 +46,8 @@ class CreateBusinessFragment : Fragment() {
     private lateinit var storage: FirebaseStorage
     private var  userId  = FirebaseAuth.getInstance().currentUser?.uid
     private lateinit var storageReference: StorageReference
-    private val preloadedData : PreloadViewModel by activityViewModels()
+    private val preloadedData: PreloadViewModel by activityViewModels()
+    private val preloadedUserData: PreloadViewModel by activityViewModels()
     private lateinit var emails: List<Pair<String, String>>
 
     companion object {
@@ -76,11 +77,11 @@ class CreateBusinessFragment : Fragment() {
 
         setupAutoCompleteView()
 
-        binding.chooseLogoButton.setOnClickListener{
+        binding.chooseLogoButton.setOnClickListener {
             pickImageFromGallery()
         }
 
-        binding.createBusinessButton.setOnClickListener{
+        binding.createBusinessButton.setOnClickListener {
             val name = binding.createBusinessNameText.text.toString()
             val email = binding.createBusinessEmailText.text.toString()
             val phoneNumber = binding.createBusinessPhoneText.text.toString()
@@ -90,26 +91,27 @@ class CreateBusinessFragment : Fragment() {
             val instaAddress = binding.createBusinessInstaText.text.toString()
 
 
-            if(!businessValidation(name, email, phoneNumber, address, description)) {
+            if (!businessValidation(name, email, phoneNumber, address, description)) {
                 return@setOnClickListener
             }
 
            //  userId = FirebaseAuth.getInstance().currentUser?.uid
 
-            val logoUri: String = if(imageUri == null) {
+            val logoUri: String = if (imageUri == null) {
                 ""
             } else {
                 imageUri.toString()
             }
 
             val randomKey = UUID.randomUUID().toString()
+            val logoPath: String = "business_image/$randomKey"
             val business = Business(randomKey,
                                     description,
                                     email,
                                     fbAddress,
                                     instaAddress,
                                     address,
-                                    logoUri,
+                                    logoPath,
                                     members,
                                     name,
                                     mutableListOf<BusinessOrder>(),
@@ -118,16 +120,88 @@ class CreateBusinessFragment : Fragment() {
                                     listOf(),
                                     tags
                                     )
-            uploadPicture()
+            uploadPicture(randomKey)
             uploadBusiness(business)
+            updateOwner(business)
+            updateMembers(business)
+
+            preloadedUserData.user.value?.businessId = business.businessId
+           // preloadedData.business.value = business
+            Log.d("abc","userid creat ${preloadedUserData.user.value?.businessId}")
+            Toast.makeText(
+                binding.root.context,
+                "Sikeresen létrehozta a vállalkozást",
+                Toast.LENGTH_SHORT
+            ).show()
+            preloadedData.business.value = business
+            preloadedData.indicator.value = 1
             Toast.makeText(binding.root.context, "Sikeresen létrehozta a vállalkozást", Toast.LENGTH_SHORT).show()
             Navigation.findNavController(requireView()).navigate(R.id.businessProfile)
-
         }
 
         setUpSpinner()
 
         return binding.root
+    }
+
+    private fun updateMembers(business: Business) {
+        if (business.memberIds.size != 0) {
+            val database = FirebaseDatabase.getInstance()
+            val userRef = database.getReference("users")
+            Log.d("abc","elotte")
+            userRef.addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    Log.d("abc","benne")
+                    for (uId in business.memberIds) {
+                        Log.d("abc","uId: $uId")
+                        for (user in dataSnapshot.children) {
+                            Log.d("abc","user1: $user")
+                            if (user.key.toString() == uId) {
+                                Log.d("abc","user2: $user")
+                                user.child("businessId").ref.setValue(business.businessId)
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Failed to read value
+                    Log.w(
+                        "TAG",
+                        "Failed to read value.",
+                        error.toException()
+                    )
+                }
+            })
+        }
+    }
+
+    private fun updateOwner(business: Business) {
+        val database = FirebaseDatabase.getInstance()
+        val userRef = database.getReference("users")
+        userRef.addValueEventListener(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (user in dataSnapshot.children) {
+                    if (user.key.toString() == business.ownerId) {
+                        user.child("businessId").ref.setValue(business.businessId)
+                        break;
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w(
+                    "TAG",
+                    "Failed to read value.",
+                    error.toException()
+                )
+            }
+        })
+
     }
 
     private fun uploadBusiness(business: Business) {
@@ -138,24 +212,31 @@ class CreateBusinessFragment : Fragment() {
         myRef.child("users").child(userId.toString()).child("businessId").setValue(business.businessId)
     }
 
-    private fun businessValidation(name: String, email: String, phoneNumber: String, address: String, description: String): Boolean {
-        if(name.isEmpty()) {
+    private fun businessValidation(
+        name: String,
+        email: String,
+        phoneNumber: String,
+        address: String,
+        description: String
+    ): Boolean {
+        if (name.isEmpty()) {
             Toast.makeText(binding.root.context, "A nev tul rovid", Toast.LENGTH_SHORT).show()
             return false
         }
-        if(email.isEmpty()) {
+        if (email.isEmpty()) {
             Toast.makeText(binding.root.context, "Az email tul rovid", Toast.LENGTH_SHORT).show()
             return false
         }
-        if(phoneNumber.isEmpty()) {
-            Toast.makeText(binding.root.context, "A telefonszam tul rovid", Toast.LENGTH_SHORT).show()
+        if (phoneNumber.isEmpty()) {
+            Toast.makeText(binding.root.context, "A telefonszam tul rovid", Toast.LENGTH_SHORT)
+                .show()
             return false
         }
-        if(address.isEmpty()) {
+        if (address.isEmpty()) {
             Toast.makeText(binding.root.context, "A cim tul rovid", Toast.LENGTH_SHORT).show()
             return false
         }
-        if(description.isEmpty()) {
+        if (description.isEmpty()) {
             Toast.makeText(binding.root.context, "A leiras tul rovid", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -182,9 +263,8 @@ class CreateBusinessFragment : Fragment() {
         }
     }
 
-    private fun uploadPicture() {
-        val randomKey = UUID.randomUUID().toString()
-        val riversRef: StorageReference = storageReference.child("business_image/$randomKey")
+    private fun uploadPicture(key: String) {
+        val riversRef: StorageReference = storageReference.child("business_image/$key")
 
         imageUri?.let {
             riversRef.putFile(it)
@@ -205,11 +285,12 @@ class CreateBusinessFragment : Fragment() {
         }
 
         val autoComplete = binding.userAutoComplete
-        val adapter = ArrayAdapter(binding.root.context, R.layout.support_simple_spinner_dropdown_item,
+        val adapter = ArrayAdapter(
+            binding.root.context, R.layout.support_simple_spinner_dropdown_item,
             userEmails
         )
         autoComplete.setAdapter(adapter)
-        autoComplete.onItemClickListener = object: AdapterView.OnItemClickListener {
+        autoComplete.onItemClickListener = object : AdapterView.OnItemClickListener {
             override fun onItemClick(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -217,7 +298,7 @@ class CreateBusinessFragment : Fragment() {
                 id: Long
             ) {
                 val email = emails[position]
-                if(!members.contains(email.first)) {
+                if (!members.contains(email.first)) {
                     autoComplete.hint = ""
                     members.add(email.first)
                     addUserChip(email)
@@ -257,15 +338,15 @@ class CreateBusinessFragment : Fragment() {
         spinner.adapter = arrayAdapter
 
         spinner.setSelection(0, false)
-        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
-                val item  = Tag.getTags()[position]
-                if(!tags.contains(item.second)) {
+                val item = Tag.getTags()[position]
+                if (!tags.contains(item.second)) {
                     tags.add(item.second)
                     addTagChip(item)
                 }
