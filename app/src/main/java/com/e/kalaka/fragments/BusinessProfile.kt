@@ -64,7 +64,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_business_profile,
@@ -83,7 +83,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
         }
 
         preloadedData.business.observe(viewLifecycleOwner, Observer {
-            var business: Business
+            val business: Business
             val indicator = preloadedData.indicator.value
             when (indicator) {
                 1 -> {
@@ -98,12 +98,15 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
                 }
             }
 
-            binding.businessName.text = business?.name
-            binding.businessDescription.text = business?.description
-            binding.businessEmail.text = business?.email
-            binding.businessLabels.text = business?.tags?.joinToString(", ")
-            binding.businessTelephone.text = business?.phone
-            binding.location.text = business?.location
+            binding.businessName.text = business.name
+            binding.businessDescription.text = business.description
+            binding.businessEmail.text = business.email
+            binding.businessLabels.text = business.tags.joinToString(", ")
+            binding.businessTelephone.text = business.phone
+            binding.location.text = business.location
+            binding.facebookText.text = if(business.facebookURL.isEmpty()) {
+                ""
+            } else { business.facebookURL }
             setItemImage(business.logoURL, binding.businessProfile)
 
             val recycleView = binding.recycleView
@@ -166,6 +169,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 //search for the user's business
                 for (business in dataSnapshot.children) {
+                    Log.d("BUSINESS", "$business")
                     if (businessId == business.key) {
                         val myBusinessId =
                             dataSnapshot.child(businessId).child("businessId").value.toString()
@@ -200,7 +204,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
                             EmptyorderList,
                             ownerId,
                             phone,
-                            listOf("ds", "sds"),
+                            listOf(),
                             listOf("tag1", "tag2")
                         )
                         preloadedData.business.value = business

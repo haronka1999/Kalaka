@@ -44,8 +44,13 @@ class OrderProductFragment : Fragment() {
         binding.quantityPicker.minValue = 0
         binding.quantityPicker.maxValue = 10
         binding.quantityPicker.wrapSelectorWheel = true
+
+        val currentProduct = preloadedData.currentProduct
+        val productPrice = currentProduct.price
+
         binding.quantityPicker.setOnValueChangedListener{ _, _, value ->
             quantity = value
+            binding.price.text = "Összeg: ${quantity*productPrice} RON"
         }
 
         binding.orderButton.setOnClickListener{
@@ -56,7 +61,6 @@ class OrderProductFragment : Fragment() {
             comment = binding.commentEditText.text.toString()
 
 
-            val currentProduct = preloadedData.currentProduct
             val businessId = currentProduct.businessId
             val productName = currentProduct.name
             val productId = currentProduct.productId
@@ -70,12 +74,11 @@ class OrderProductFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val productPrice = currentProduct.price
-            price = quantity*productPrice
+
             val randomKey = UUID.randomUUID().toString()
             val currentTime = SimpleDateFormat("YYYY.MM.DD").toString()
 
-
+            price = quantity*productPrice
             val order = UserOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, currentTime, price)
             uploadOrder(order, businessId)
 
