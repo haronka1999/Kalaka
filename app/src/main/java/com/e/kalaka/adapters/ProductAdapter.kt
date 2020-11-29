@@ -1,4 +1,4 @@
-package com.e.kalaka.adapters
+        package com.e.kalaka.adapters
 
 import android.app.Activity
 import android.graphics.BitmapFactory

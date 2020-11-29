@@ -158,7 +158,7 @@ class SplashFragment : Fragment() {
 
     private fun addFavoriteProductToViewModel(productId: String) {
         database = FirebaseDatabase.getInstance()
-        val productsRef = database.getReference("products").child(productId)
+        val productsRef = database.getReference("products")
         Log.d("************",productsRef.toString())
 
         productsRef.addValueEventListener(object : ValueEventListener {
@@ -172,6 +172,7 @@ class SplashFragment : Fragment() {
                     prod.child("price").value.toString().toDouble(),
                     prod.child("productId").value.toString()
                 )
+
                 if (preloadedData.favoriteProductlist.value == null) {
                     preloadedData.favoriteProductlist.value = mutableListOf(product)
                 } else {
