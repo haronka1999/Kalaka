@@ -161,7 +161,7 @@ class RegisterFragment : Fragment() {
 
                     userId = ""
                     val user = User(
-                        0,
+                        "0",
                         email,
                         arrayListOf(),
                         firstName,
