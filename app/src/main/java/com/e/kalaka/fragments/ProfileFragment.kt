@@ -34,7 +34,6 @@ class ProfileFragment : Fragment() {
     private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     var database = FirebaseDatabase.getInstance()
     var myRef = database.getReference("users")
-    var myRefBusiness = database.getReference("business")
     var userId = mAuth.currentUser?.uid
     private lateinit var businessId : String
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,8 +88,6 @@ class ProfileFragment : Fragment() {
 
         return view
     }
-
-
 
 
     private fun showDatas() {
