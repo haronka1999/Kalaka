@@ -1,7 +1,6 @@
 package com.e.kalaka.fragments
 
 import android.content.ContentValues
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,21 +9,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.observe
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.e.kalaka.R
-import com.e.kalaka.databinding.FragmentRegisterBinding
 import com.e.kalaka.databinding.FragmentSplashBinding
-import com.e.kalaka.models.Business
 import com.e.kalaka.models.Product
 import com.e.kalaka.models.User
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import java.util.*
-import kotlin.collections.HashMap
 
 
 class SplashFragment : Fragment() {
@@ -37,7 +29,7 @@ class SplashFragment : Fragment() {
     //firebase
     private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private lateinit var database: FirebaseDatabase
-    private lateinit var databaseRef: DatabaseReference
+    private lateinit var usersRef: DatabaseReference
     private val mUser = mAuth.currentUser
 
 
@@ -66,13 +58,13 @@ class SplashFragment : Fragment() {
 
     private fun loadUserData() {
         database = FirebaseDatabase.getInstance()
-        databaseRef = database.getReference("users")
+        usersRef = database.getReference("users")
 
         userID = mUser?.uid.toString()
         val emails = mutableListOf<Pair<String, String>>()
         val favoriteProductIds = mutableListOf<String>()
 
-        databaseRef.addValueEventListener(object : ValueEventListener {
+        usersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // get all emails from database (is needed for autocomplete search)
                 for (user in dataSnapshot.children) {
@@ -121,9 +113,9 @@ class SplashFragment : Fragment() {
 
     private fun addFavoriteProductToViewModel(productId: String) {
         database = FirebaseDatabase.getInstance()
-        databaseRef = database.getReference("products")
+        usersRef = database.getReference("products")
 
-        databaseRef.addValueEventListener(object : ValueEventListener {
+        usersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val productData = snapshot.child(productId)
                 val product = Product(

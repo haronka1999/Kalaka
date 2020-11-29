@@ -23,8 +23,6 @@ class PendingOrderAdapter(private val list: List<BusinessOrder>) :
         val countProductsTextView: TextView = itemView.findViewById(R.id.countProducts)
         val addressTextView: TextView = itemView.findViewById(R.id.addressTextView)
         val numberTextView: TextView = itemView.findViewById(R.id.numberTextView)
-
-
     }
 
 
@@ -41,12 +39,11 @@ class PendingOrderAdapter(private val list: List<BusinessOrder>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
         val currentItem = list[position]
-        holder.productNameTextView.text = currentItem.productName
-        holder.personNameTextView.text = currentItem.clientId
-        holder.addressTextView.text =
-            "${currentItem.city},  ${currentItem.address}, ${currentItem.postcode} "
-        holder.countProductsTextView.text = currentItem.total.toString()
-       // holder.numberTextView.text = currentItem
+        holder.productNameTextView.text = "Termék neve: ${currentItem.productName}"
+        holder.personNameTextView.text = "Kliens neve: ${currentItem.clientId}"
+        holder.addressTextView.text = "Kliens címe: ${currentItem.city}, ${currentItem.address}, ${currentItem.postcode} "
+        holder.countProductsTextView.text = "Darabszám:  ${currentItem.total}"
+        holder.numberTextView.text  = "Összeg: 100 RON"
 
 
     }
