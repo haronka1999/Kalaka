@@ -17,14 +17,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.e.kalaka.R
-import com.e.kalaka.adapters.BusinessProfileAdapter
+import com.e.kalaka.adapters.ProductAdapter
 import com.e.kalaka.databinding.FragmentBusinessProfileBinding
 import com.e.kalaka.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.e.kalaka.viewModels.PreloadViewModel
+import com.google.firebase.storage.FirebaseStorage
 
 
-class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
+class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentBusinessProfileBinding
     private val preloadedData: PreloadViewModel by activityViewModels()
@@ -67,12 +68,16 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         val business = preloadedData.business.value
+        binding.businessName.text = business?.name
         binding.businessDescription.text = business?.description
         binding.businessEmail.text = business?.email
         binding.businessLabels.text = business?.tags?.joinToString(", ")
         binding.businessTelephone.text = business?.phone
         binding.location.text = business?.location
-        Glide.with(this).load(business?.logoURL).into(binding.businessProfile)
+        Glide.with(this).load(Uri.parse(business?.logoURL))
+            .circleCrop()
+            .into(binding.businessProfile)
+
 
 
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
@@ -80,15 +85,13 @@ class BusinessProfile : Fragment(), BusinessProfileAdapter.OnItemClickListener {
 
 
         preloadedData.productList.observe(viewLifecycleOwner, Observer { list ->
-            val adapter = BusinessProfileAdapter(list, this)
+            val adapter = ProductAdapter(list, this, requireActivity())
             recycle_view.adapter = adapter
             val HorizontalLayout =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             recycle_view.layoutManager = HorizontalLayout
             recycle_view.setHasFixedSize(true)
         })
-
-
 
     }
 
