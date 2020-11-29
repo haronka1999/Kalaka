@@ -38,9 +38,6 @@ class FavoriteListAdapter(private var favorites: MutableList<Product>, private v
 
     override fun onBindViewHolder(holder: FavoriteListHolder, position: Int) {
         val currentItem = favorites[position]
-        holder.itemView.findViewById<TextView>(R.id.product_name).text = currentItem.name
-        holder.itemView.findViewById<TextView>(R.id.product_description).text = currentItem.description
-        holder.itemView.findViewById<TextView>(R.id.product_price).text = "${currentItem.price} RON"
         holder.itemView.findViewById<ImageView>(R.id.favorite_product).visibility = View.INVISIBLE
         holder.itemView.findViewById<ImageView>(R.id.delete_product).setOnClickListener{
             favorites.remove(currentItem)
