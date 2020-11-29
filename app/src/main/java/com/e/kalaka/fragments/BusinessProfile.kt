@@ -21,9 +21,15 @@ import com.e.kalaka.R
 import com.e.kalaka.adapters.ProductAdapter
 import com.e.kalaka.databinding.FragmentBusinessProfileBinding
 import com.e.kalaka.models.Business
+import com.e.kalaka.models.Product
 import com.e.kalaka.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.e.kalaka.viewModels.PreloadViewModel
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 
 
@@ -31,7 +37,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentBusinessProfileBinding
     private val preloadedData: PreloadViewModel by activityViewModels()
-    private lateinit var mAuth: FirebaseAuth
+    private lateinit var database : FirebaseDatabase
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +83,8 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             }
         }
 
+
+
         binding.businessName.text = business?.name
         binding.businessDescription.text = business?.description
         binding.businessEmail.text = business?.email
@@ -94,13 +102,14 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
 
 
         preloadedData.productList.observe(viewLifecycleOwner, Observer { list ->
-            val adapter = ProductAdapter(list, this, requireActivity(),indicator)
+            val adapter = ProductAdapter(list, this, requireActivity(),indicator!!)
             recycle_view.adapter = adapter
             val HorizontalLayout =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             recycle_view.layoutManager = HorizontalLayout
             recycle_view.setHasFixedSize(true)
         })
+        loadProducts(business.productIds)
 
     }
 
@@ -112,7 +121,35 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
         binding.editBusiness.visibility = View.GONE
         binding.addButton.visibility = View.GONE
         binding.statisticsButton.visibility = View.GONE
-        //binding.recycleView.findViewById<ImageView>(R.id.favorite_product).visibility = View.GONE
-       // binding.recycleView.findViewById<ImageView>(R.id.delete_product).visibility = View.GONE
+    }
+
+    private fun loadProducts(list : List<String>){
+        database = FirebaseDatabase.getInstance()
+
+        database.getReference("products").addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = mutableListOf<Product>()
+
+                for (product in snapshot.children){
+                    list.add(
+                        Product(
+                            product.child("businessId").value.toString(),
+                            product.child("description").value.toString(),
+                            product.child("name").value.toString(),
+                            product.child("photoURL").value.toString(),
+                            product.child("price").value.toString().toDouble(),
+                            product.child("productId").value.toString()
+                            )
+                        )
+
+                }
+                preloadedData.productList.value = list
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }
