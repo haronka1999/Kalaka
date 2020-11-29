@@ -1,6 +1,7 @@
 package com.e.kalaka.fragments
 
 import android.content.ContentValues
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -160,14 +161,18 @@ class SplashFragment : Fragment() {
 
         productsRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val productData = snapshot.child(productId)
+                //val productData = snapshot.child(productId)
+                Log.d("************",snapshot.toString())
+
+
+
                 val product = Product(
-                    productData.child("businessId").value.toString(),
-                    productData.child("description").value.toString(),
-                    productData.child("name").value.toString(),
-                    productData.child("photoUrl").value.toString(),
-                    productData.child("price").value.toString().toDouble(),
-                    productData.child("productId").value.toString()
+                    snapshot.child("businessId").value.toString(),
+                    snapshot.child("description").value.toString(),
+                    snapshot.child("name").value.toString(),
+                    snapshot.child("photoURL").value.toString(),
+                    snapshot.child("price").value.toString().toDouble(),
+                    snapshot.child("productId").value.toString()
                 )
                 if (preloadedData.favoriteProductlist.value == null) {
                     preloadedData.favoriteProductlist.value = mutableListOf(product)
@@ -178,5 +183,10 @@ class SplashFragment : Fragment() {
 
             override fun onCancelled(error: DatabaseError) {}
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+
     }
 }
