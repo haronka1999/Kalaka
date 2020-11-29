@@ -85,37 +85,39 @@
             <EditText
                 android:id="@+id/postalCodeEditText"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
                 android:autofillHints="Password"
+                android:drawableLeft="@drawable/ic_mailbox"
                 android:drawablePadding="10dp"
+                android:drawableTint="#FFFFFF"
                 android:hint="Postakód"
                 android:inputType="number"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/addressEditText"
                 tools:ignore="LabelFor" />
 
 
-            <EditText
+            <TextView
                 android:id="@+id/quantity"
-                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="20dp"
-                android:autofillHints="Password"
                 android:drawableLeft="@drawable/ic_quantity"
                 android:drawablePadding="10dp"
                 android:drawableTint="#FFFFFF"
-                android:hint="Darabszám"
-                android:inputType="number"
+                android:text="Darabszám"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#FFFFFF"
+                android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/postalCodeEditText"
-                tools:ignore="LabelFor" />
+                />
 
             <NumberPicker
                 android:id="@+id/quantityPicker"
@@ -123,7 +125,9 @@
                 android:layout_height="82dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="3dp"
+                android:foregroundTint="#FFFFFF"
                 android:solidColor="@color/background"
+                android:theme="@style/ThemeOverlay.NumberPicker"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/quantity"
@@ -131,7 +135,7 @@
 
             <TextView
                 android:id="@+id/price"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="20dp"
@@ -143,7 +147,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/quantity"
-                tools:ignore="LabelFor" />
+                />
 
             <EditText
                 android:id="@+id/commentEditText"

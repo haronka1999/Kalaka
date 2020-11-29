@@ -35,11 +35,13 @@ class OrderFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order, container, false)
         val view = binding.root
+
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         val orderList = ArrayList<UserOrderList>()
+
         val database = FirebaseDatabase.getInstance()
         val userId = mAuth.currentUser?.uid.toString()
         val ref = database.getReference("users").child(userId).child("orders")
@@ -47,6 +49,7 @@ class OrderFragment : Fragment() {
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.hasChildren()) {
+                    binding.noOrderText.visibility = View.GONE
                     for (data in dataSnapshot.children) {
                         val order = UserOrderList()
                         order.time = data.child("time").value.toString()
@@ -54,19 +57,14 @@ class OrderFragment : Fragment() {
                         order.product = data.child("productName").value.toString()
                         order.business = data.child("businessName").value.toString()
 
-
                         orderList.add(order)
                     }
                 }
                 else{
-                   Toast.makeText(
-                        context, "Meg nincs rendeles",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                   binding.recyclerView.visibility = View.GONE
                 }
 
                 binding.recyclerView.adapter = UserOrderAdapter(orderList)
-
             }
 
             override fun onCancelled(error: DatabaseError) {
