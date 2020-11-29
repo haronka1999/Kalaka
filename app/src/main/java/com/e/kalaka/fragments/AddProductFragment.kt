@@ -42,6 +42,7 @@ class AddProductFragment : Fragment() {
     private lateinit var binding: FragmentAddProductBinding
     private lateinit var imageUri: Uri
     private val preloadedData: PreloadViewModel by activityViewModels()
+
     companion object {
         //image pick code
         const val IMAGE_PICK_CODE = 1;
@@ -66,30 +67,24 @@ class AddProductFragment : Fragment() {
             name = binding.productNameEditText.text.toString()
             description = binding.descriptionEditText.text.toString()
             price = binding.priceEditText.text.toString().toDouble()
-            val businessId = preloadedData.business.value?.businessId
-            Log.d("Helo", "Business id: $businessId")
-
             val productId = UUID.randomUUID().toString()
 
-
-            //put productId into the business
-           val actualBusiness =  preloadedData.business.value
-
-            Log.d("Helo", "productID $productId")
-            Log.d("Helo", "actualBusiness?.businessId ${actualBusiness?.businessId}")
-            Log.d("Helo", "userCredentials?.businessId ${userCredentials?.businessId}")
-
-
-            //myRef.child("business").child(userCredentials?.businessId.toString()).child("productIds").push().setValue(productId)
-
-
-            if (!isValidForm()) {
+            //put businessId into the product
+            val businessId = preloadedData.business.value?.businessId
+            if (!isValidForm())
                 return@setOnClickListener
-            }
 
             val photoURL = "product_image/$productId"
-            val product =
-                businessId?.let { it1 -> Product(it1, description, name, photoURL, price, productId) }
+            val product = businessId?.let { it1 ->
+                Product(
+                    businessId,
+                    description,
+                    name,
+                    photoURL,
+                    price,
+                    productId
+                )
+            }
             product?.let { it1 -> preloadedData.productList.value?.add(it1) }
             product?.let { it1 -> writeProductIntoDataBase(it1) }
         }
