@@ -56,7 +56,8 @@ class CreateBusinessFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        emails = preloadedData.userEmails.value!!
+        //emails = preloadedData.userEmails.value!!
+        emails = mutableListOf()
     }
 
     override fun onCreateView(
