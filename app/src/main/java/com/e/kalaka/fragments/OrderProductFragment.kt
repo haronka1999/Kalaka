@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.e.kalaka.R
 import com.e.kalaka.databinding.FragmentOrderProductBinding
+import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.models.UserOrder
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -84,19 +85,20 @@ class OrderProductFragment : Fragment() {
             val currentTime = SimpleDateFormat("YYYY.MM.DD").toString()
 
             userId = mAuth.currentUser?.uid.toString()
-            val order = UserOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, currentTime, price)
-            uploadOrder(order, businessId)
 
+
+            val userOrder = UserOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, currentTime, price)
+            val businessOrder = BusinessOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, 0 , currentTime, price, "")
+            uploadOrder(userOrder, businessOrder, businessId)
         }
         return binding.root
     }
 
-    private fun uploadOrder(order: UserOrder, businessId: String) {
+    private fun uploadOrder(order: UserOrder, businessOrder: BusinessOrder, businessId: String) {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.reference
-        myRef.child("business").child(businessId).child("orders").child(order.orderId).setValue(order)
-        myRef.child("users").child(userId).child("orders").child(order.orderId).setValue(UserOrder(order.address,order.city,userId,order.comment,order.number,order.orderId,
-        order.postcode,order.productId,order.productName,order.time,order.total))
+        myRef.child("business").child(businessId).child("orders").child(order.orderId).setValue(businessOrder)
+        myRef.child("users").child(userId).child("orders").child(order.orderId).setValue(order)
         Toast.makeText(activity, "Rendelés sikeresen leadva!", Toast.LENGTH_SHORT).show()
         Navigation.findNavController(binding.root)
             .navigate(R.id.action_orderProductFragment_to_homeFragment)
