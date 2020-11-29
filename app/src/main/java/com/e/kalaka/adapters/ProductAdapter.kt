@@ -31,7 +31,8 @@ class ProductAdapter (
     private val database = FirebaseDatabase.getInstance().getReference("users")
     private val auth = FirebaseAuth.getInstance()
 
-    inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
 
         val productImage = itemView.findViewById<ImageView>(R.id.product_image)
         val deleteProduct = itemView.findViewById<ImageButton>(R.id.delete_product)
@@ -48,30 +49,29 @@ class ProductAdapter (
             }
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.product_recylce_item, parent, false)
+        val itemView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.product_recylce_item, parent, false)
         return DataViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
-        val currentItem = items [position]
+        val currentItem = items[position]
         val userId = auth.currentUser?.uid.toString()
-        setIconColor(position,userId,holder.favoriteProduct)
-
-
+        setIconColor(position, userId, holder.favoriteProduct)
 
         setProductImage(currentItem.photoURL, holder.productImage)
 
-        if (indicator == 2){
+        if (indicator == 2) {
             holder.deleteProduct.visibility = View.GONE
-        }
-        else {
+        } else {
             holder.deleteProduct.setOnClickListener {
-
+                deleteProduct(currentItem)
             }
         }
-        holder.favoriteProduct.setOnClickListener{
-            likeProduct(position,holder.favoriteProduct)
+        holder.favoriteProduct.setOnClickListener {
+            likeProduct(position, holder.favoriteProduct)
         }
     }
 
@@ -87,32 +87,31 @@ class ProductAdapter (
 
     override fun getItemCount(): Int = items.size
 
-    interface OnItemClickListener{
+    interface OnItemClickListener {
         fun onItemClick(position: Int)
     }
 
-    private fun likeProduct(position : Int, icon : ImageButton){
+    private fun likeProduct(position: Int, icon: ImageButton) {
         val userId = auth.currentUser?.uid.toString()
-        database.addListenerForSingleValueEvent(object : ValueEventListener{
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 var isLiked = false
-                var favId : String? = null
-                for (favorite in snapshot.child(userId).child("favorites").children){
-                    if (favorite.value.toString() == items[position].productId)
-                    {
+                var favId: String? = null
+                for (favorite in snapshot.child(userId).child("favorites").children) {
+                    if (favorite.value.toString() == items[position].productId) {
                         isLiked = true
                         favId = favorite.key
                     }
                 }
 
-                if (isLiked){
+                if (isLiked) {
                     database.child(userId).child("favorites").child(favId!!).removeValue()
                     icon.setColorFilter(Color.argb(255, 68, 190, 237))
-                }
-                else{
-                    database.child(userId).child("favorites").child(items[position].productId).setValue(items[position].productId)
+                } else {
+                    database.child(userId).child("favorites").child(items[position].productId)
+                        .setValue(items[position].productId)
                     icon.setColorFilter(Color.argb(255, 194, 39, 72))
                 }
             }
@@ -124,24 +123,22 @@ class ProductAdapter (
         })
     }
 
-    private fun setIconColor(position : Int, userId : String, icon : ImageButton){
+    private fun setIconColor(position: Int, userId: String, icon: ImageButton) {
 
-        database.addListenerForSingleValueEvent(object : ValueEventListener{
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 var isLiked = false
-                for (favorite in snapshot.child(userId).child("favorites").children){
-                    if (favorite.value.toString() == items[position].productId)
-                    {
+                for (favorite in snapshot.child(userId).child("favorites").children) {
+                    if (favorite.value.toString() == items[position].productId) {
                         isLiked = true
                         break
                     }
                 }
-                if (isLiked){
+                if (isLiked) {
                     icon.setColorFilter(Color.argb(255, 194, 39, 72))
-                }
-                else{
+                } else {
                     icon.setColorFilter(Color.argb(255, 68, 190, 237))
                 }
             }
@@ -150,5 +147,13 @@ class ProductAdapter (
                 TODO("Not yet implemented")
             }
         })
+    }
+
+
+    private fun deleteProduct(product: Product) {
+        val db = FirebaseDatabase.getInstance()
+        db.reference.child("business").child(product.businessId).child("productIds")
+            .child(product.productId).removeValue()
+        db.reference.child("products").child(product.productId).removeValue()
     }
 }
