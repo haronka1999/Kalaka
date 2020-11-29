@@ -2,14 +2,23 @@ package com.e.kalaka.adapters
 
 import android.app.Activity
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.renderscript.Sampler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.e.kalaka.R
 import com.e.kalaka.models.Product
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 
 class ProductAdapter (
@@ -19,11 +28,14 @@ class ProductAdapter (
     private val indicator : Int
         ):  RecyclerView.Adapter<ProductAdapter.DataViewHolder>() {
 
+    private val database = FirebaseDatabase.getInstance().getReference("users")
+    private val auth = FirebaseAuth.getInstance()
+
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         val productImage = itemView.findViewById<ImageView>(R.id.product_image)
-        val deleteProduct = itemView.findViewById<ImageView>(R.id.delete_product)
-        val favoriteProduct = itemView.findViewById<ImageView>(R.id.favorite_product)
+        val deleteProduct = itemView.findViewById<ImageButton>(R.id.delete_product)
+        val favoriteProduct = itemView.findViewById<ImageButton>(R.id.favorite_product)
 
         init {
             itemView.setOnClickListener(this)
@@ -55,7 +67,7 @@ class ProductAdapter (
             }
         }
         holder.favoriteProduct.setOnClickListener{
-            // Todo
+            likeProduct(position,holder.favoriteProduct)
         }
     }
 
@@ -73,5 +85,38 @@ class ProductAdapter (
 
     interface OnItemClickListener{
         fun onItemClick(position: Int)
+    }
+
+    private fun likeProduct(position : Int, icon : ImageButton){
+        val userId = auth.currentUser?.uid.toString()
+        database.addListenerForSingleValueEvent(object : ValueEventListener{
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                var isLiked = false
+                var favId : String? = null
+                for (favorite in snapshot.child(userId).child("favorites").children){
+                    if (favorite.value.toString() == items[position].productId)
+                    {
+                        isLiked = true
+                        favId = favorite.key
+                    }
+                }
+
+                if (isLiked){
+                    database.child(userId).child("favorites").child(favId!!).removeValue()
+                    //icon.setColorFilter(Color.argb(255, 255, 255, 255))
+                }
+                else{
+                    database.child(userId).child("favorites").child(items[position].productId).setValue(items[position].productId)
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }

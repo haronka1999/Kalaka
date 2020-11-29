@@ -72,7 +72,7 @@ class SplashFragment : Fragment() {
         val emails = mutableListOf<Pair<String, String>>()
         val favoriteProductIds = mutableListOf<String>()
 
-        databaseRef.addValueEventListener(object : ValueEventListener {
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // get all emails from database (is needed for autocomplete search)
                 for (user in dataSnapshot.children) {
@@ -121,18 +121,23 @@ class SplashFragment : Fragment() {
 
     private fun addFavoriteProductToViewModel(productId: String) {
         database = FirebaseDatabase.getInstance()
-        databaseRef = database.getReference("products")
+        databaseRef = database.getReference("products").child(productId)
+        Log.d("************",databaseRef.toString())
 
-        databaseRef.addValueEventListener(object : ValueEventListener {
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val productData = snapshot.child(productId)
+                //val productData = snapshot.child(productId)
+                Log.d("************",snapshot.toString())
+
+
+
                 val product = Product(
-                    productData.child("businessId").value.toString(),
-                    productData.child("description").value.toString(),
-                    productData.child("name").value.toString(),
-                    productData.child("photoUrl").value.toString(),
-                    productData.child("price").value.toString().toDouble(),
-                    productData.child("productId").value.toString()
+                    snapshot.child("businessId").value.toString(),
+                    snapshot.child("description").value.toString(),
+                    snapshot.child("name").value.toString(),
+                    snapshot.child("photoURL").value.toString(),
+                    snapshot.child("price").value.toString().toDouble(),
+                    snapshot.child("productId").value.toString()
                 )
                 if (preloadedData.favoriteProductlist.value == null) {
                     preloadedData.favoriteProductlist.value = mutableListOf(product)
@@ -143,5 +148,10 @@ class SplashFragment : Fragment() {
 
             override fun onCancelled(error: DatabaseError) {}
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+
     }
 }
