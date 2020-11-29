@@ -2,7 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -48,10 +50,10 @@
                     android:id="@+id/productNameTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="26sp"
-                    android:layout_marginBottom="16dp"
                     android:gravity="center"
                     android:text="Termék neve es Ára"
+                    android:textColor="#FFFFFF"
+                    android:textSize="26sp"
                     app:layout_constraintTop_toBottomOf="@id/business_profile" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -62,43 +64,48 @@
             android:id="@+id/descriptionTextView"
             android:layout_width="355dp"
             android:layout_height="162dp"
-            android:ems="10"
-            android:text="Leiras"
             android:layout_marginTop="32dp"
             android:background="@color/item_background"
-            app:layout_constraintStart_toStartOf="parent"
+            android:padding="10dp"
+            android:ems="10"
+            android:text="Leírás"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:layout_constraintCircleRadius="5dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView"
-            tools:layout_editor_absoluteX="28dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
         <TextView
             android:id="@+id/tagsTextView"
             android:layout_width="355dp"
             android:layout_height="50dp"
-            android:ems="10"
-            android:text="Cimkék"
             android:layout_marginTop="32dp"
             android:background="@color/item_background"
-            app:layout_constraintStart_toStartOf="parent"
+            android:ems="10"
+            android:text="Címkék"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/descriptionTextView"
-            tools:layout_editor_absoluteX="28dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTextView" />
 
         <Button
             android:id="@+id/orderButton"
             android:layout_width="140dp"
             android:layout_height="40dp"
             android:layout_marginTop="32dp"
+            android:layout_marginBottom="30dp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/szin3"
             android:text="Rendelés"
             app:backgroundTint="#44BEED"
-            app:layout_constraintTop_toBottomOf="@id/tagsTextView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@id/tagsTextView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+</ScrollView>
 </layout>
