@@ -17,6 +17,8 @@ import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.adapters.BusinessAdapter
 import com.e.kalaka.databinding.FragmentProfileBinding
+import com.e.kalaka.models.Business
+import com.e.kalaka.models.BusinessOrder
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -34,7 +36,6 @@ class ProfileFragment : Fragment() {
     var myRef = database.getReference("users")
     var userId = mAuth.currentUser?.uid
     private lateinit var businessId : String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
@@ -64,11 +65,15 @@ class ProfileFragment : Fragment() {
         showDatas()
 
 
+
+
         binding.myBusiness.setOnClickListener {
             if (businessId == "0") {
+
                 Navigation.findNavController(binding.root)
                     .navigate(R.id.action_profileFragment_to_noBusinessFragment)
             } else {
+
                 preloadedData.indicator.value = 1
                 Navigation.findNavController(binding.root)
                     .navigate(R.id.action_profileFragment_to_businessProfile)
@@ -86,13 +91,13 @@ class ProfileFragment : Fragment() {
 
 
     private fun showDatas() {
-
         val user = preloadedData.user.value
         binding.firstName.text=user?.firstName
         binding.lastName.text=user?.lastName
         binding.email.text=user?.email
-        Log.d("------", user!!.photoURL)
-        setProfileImage(user.photoURL, binding.profilePic)
+        if (user != null) {
+            setProfileImage(user.photoURL, binding.profilePic)
+        }
     }
 
     private fun setProfileImage(logoURL: String, view: ImageView) {
