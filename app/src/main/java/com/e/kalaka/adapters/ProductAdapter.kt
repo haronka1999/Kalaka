@@ -2,15 +2,12 @@ package com.e.kalaka.adapters
 
 import android.app.Activity
 import android.graphics.BitmapFactory
-import android.media.Image
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.models.Product
 import com.google.firebase.storage.FirebaseStorage
@@ -52,7 +49,7 @@ class ProductAdapter (
         holder.productDescription.text = currentItem.description
         holder.productName.text = currentItem.name
         holder.productPrice.text = currentItem.price.toString() + " RON"
-        //Glide.with(activity).load(Uri.parse(currentItem.photoURL)).into(holder.productImage)
+        
         setProductImage(currentItem.photoURL, holder.productImage)
 
         if (indicator == 2){
