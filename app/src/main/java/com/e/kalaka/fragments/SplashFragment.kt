@@ -2,11 +2,13 @@ package com.e.kalaka.fragments
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,31 +36,73 @@ class SplashFragment : Fragment() {
     private lateinit var usersRef: DatabaseReference
     private val mUser = mAuth.currentUser
 
+    //shared preferences
+    private lateinit var sharedPreferences: SharedPreferences
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_splash, container, false)
-
-        preloadedData.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (mUser != null) {
-                findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
-            } else {
-                findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
-            }
-        })
-        loadUserData()
         return binding.root
     }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //hide bottom navigation
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+
+        //get shared preferences
+        sharedPreferences = requireContext().getSharedPreferences("credentials",Context.MODE_PRIVATE)
+        val credentials = sharedPreferences.all
+
+        login(credentials)
+    }
+
+
+    private fun login(preferences: MutableMap<String,*>){
+
+        if (preferences.containsKey("email") && preferences.containsKey("password")){
+
+            val email = preferences["email"] as String
+            val password = preferences["password"] as String
+
+            mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener{task ->
+                if (task.isSuccessful){
+
+                    preloadedData.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {user ->
+                        if (user == null) {
+                            Log.d("Error", "Couldn't load the user data")
+                            Toast.makeText(context,"Sikertelen bejelentkezés",Toast.LENGTH_LONG).show()
+                            findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+                        } else {
+                            findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+                        }
+                    })
+
+                    loadUserData()
+                }
+                else{
+                    //clear shared preferences
+                    sharedPreferences.edit().clear().apply()
+                    findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+                }
+            }
+        }
+        else{
+            findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+        }
+    }
+
     private fun loadUserData() {
+
         database = FirebaseDatabase.getInstance()
         usersRef = database.getReference("users")
 
@@ -66,7 +110,7 @@ class SplashFragment : Fragment() {
 
         userID = mUser?.uid.toString()
 
-        usersRef.addValueEventListener(object : ValueEventListener {
+        usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 // get all emails from database (is needed for autocomplete search)

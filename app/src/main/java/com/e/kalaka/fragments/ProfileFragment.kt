@@ -1,6 +1,8 @@
 package com.e.kalaka.fragments
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -38,9 +40,14 @@ class ProfileFragment : Fragment() {
     var myRef = database.getReference("users")
     var userId = mAuth.currentUser?.uid
     private lateinit var businessId : String
+    private lateinit var sharedPreferences: SharedPreferences
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 businessId =  dataSnapshot.child(userId.toString()).child("businessId").value.toString()
@@ -67,8 +74,6 @@ class ProfileFragment : Fragment() {
         showDatas()
 
 
-
-
         binding.myBusiness.setOnClickListener {
             if (businessId == "0") {
 
@@ -82,10 +87,13 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        //SIGN OUT
         binding.signOut.setOnClickListener {
             mAuth.signOut()
-            Navigation.findNavController(binding.root)
-                .navigate(R.id.action_profileFragment_to_loginFragment)
+            sharedPreferences = requireContext().getSharedPreferences("credentials", Context.MODE_PRIVATE)
+            sharedPreferences.edit().clear().apply()
+
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         }
 
         return view
@@ -104,8 +112,8 @@ class ProfileFragment : Fragment() {
     private fun setProfileImage(logoURL: String, view: ImageView) {
         val storage = FirebaseStorage.getInstance()
         val storageReference = storage.reference.child(logoURL)
-        val ONE_MEGABYTE = (1024 * 1024).toLong()
-        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytesPrm ->
+        val FIVE_MEGABYTE = (1024 * 1024 * 5).toLong()
+        storageReference.getBytes(FIVE_MEGABYTE).addOnSuccessListener { bytesPrm ->
             val bmp = BitmapFactory.decodeByteArray(bytesPrm, 0, bytesPrm.size)
             view.setImageBitmap(bmp)
         }
