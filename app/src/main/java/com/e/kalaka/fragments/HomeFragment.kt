@@ -53,7 +53,6 @@ class HomeFragment : Fragment(), TagListAdapter.OnItemClickListener {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         topicViewModel.filteredTagList.value = Tag.getTags()
-        topicViewModel.filteredList.value = Tag.getTags()
         businessId = preloadViewModel.user.value!!.businessId
         Log.d("Helo", "BusinessID $businessId")
         if ( businessId == "0"){
