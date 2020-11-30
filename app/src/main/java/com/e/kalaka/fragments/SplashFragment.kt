@@ -44,8 +44,13 @@ class SplashFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_splash, container, false)
+        return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         preloadedData.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (mUser != null) {
@@ -55,10 +60,10 @@ class SplashFragment : Fragment() {
             }
         })
         loadUserData()
-        return binding.root
     }
 
     private fun loadUserData() {
+
         database = FirebaseDatabase.getInstance()
         usersRef = database.getReference("users")
 

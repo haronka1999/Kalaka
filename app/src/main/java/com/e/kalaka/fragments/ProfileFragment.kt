@@ -104,8 +104,8 @@ class ProfileFragment : Fragment() {
     private fun setProfileImage(logoURL: String, view: ImageView) {
         val storage = FirebaseStorage.getInstance()
         val storageReference = storage.reference.child(logoURL)
-        val ONE_MEGABYTE = (1024 * 1024).toLong()
-        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytesPrm ->
+        val FIVE_MEGABYTE = (1024 * 1024 * 5).toLong()
+        storageReference.getBytes(FIVE_MEGABYTE).addOnSuccessListener { bytesPrm ->
             val bmp = BitmapFactory.decodeByteArray(bytesPrm, 0, bytesPrm.size)
             view.setImageBitmap(bmp)
         }
