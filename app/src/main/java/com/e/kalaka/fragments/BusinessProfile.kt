@@ -50,8 +50,7 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 //get the current user's business
-                businessId =
-                    dataSnapshot.child(userId.toString()).child("businessId").value.toString()
+                businessId = dataSnapshot.child(userId.toString()).child("businessId").value.toString()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -134,7 +133,9 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             loadProducts(business.productIds, business.businessId)
         })
 
-        loadBusiness(userId)
+        if(preloadedData.indicator.value == 1) {
+            loadBusiness(userId)
+        }
     }
 
     override fun onItemClick(position: Int) {
