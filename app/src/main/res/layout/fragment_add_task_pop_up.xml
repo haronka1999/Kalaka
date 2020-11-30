@@ -24,7 +24,7 @@
             android:background="@android:color/white"
             android:clickable="true"
             android:focusable="true"
-            android:text="VÁllalom"
+            android:text="@string/acceptOrderButton"
             android:textStyle="bold" />
 
 
@@ -36,7 +36,7 @@
             android:background="@android:color/white"
             android:clickable="true"
             android:focusable="true"
-            android:text="Kész"
+            android:text="@string/doneOrderButton"
             android:textStyle="bold" />
 
         <Button
@@ -47,7 +47,7 @@
             android:background="@android:color/white"
             android:clickable="true"
             android:focusable="true"
-            android:text="Postázva"
+            android:text="@string/sentOrderButton"
             android:textStyle="bold" />
 
         <Button
@@ -58,7 +58,7 @@
             android:background="@android:color/white"
             android:clickable="true"
             android:focusable="true"
-            android:text="Törlés"
+            android:text="@string/deleteOrderButton"
             android:textStyle="bold" />
     </LinearLayout>
 </FrameLayout>

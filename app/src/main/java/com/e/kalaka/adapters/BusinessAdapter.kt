@@ -1,24 +1,20 @@
 package com.e.kalaka.adapters
 
-import android.app.Activity
 import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.e.kalaka.R
 import com.e.kalaka.models.Business
 import com.google.firebase.storage.FirebaseStorage
 
 
 class BusinessAdapter(
-    private val items: List<Business>,
-    private val listener: BusinessAdapter.OnItemClickListener,
-    private val activity: Activity
+    private var items: MutableList<Business>,
+    private val listener: OnItemClickListener
 ):  RecyclerView.Adapter<BusinessAdapter.DataViewHolder>(){
 
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -68,7 +64,12 @@ class BusinessAdapter(
 
     override fun getItemCount(): Int = items.size
 
-        interface OnItemClickListener{
-            fun onItemClick(position: Int)
-        }
+    interface OnItemClickListener{
+        fun onItemClick(position: Int)
+    }
+
+    fun setData(newItems: MutableList<Business>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
 }

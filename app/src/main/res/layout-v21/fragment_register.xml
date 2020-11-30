@@ -22,7 +22,7 @@
             android:textColor="@color/white"
             android:layout_height="wrap_content"
             android:textColorHint="@color/white"
-            android:text="Regisztráció"
+            android:text="@string/registration_text"
             android:textSize="28sp"
             app:layout_constraintBottom_toTopOf="@id/firstNameEditText"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +38,7 @@
             android:layout_marginEnd="32dp"
             android:autofillHints="Username"
             android:drawablePadding="10dp"
-            android:hint="Vezetéknév"
+            android:hint="@string/lastNameText"
             android:inputType="textPersonName"
             android:textColor="#FFFFFF"
             android:textColorHint="@color/white"
@@ -57,7 +57,7 @@
             android:layout_marginEnd="32dp"
             android:autofillHints="Username"
             android:drawablePadding="10dp"
-            android:hint="Keresztnév"
+            android:hint="@string/firstNameText"
             android:inputType="textPersonName"
             android:textColor="#FFFFFF"
             android:textColorHint="@color/white"
@@ -75,7 +75,7 @@
             android:layout_marginEnd="32dp"
             android:autofillHints="Email"
             android:drawablePadding="10dp"
-            android:hint="Email"
+            android:hint="@string/email_text"
             android:inputType="textEmailAddress"
             android:textColor="#FFFFFF"
             android:textColorHint="@color/white"
@@ -93,7 +93,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
             android:layout_marginStart="32dp"
-            android:text="Kép feltöltése"
+            android:text="@string/addProduct_uploadImage"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/emailEditText"
@@ -106,7 +106,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:backgroundTint="@color/background"
-            android:contentDescription="kephozaadas"
+            android:contentDescription="@string/content_description"
             android:tint="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="@id/addPictureTextView"
             app:layout_constraintStart_toEndOf="@+id/addPictureTextView"
@@ -131,7 +131,7 @@
             android:layout_marginTop="32dp"
             android:autofillHints="Password"
             android:drawablePadding="10dp"
-            android:hint="Password"
+            android:hint="@string/password_text"
             android:inputType="textPassword"
             android:textColor="#FFFFFF"
             android:textColorHint="@color/white"
@@ -148,7 +148,7 @@
             android:layout_marginTop="32dp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/szin3"
-            android:text="Mentés"
+            android:text="@string/save_text"
             android:textColor="@color/background"
             app:backgroundTint="#44BEED"
             app:layout_constraintEnd_toEndOf="parent"
@@ -157,7 +157,7 @@
 
         <TextView
             android:id="@+id/gotoLoginButton"
-            android:text="Már van fiókom"
+            android:text="@string/alreadyAccount"
             android:layout_width="match_parent"
             android:gravity="center"
             android:textColor="@color/white"
@@ -166,8 +166,6 @@
             app:layout_constraintTop_toBottomOf="@id/saveButton"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_height="wrap_content"/>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

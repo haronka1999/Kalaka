@@ -1,18 +1,22 @@
 package com.e.kalaka.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.e.kalaka.R
 import com.e.kalaka.adapters.BusinessAdapter
 import com.e.kalaka.databinding.FragmentMainSearchBinding
+import com.e.kalaka.models.Business
 import com.e.kalaka.viewModels.PreloadViewModel
 import com.e.kalaka.viewModels.TopicViewModel
 
@@ -22,11 +26,6 @@ class MainSearch : Fragment(), BusinessAdapter.OnItemClickListener {
     private lateinit var binding : FragmentMainSearchBinding
     private val topicViewModel : TopicViewModel by activityViewModels()
     private val preloadedData : PreloadViewModel by activityViewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,18 +39,25 @@ class MainSearch : Fragment(), BusinessAdapter.OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
 
-        binding.recycleView.adapter = BusinessAdapter(topicViewModel.list.value!!, this, requireActivity())
+        topicViewModel.filteredBusinesslist = topicViewModel.list
+
+        binding.searchInput.addTextChangedListener{
+            val newList = mutableListOf<Business>()
+            topicViewModel.list.value?.forEach{ business->
+                if(business.name.contains(it.toString())) {
+                    newList.add(business)
+                }
+            }
+            topicViewModel.filteredBusinesslist.value = newList
+        }
+        val adapter = BusinessAdapter(mutableListOf(), this)
+        binding.recycleView.adapter = adapter
         binding.recycleView.layoutManager = LinearLayoutManager(context)
         binding.recycleView.setHasFixedSize(true)
-        /*
-        topicViewModel.list.observe(viewLifecycleOwner, Observer { list ->
-            binding.recycleView.adapter = BusinessAdapter(list, this, requireActivity())
-            binding.recycleView.layoutManager = LinearLayoutManager(context)
-            binding.recycleView.setHasFixedSize(true)
-        })
 
-         */
-
+        topicViewModel.filteredBusinesslist.observe(viewLifecycleOwner) {
+            adapter.setData(it)
+        }
     }
 
     override fun onItemClick(position: Int) {
