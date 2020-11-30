@@ -1,7 +1,9 @@
 package com.e.kalaka.fragments
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -44,6 +46,7 @@ class RegisterFragment : Fragment() {
     var database = FirebaseDatabase.getInstance()
     var myRef = database.reference
     private val preloadedData: PreloadViewModel by activityViewModels()
+    private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
         //image pick code
@@ -60,6 +63,27 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.circularProgress.visibility = View.GONE
+
+        //the user cant go back to the splashscreen
+        var callbackCounter = 0
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (callbackCounter == 0) {
+                Toast.makeText(requireContext(), "Nyomja meg újra a kilépéshez!", Toast.LENGTH_SHORT).show()
+                Timer().schedule(timerTask {
+                    callbackCounter = 0
+                }, 2000)
+
+                callbackCounter++
+            } else requireActivity().finish()
+        }
+
+
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
 
@@ -78,7 +102,7 @@ class RegisterFragment : Fragment() {
             if (!registrationValidation(lastName, firstName, email, password))
                 return@setOnClickListener
 
-
+            binding.circularProgress.visibility = View.VISIBLE
             //authentication
             registerUserInDataBase(email, password)
         }
@@ -87,17 +111,6 @@ class RegisterFragment : Fragment() {
             Navigation.findNavController(binding.root)
                 .navigate(R.id.action_registerFragment_to_loginFragment)
         }
-        return binding.root
-    }
-
-
-
-    private fun pickImageFromGallery() {
-        //Intent to pick image
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -108,6 +121,13 @@ class RegisterFragment : Fragment() {
         }
     }
 
+    private fun pickImageFromGallery() {
+        //Intent to pick image
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(intent, IMAGE_PICK_CODE)
+    }
 
     private fun uploadPicture(id: String) {
 
@@ -127,11 +147,8 @@ class RegisterFragment : Fragment() {
     private fun putUserDataIntoRealTimeDatabase(
         user: User
     ) {
-        // Log.d("Helo", "LastName: $lastName")
-        //Log.d("Helo", "firstName: $firstName")
-        Log.d("Helo", "imageUri: $imageUri")
-
         userId = mAuth.currentUser?.uid.toString()
+
         // upload user image to firebase storage
         uploadPicture(userId)
 
@@ -149,17 +166,14 @@ class RegisterFragment : Fragment() {
 
     }
     private fun registerUserInDataBase(email: String, password: String) {
+
         val navController = Navigation.findNavController(binding.root);
         mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 // let the user know that the registration was successful
-                Log.d("Helo", "itt vagy ? ")
 
                 if (task.isSuccessful) {
-                    Log.d("Helo", "successfull")
-                    Log.d("Helo", "imageUri.toString() $imageUri")
-
                     userId = ""
                     val user = User(
                         "0",
@@ -171,21 +185,27 @@ class RegisterFragment : Fragment() {
                         arrayListOf(),
                         imageUri.toString()
                     )
-                    //realtime
 
+                    //save to shared preferences
+                    sharedPreferences = requireContext().getSharedPreferences("credentials",
+                        Context.MODE_PRIVATE)
+                    val edit = sharedPreferences.edit()
+                    edit.clear()
+                    edit.putString("email", email)
+                    edit.putString("password", password)
+                    edit.apply()
+
+                    //realtime
                     putUserDataIntoRealTimeDatabase(user)
                     preloadedData.user.value = user
                     navController.navigate(R.id.homeFragment)
                 } else {
                     Log.d("Helo", task.exception.toString())
-                    Toast.makeText(
-                        activity,
-                        "Error !" + task.exception.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(activity, "Sikertelen regisztráció!", Toast.LENGTH_SHORT).show()
                 }
             }
     }
+
     private fun registrationValidation(
         lastName: String,
         firstName: String,
@@ -227,23 +247,8 @@ class RegisterFragment : Fragment() {
             return false
         }
 
-
         return true
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-        var callbackCounter = 0
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            if (callbackCounter == 0) {
-                Toast.makeText(requireContext(), "Nyomja meg újra a kilépéshez!", Toast.LENGTH_SHORT).show()
-                Timer().schedule(timerTask {
-                    callbackCounter = 0
-                }, 2000)
-
-                callbackCounter++
-            } else requireActivity().finish()
-        }
-    }
 }
