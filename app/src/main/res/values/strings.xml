@@ -59,4 +59,6 @@
     <string name="time_placeholder">Időpont:</string>
     <string name="business_placeholder">Vállalkozás:</string>
     <string name="productName_placeholder">Termék:</string>
+    <string name="orderStatusText">Rendelés állapota</string>
+    <string name="orderWorkerText">Rajta dolgozik</string>
 </resources>

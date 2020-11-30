@@ -142,7 +142,6 @@ class AddProductFragment : Fragment() {
         riversRef.putFile(imageUri)
             .addOnSuccessListener { taskSnapshot -> // Get a URL to the uploaded content
                 Log.d("Helo", "kep sikeresen feltoltve")
-                Toast.makeText(activity, "Kép sikeresen feltöltve", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 Log.d("Helo", "valami hiba a kepfeltoltesnel")

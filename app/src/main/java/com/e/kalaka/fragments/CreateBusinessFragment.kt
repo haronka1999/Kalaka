@@ -39,10 +39,10 @@ class CreateBusinessFragment : Fragment() {
 
     private lateinit var binding: FragmentCreateBusinessBinding
     private var tags = mutableListOf<String>()
-    private var members = mutableListOf<String>()
     private var imageUri: Uri? = null
     private lateinit var storage: FirebaseStorage
     private var  userId  = FirebaseAuth.getInstance().currentUser?.uid
+    private var members = mutableListOf(userId!!)
     private lateinit var storageReference: StorageReference
     private val preloadedData: PreloadViewModel by activityViewModels()
     private val preloadedUserData: PreloadViewModel by activityViewModels()
@@ -93,17 +93,9 @@ class CreateBusinessFragment : Fragment() {
                 return@setOnClickListener
             }
 
-           //  userId = FirebaseAuth.getInstance().currentUser?.uid
-
-            val logoUri: String = if (imageUri == null) {
-                ""
-            } else {
-                imageUri.toString()
-            }
-
             val randomKey = UUID.randomUUID().toString()
-            val logoPath: String = "business_image/$randomKey"
-            val EmptyorderList : MutableList<BusinessOrder> = arrayListOf()
+            val logoPath = "business_image/$randomKey"
+            val emptyOrderList : MutableList<BusinessOrder> = arrayListOf()
             val business = Business(randomKey,
                                     description,
                                     email,
@@ -113,7 +105,7 @@ class CreateBusinessFragment : Fragment() {
                                     logoPath,
                                     members,
                                     name,
-                                    EmptyorderList,
+                                    emptyOrderList,
                                     userId!!,
                                     phoneNumber,
                                     listOf(),
