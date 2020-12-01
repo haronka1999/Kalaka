@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kalaka</string>
+    <string name="app_name">LocalTrader</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="businessname_placeholder">BusinessName</string>
     <string name="business_description_placeholer">Description Description Description</string>
