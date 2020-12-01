@@ -157,12 +157,12 @@ class SplashFragment : Fragment() {
     }
 
     private fun loadPendingOrders(userId: String) {
-
-        preloadedData.pendingOrders.value = mutableListOf()
         val myRefBusiness = database.getReference("business")
 
         myRefBusiness.addValueEventListener(object: ValueEventListener {
+
             override fun onDataChange(snapshot: DataSnapshot) {
+                val newList = mutableListOf<BusinessOrder>()
 
                 // hosszan megyünk a vállalkozásokon
                 for(business in snapshot.children) {
@@ -170,29 +170,29 @@ class SplashFragment : Fragment() {
                     for(member in business.child("memberIds").children) {
                         // ha a user tagja a vállalkozásnak, akkor a vállalkozás rendelései hozzá tartoznak
                         if(member.value.toString() == userId) {
-                            for(orders in business.children ) {
-                                if(orders.child("status").value.toString() == "0") {
-                                    val order = BusinessOrder(
-                                        orders.child("address").value.toString(),
-                                        orders.child("city").value.toString(),
-                                        orders.child("clientId").value.toString(),
-                                        orders.child("comment").value.toString(),
-                                        orders.child("number").value.toString(),
-                                        orders.child("orderId").value.toString(),
-                                        orders.child("postcode").value.toString(),
-                                        orders.child("productId").value.toString(),
-                                        orders.child("productName").value.toString(),
-                                        orders.child("status").value.toString().toInt(),
-                                        orders.child("time").value.toString(),
-                                        orders.child("total").value.toString().toDouble(),
-                                        orders.child("worker").value.toString()
-                                    )
-                                    preloadedData.pendingOrders.value!!.add(order)
-                                }
+                            for(orders in business.child("orders").children ) {
+                                val order = BusinessOrder(
+                                    orders.child("address").value.toString(),
+                                    orders.child("city").value.toString(),
+                                    orders.child("clientId").value.toString(),
+                                    orders.child("comment").value.toString(),
+                                    orders.child("number").value.toString(),
+                                    orders.child("orderId").value.toString(),
+                                    orders.child("postcode").value.toString(),
+                                    orders.child("productId").value.toString(),
+                                    orders.child("productName").value.toString(),
+                                    orders.child("status").value.toString().toInt(),
+                                    orders.child("time").value.toString(),
+                                    orders.child("total").value.toString().toDouble(),
+                                    orders.child("worker").value.toString()
+                                )
+                                newList.add(order)
                             }
                         }
                     }
                 }
+
+                preloadedData.pendingOrders.value = newList
             }
 
             override fun onCancelled(error: DatabaseError) {}
@@ -203,7 +203,6 @@ class SplashFragment : Fragment() {
     private fun addFavoriteProductToViewModel(productId: String) {
         database = FirebaseDatabase.getInstance()
         val productsRef = database.getReference("products")
-        Log.d("************",productsRef.toString())
 
         productsRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

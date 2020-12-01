@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.e.kalaka.R
 import com.e.kalaka.adapters.PendingOrderAdapter
@@ -29,7 +30,6 @@ import com.google.firebase.database.ValueEventListener
 class PendingOrderFragment : Fragment(), PendingOrderAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentPendingOrderBinding
-    private var businessOrders = mutableListOf<BusinessOrder>()
     private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     var database = FirebaseDatabase.getInstance()
     var userId = mAuth.currentUser?.uid
@@ -42,10 +42,8 @@ class PendingOrderFragment : Fragment(), PendingOrderAdapter.OnItemClickListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        businessOrders = preloadedData.pendingOrders.value!!
         businessId = preloadedData.user.value!!.businessId
-
-
+        topicViewModel.choosedTask.value = 0
     }
 
     override fun onCreateView(
@@ -55,68 +53,50 @@ class PendingOrderFragment : Fragment(), PendingOrderAdapter.OnItemClickListener
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_pending_order, container, false)
         val recyclerView = binding.recyclerView
-        recyclerView.adapter = PendingOrderAdapter(businessOrders, this)
+        val adapter = PendingOrderAdapter(preloadedData.pendingOrders.value!!, this, binding.root.context)
+        recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.setHasFixedSize(true)
 
-//        if(businessId == "0"){
-//            //WE SHOUDLNT BE HERE BECAUSE THE BUTTON IS NOT
-//            //VISIBLE IF THE USER DOESNT HAVE A BUSINESS
-//        }
+        preloadedData.pendingOrders.observe(viewLifecycleOwner) {
+            if(it.size == 0) {
+                binding.empty.visibility = View.VISIBLE
+                binding.recyclerView.visibility = View.GONE
+            } else {
+                binding.empty.visibility = View.GONE
+                binding.recyclerView.visibility = View.VISIBLE
+            }
+
+            adapter.setData(it)
+        }
 
         topicViewModel.choosedTask.observe(viewLifecycleOwner, Observer {
+
             task = topicViewModel.choosedTask.value!!.toInt()
-            Log.d("Helo", task.toString())
-
-            myRefBusiness.child(businessId).addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    Log.d("Helo", "$snapshot")
-                    if(task == 1){
-                        Log.d("Helo", "Current Order ID : " + preloadedData.currentPendingOrder.orderId)
-
-                    }else if(task == 2){
-
-                    }else if(task == 3){
-
-                    }else if(task == 4){
-
-                    }else{
+                when (task) {
+                    1 -> {
+                        val orderId = preloadedData.currentPendingOrder.orderId
+                        val workerName = "${preloadedData.user.value?.lastName} ${preloadedData.user.value?.firstName}"
+                        setOrderStatus(businessId, orderId, workerName, "1")
+                    }
+                    2 -> {
+                        val orderId = preloadedData.currentPendingOrder.orderId
+                        val workerName = "${preloadedData.user.value?.lastName} ${preloadedData.user.value?.firstName}"
+                        setOrderStatus(businessId, orderId, workerName, "2")
+                    }
+                    3 -> {
+                        val orderId = preloadedData.currentPendingOrder.orderId
+                        val workerName = "${preloadedData.user.value?.lastName} ${preloadedData.user.value?.firstName}"
+                        setOrderStatus(businessId, orderId, workerName, "3")
+                    }
+                    4 -> {
+                    }
+                    else -> {
 
                     }
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
         })
 
-
-
-//        topicViewModel.choosedTask.observe(viewLifecycleOwner, Observer {
-//            myRefBusiness.addValueEventListener(object : ValueEventListener {
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    for (business in snapshot.children) {
-//                        if (business.child("ownerId").value.toString() == userId) {
-//                            if (business.child("orders").value != null) {
-//                                for (orders in business.child("orders").children) {
-//                                    if (orders.child("status").value.toString() == "0") {
-//                                        Log.d(
-//                                            "Helo",
-//                                            "orders: ${orders.child("orderId").value.toString()}"
-//                                        )
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {
-//                }
-//            })
-//        })
         return binding.root
     }
 
@@ -129,6 +109,15 @@ class PendingOrderFragment : Fragment(), PendingOrderAdapter.OnItemClickListener
         }
     }
 
+    private fun setOrderStatus(businessId: String, orderId: String, worker: String, status: String) {
+        myRefBusiness.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.child(businessId).child("orders").child(orderId).child("status").ref.setValue(status)
+                snapshot.child(businessId).child("orders").child(orderId).child("worker").ref.setValue(worker)
+            }
 
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
 }
 

@@ -98,8 +98,9 @@ class OrderProductFragment : Fragment() {
             userId = mAuth.currentUser?.uid.toString()
 
             preloadedBusinessName.businessName.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                val clientName = "${preloadedData.user.value?.firstName} ${preloadedData.user.value?.lastName}"
                 val userOrder = UserOrder(address, city, userId,preloadedBusinessName.businessName.value!!, comment, number, randomKey, postalCode, productId, productName, currentTime, price)
-                val businessOrder = BusinessOrder(address, city, userId, comment, number, randomKey, postalCode, productId, productName, 0 , currentTime, price, "")
+                val businessOrder = BusinessOrder(address, city, clientName, comment, number, randomKey, postalCode, productId, productName, 0 , currentTime, price, "")
                 uploadOrder(userOrder, businessOrder, businessId)
                 findNavController().navigate(R.id.action_orderProductFragment_to_homeFragment)
             })

@@ -8,10 +8,10 @@ class PreloadViewModel : ViewModel(){
 
     var user : MutableLiveData<User> = MutableLiveData<User>()
 
-    //profilnak
+    // profilnak
     var business : MutableLiveData<Business> = MutableLiveData<Business>()
 
-    //listazasbol
+    // listazasbol
     var searchedBusiness : MutableLiveData<Business> = MutableLiveData<Business>()
 
 

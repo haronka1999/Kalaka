@@ -80,7 +80,6 @@ class ProfileFragment : Fragment() {
                 Navigation.findNavController(binding.root)
                     .navigate(R.id.action_profileFragment_to_noBusinessFragment)
             } else {
-
                 preloadedData.indicator.value = 1
                 Navigation.findNavController(binding.root)
                     .navigate(R.id.action_profileFragment_to_businessProfile)
