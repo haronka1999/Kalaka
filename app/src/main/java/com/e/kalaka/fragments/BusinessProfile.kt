@@ -81,30 +81,17 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             findNavController().navigate(R.id.action_businessProfile_to_addProductFragment)
         }
 
-        preloadedData.searchedBusiness.observe(viewLifecycleOwner, Observer {
-            val business: Business
-            val indicator = preloadedData.indicator.value
-            when (indicator) {
-                1 -> {
-                    business = preloadedData.business.value!!
-                }
-                2 -> {
-                    business = preloadedData.searchedBusiness.value!!
-                    hideEditButtons()
-                }
-                else -> {
-                    business = preloadedData.business.value!!
-                }
-            }
+        Log.d("******INDICATOR",preloadedData.indicator.value.toString())
+        if (preloadedData.indicator.value == 2) hideEditButtons()
 
-            binding.businessName.text = business.name
-            binding.businessDescription.text = business.description
-            binding.businessEmail.text = business.email
-            binding.businessLabels.text = business.tags.joinToString(", ")
-            binding.businessTelephone.text = business.phone
-            binding.location.text = business.location
+        preloadedData.business.observe(viewLifecycleOwner, Observer { business ->
+            setDetails(business)
+        })
 
-            if(business.facebookURL.isEmpty()) {
+
+
+
+           /* if(business.facebookURL.isEmpty()) {
                 binding.facebookText.visibility = View.INVISIBLE
             }
             else {
@@ -116,12 +103,11 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             }
             else {
                 binding.instagramText.text = business.instagramURL
-            }
+            }*/
 
-            setItemImage(business.logoURL, binding.businessProfile)
 
             val recycleView = binding.recycleView
-
+            val indicator = preloadedData.indicator.value
 
             preloadedData.productList.observe(viewLifecycleOwner, Observer {
                     list -> val adapter = indicator?.let { ProductAdapter(list, this, requireActivity(), it) }
@@ -130,11 +116,13 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
                 recycleView.layoutManager = horizontalLayout
                 recycleView.setHasFixedSize(true)
             })
-            loadProducts(business.productIds, business.businessId)
-        })
+
 
         if(preloadedData.indicator.value == 1) {
             loadBusiness(userId)
+        }
+        else{
+            setDetails(preloadedData.searchedBusiness.value!!)
         }
     }
 
@@ -243,4 +231,16 @@ class BusinessProfile : Fragment(), ProductAdapter.OnItemClickListener {
             holder.setImageBitmap(bmp)
         }
     }
+
+    private fun setDetails(business: Business){
+        binding.businessName.text = business.name
+        binding.businessDescription.text = business.description
+        binding.businessEmail.text = business.email
+        binding.businessLabels.text = business.tags.joinToString(", ")
+        binding.businessTelephone.text = business.phone
+        binding.location.text = business.location
+        setItemImage(business.logoURL, binding.businessProfile)
+        loadProducts(business.productIds, business.businessId)
+    }
 }
+
