@@ -1,0 +1,65 @@
+
+<layout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/item_background"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="30dp"
+        android:orientation="vertical">
+
+
+        <Button
+            android:id="@+id/vallalomButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/acceptOrderButton"
+            android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/keszButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/doneOrderButton"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/postazvaButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/sentOrderButton"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/torlesButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/deleteOrderButton"
+            android:textStyle="bold" />
+    </LinearLayout>
+</FrameLayout>
+</layout>
